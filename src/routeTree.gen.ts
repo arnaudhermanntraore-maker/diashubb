@@ -21,7 +21,7 @@ import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
-import { Route as ListingsNewRouteImport } from './routes/listings.new'
+import { Route as ListingsNewRouteImport } from './routes/listings_.new'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
@@ -86,9 +86,9 @@ const PropertyIdRoute = PropertyIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ListingsNewRoute = ListingsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => ListingsRoute,
+  id: '/listings_/new',
+  path: '/listings/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
@@ -110,7 +110,7 @@ export interface FileRoutesByFullPath {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
-  '/listings': typeof ListingsRouteWithChildren
+  '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
   '/listings/new': typeof ListingsNewRoute
@@ -127,7 +127,7 @@ export interface FileRoutesByTo {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
-  '/listings': typeof ListingsRouteWithChildren
+  '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
   '/listings/new': typeof ListingsNewRoute
@@ -145,10 +145,10 @@ export interface FileRoutesById {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
-  '/listings': typeof ListingsRouteWithChildren
+  '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
-  '/listings/new': typeof ListingsNewRoute
+  '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
@@ -201,7 +201,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/messages'
     | '/safety'
-    | '/listings/new'
+    | '/listings_/new'
     | '/property/$id'
     | '/api/public/chat'
     | '/api/public/stripe-webhook'
@@ -216,9 +216,10 @@ export interface RootRouteChildren {
   ContractorsRoute: typeof ContractorsRoute
   DashboardRoute: typeof DashboardRoute
   DemoLoginRoute: typeof DemoLoginRoute
-  ListingsRoute: typeof ListingsRouteWithChildren
+  ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
   SafetyRoute: typeof SafetyRoute
+  ListingsNewRoute: typeof ListingsNewRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
@@ -310,12 +311,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropertyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/listings/new': {
-      id: '/listings/new'
-      path: '/new'
+    '/listings_/new': {
+      id: '/listings_/new'
+      path: '/listings/new'
       fullPath: '/listings/new'
       preLoaderRoute: typeof ListingsNewRouteImport
-      parentRoute: typeof ListingsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
@@ -334,18 +335,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ListingsRouteChildren {
-  ListingsNewRoute: typeof ListingsNewRoute
-}
-
-const ListingsRouteChildren: ListingsRouteChildren = {
-  ListingsNewRoute: ListingsNewRoute,
-}
-
-const ListingsRouteWithChildren = ListingsRoute._addFileChildren(
-  ListingsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -355,9 +344,10 @@ const rootRouteChildren: RootRouteChildren = {
   ContractorsRoute: ContractorsRoute,
   DashboardRoute: DashboardRoute,
   DemoLoginRoute: DemoLoginRoute,
-  ListingsRoute: ListingsRouteWithChildren,
+  ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
   SafetyRoute: SafetyRoute,
+  ListingsNewRoute: ListingsNewRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
@@ -365,3 +355,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
