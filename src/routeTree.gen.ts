@@ -23,6 +23,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
+import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
@@ -97,6 +98,11 @@ const ListingsNewRoute = ListingsNewRouteImport.update({
   path: '/listings/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgencyRegisterRoute = AgencyRegisterRouteImport.update({
+  id: '/agency/register',
+  path: '/agency/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgencyDashboardRoute = AgencyDashboardRouteImport.update({
   id: '/agency/dashboard',
   path: '/agency/dashboard',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
+  '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
+  '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
+  '/agency/register': typeof AgencyRegisterRoute
   '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/agency/dashboard'
+    | '/agency/register'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/agency/dashboard'
+    | '/agency/register'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/agency/dashboard'
+    | '/agency/register'
     | '/listings_/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   SafetyRoute: typeof SafetyRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
+  AgencyRegisterRoute: typeof AgencyRegisterRoute
   ListingsNewRoute: typeof ListingsNewRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
@@ -351,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListingsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agency/register': {
+      id: '/agency/register'
+      path: '/agency/register'
+      fullPath: '/agency/register'
+      preLoaderRoute: typeof AgencyRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agency/dashboard': {
       id: '/agency/dashboard'
       path: '/agency/dashboard'
@@ -389,6 +409,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   SafetyRoute: SafetyRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
+  AgencyRegisterRoute: AgencyRegisterRoute,
   ListingsNewRoute: ListingsNewRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
