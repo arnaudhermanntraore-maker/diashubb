@@ -189,7 +189,7 @@ export function PartnerDirectory({ title, subtitle, searchPlaceholder, cards, ct
           <p className="text-xs sm:text-sm text-foreground/80 mt-1 max-w-2xl">{ctaText}</p>
         </div>
         <Link
-          to="/auth"
+          to={partnerKind === "agent" ? "/agency/register" : "/auth"}
           className="inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-5 py-3 rounded-lg shrink-0 w-full md:w-auto"
           style={{ background: "var(--tf-blue)" }}
         >
