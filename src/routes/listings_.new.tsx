@@ -467,7 +467,12 @@ function Step3({ data, u, errors, fr }: StepProps) {
           icon="image"
           label={fr ? "Téléverser une image équirectangulaire" : "Upload an equirectangular image"}
         />
-        <p className="text-xs text-muted-foreground mt-1">{fr ? "Une visite 360° augmente les visites de +40%" : "A 360° tour increases views by +40%"}</p>
+        {data.tour360 && (
+          <div className="mt-3">
+            <Pano360Viewer imageUrl={data.tour360} height={300} />
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground mt-2">{fr ? "Une visite 360° augmente les visites de +40%" : "A 360° tour increases views by +40%"}</p>
       </Field>
 
       <Field label={fr ? "Vidéo (optionnel)" : "Video (optional)"}>
