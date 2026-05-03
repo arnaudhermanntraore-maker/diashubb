@@ -39,7 +39,7 @@ const resources = {
   },
   en: {
     translation: {
-      nav: { home: "Home", listings: "Listings", agents: "Agents", dashboard: "Dashboard", messages: "Messages", admin: "Admin", login: "Sign in", logout: "Sign out", signup: "Sign up" },
+      nav: { home: "Home", listings: "Listings", agents: "Agencies", dashboard: "Dashboard", messages: "Messages", admin: "Admin", login: "Sign in", logout: "Sign out", signup: "Sign up" },
       hero: {
         kicker: "Bi-continental platform",
         title: "African real estate, verified and borderless",
