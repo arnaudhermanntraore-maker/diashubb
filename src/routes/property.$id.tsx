@@ -72,7 +72,7 @@ function PropertyDetail() {
       <div className="mt-4 grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           <div className="aspect-[16/10] bg-muted rounded-2xl overflow-hidden">
-            {p.cover_url ? <img src={p.cover_url} alt={p.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-earth" />}
+            {p.cover_url ? <img src={p.cover_url} alt={p.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-muted" />}
           </div>
           {p.tour_360_url && (
             <a href={p.tour_360_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm text-primary"><Compass size={16} /> {t("property.tour")}</a>
