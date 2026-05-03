@@ -17,25 +17,42 @@ export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
 });
 
+type ListingRow = { id: string; title: string; country: string; price_usd: number; status: string; cover_url: string | null };
+type BoostRow = { id: string; item_id: string; item_type: string; plan: string; status: string; starts_at: string | null; ends_at: string | null; amount_usd: number; stats: { views?: number; saves?: number; contacts?: number } };
+
 function Dashboard() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [stats, setStats] = useState({ listings: 0, txs: 0, terracoins: 0 });
-  const [myListings, setMyListings] = useState<{ id: string; title: string; country: string; price_usd: number; status: string }[]>([]);
+  const [myListings, setMyListings] = useState<ListingRow[]>([]);
+  const [boosts, setBoosts] = useState<BoostRow[]>([]);
+  const cancelFn = useServerFn(cancelBoost);
 
-  useEffect(() => {
+  const refresh = async () => {
     if (!user) return;
-    (async () => {
-      const [{ data: profile }, { count: l }, { count: tx }, { data: list }] = await Promise.all([
-        supabase.from("profiles").select("terracoins").eq("id", user.id).maybeSingle(),
-        supabase.from("properties").select("id", { count: "exact", head: true }).eq("agent_id", user.id),
-        supabase.from("transactions").select("id", { count: "exact", head: true }).or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`),
-        supabase.from("properties").select("id,title,country,price_usd,status").eq("agent_id", user.id).limit(10),
-      ]);
-      setStats({ listings: l ?? 0, txs: tx ?? 0, terracoins: profile?.terracoins ?? 0 });
-      setMyListings(list ?? []);
-    })();
-  }, [user]);
+    const [{ data: profile }, { count: l }, { count: tx }, { data: list }, { data: bs }] = await Promise.all([
+      supabase.from("profiles").select("terracoins").eq("id", user.id).maybeSingle(),
+      supabase.from("properties").select("id", { count: "exact", head: true }).eq("agent_id", user.id),
+      supabase.from("transactions").select("id", { count: "exact", head: true }).or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`),
+      supabase.from("properties").select("id,title,country,price_usd,status,cover_url").eq("agent_id", user.id).limit(10),
+      supabase.from("boosts").select("id,item_id,item_type,plan,status,starts_at,ends_at,amount_usd,stats").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
+    ]);
+    setStats({ listings: l ?? 0, txs: tx ?? 0, terracoins: profile?.terracoins ?? 0 });
+    setMyListings((list ?? []) as ListingRow[]);
+    setBoosts((bs ?? []) as BoostRow[]);
+  };
+
+  useEffect(() => { refresh(); }, [user]);
+
+  const stopBoost = async (id: string) => {
+    if (!confirm("Arrêter ce boost ? Aucun remboursement.")) return;
+    try { await cancelFn({ data: { boostId: id } }); toast.success("Boost arrêté"); refresh(); }
+    catch (e) { toast.error((e as Error).message); }
+  };
+
+  const activeBoosts = boosts.filter((b) => b.status === "active");
+  const titleFor = (id: string) => myListings.find((l) => l.id === id)?.title ?? id.slice(0, 8);
+  const thumbFor = (id: string) => myListings.find((l) => l.id === id)?.cover_url ?? null;
 
   const cards = [
     { icon: Building2, label: t("dashboard.listings"), value: stats.listings },
