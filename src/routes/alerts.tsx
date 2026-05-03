@@ -45,7 +45,7 @@ function Alerts() {
     if (country) criteria.country = country;
     if (maxPrice) criteria.maxPrice = Number(maxPrice);
     if (type) criteria.type = type;
-    const { error } = await supabase.from("alerts").insert([{ user_id: user.id, criteria_json: criteria }]);
+    const { error } = await supabase.from("alerts").insert([{ user_id: user.id, criteria_json: criteria as never }]);
     if (error) toast.error(error.message); else { toast.success(fr ? "Alerte créée" : "Alert created"); setShowForm(false); setCountry(""); setMaxPrice(""); setType(""); load(); }
   };
 
