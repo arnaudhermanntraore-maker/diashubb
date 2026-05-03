@@ -161,11 +161,9 @@ function NewListing() {
   }
 
   const STEPS = [
-    { n: 1, icon: Home, t: fr ? "Informations de base" : "Basic info" },
-    { n: 2, icon: MapPin, t: fr ? "Localisation" : "Location" },
-    { n: 3, icon: ImageIcon, t: fr ? "Photos & médias" : "Photos & media" },
-    { n: 4, icon: FileText, t: fr ? "Documents" : "Documents" },
-    { n: 5, icon: DollarSign, t: fr ? "Prix & publication" : "Price & publish" },
+    { n: 1, icon: Home, t: fr ? "Bien & localisation" : "Property & location" },
+    { n: 2, icon: ImageIcon, t: fr ? "Photos & documents" : "Photos & documents" },
+    { n: 3, icon: DollarSign, t: fr ? "Prix & publication" : "Price & publish" },
   ];
 
   return (
@@ -200,22 +198,36 @@ function NewListing() {
       {/* Right panel */}
       <section className="flex-1 p-5 md:p-10 overflow-y-auto">
         <div className="max-w-2xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{fr ? `Étape ${step} sur 5` : `Step ${step} of 5`}</div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{fr ? `Étape ${step} sur 3` : `Step ${step} of 3`}</div>
           <h1 className="font-display text-2xl font-bold">{STEPS[step - 1].t}</h1>
 
           <div className="mt-6 bg-card border border-border rounded-2xl p-5 md:p-6 space-y-5">
-            {step === 1 && <Step1 data={data} u={u} errors={errors} fr={fr} />}
-            {step === 2 && <Step2 data={data} u={u} errors={errors} fr={fr} />}
-            {step === 3 && <Step3 data={data} u={u} errors={errors} fr={fr} />}
-            {step === 4 && <Step4 data={data} u={u} errors={errors} fr={fr} />}
-            {step === 5 && <Step5 data={data} u={u} errors={allErrors} fr={fr} />}
+            {step === 1 && (
+              <>
+                <Step1 data={data} u={u} errors={errors} fr={fr} />
+                <div className="pt-4 border-t border-border">
+                  <h3 className="font-display font-bold text-base mb-3">{fr ? "Localisation" : "Location"}</h3>
+                  <Step2 data={data} u={u} errors={errors} fr={fr} />
+                </div>
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <Step3 data={data} u={u} errors={errors} fr={fr} />
+                <div className="pt-4 border-t border-border">
+                  <h3 className="font-display font-bold text-base mb-3">{fr ? "Documents" : "Documents"}</h3>
+                  <Step4 data={data} u={u} errors={errors} fr={fr} />
+                </div>
+              </>
+            )}
+            {step === 3 && <Step5 data={data} u={u} errors={allErrors} fr={fr} />}
           </div>
 
           <div className="flex justify-between mt-6 gap-3">
             <button onClick={back} disabled={step === 1} className="px-5 py-2.5 rounded-full border border-border disabled:opacity-40 inline-flex items-center gap-1">
               <ChevronLeft size={16} /> {fr ? "Retour" : "Back"}
             </button>
-            {step < 5 ? (
+            {step < 3 ? (
               <button onClick={next} className="px-6 py-2.5 rounded-full text-white font-semibold inline-flex items-center gap-1" style={{ background: "var(--tf-blue)" }}>
                 {fr ? "Continuer" : "Continue"} <ChevronRight size={16} />
               </button>
