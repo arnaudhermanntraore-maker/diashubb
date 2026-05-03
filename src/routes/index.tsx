@@ -34,6 +34,22 @@ function Home() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
   const [tab, setTab] = useState<"buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate">("buy_us");
+  const [searchQ, setSearchQ] = useState("");
+  const [searchPrice, setSearchPrice] = useState("");
+  const [searchType, setSearchType] = useState("");
+
+  const tabToFilters = (tabId: string) => {
+    if (tabId === "invest_af") return { region: "africa" as const };
+    if (tabId === "buy_us" || tabId === "rent_us") return { region: "usa" as const };
+    return {};
+  };
+  const searchParams = {
+    ...(searchQ ? { q: searchQ } : {}),
+    ...(searchPrice ? { maxPrice: Number(searchPrice) } : {}),
+    ...(searchType ? { type: searchType } : {}),
+    ...tabToFilters(tab),
+    tab,
+  };
 
   const tabs = [
     { id: "buy_us",     label: fr ? "Acheter US"      : "Buy in US",        color: TF_BLUE },
@@ -164,19 +180,31 @@ function Home() {
             })}
           </div>
           <div className="bg-white border border-border rounded-2xl p-3 grid grid-cols-1 md:grid-cols-12 gap-2 shadow-soft">
-            <input className="md:col-span-4 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none" placeholder={fr ? "Ville ou code postal" : "City or ZIP code"} />
-            <select className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option>{fr ? "Fourchette de prix" : "Price range"}</option>
-              <option>$0 – $100k</option><option>$100k – $300k</option><option>$300k – $1M</option><option>$1M+</option>
+            <input
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              className="md:col-span-4 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none"
+              placeholder={fr ? "Ville ou code postal" : "City or ZIP code"}
+            />
+            <select value={searchPrice} onChange={(e) => setSearchPrice(e.target.value)} className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
+              <option value="">{fr ? "Fourchette de prix" : "Price range"}</option>
+              <option value="100000">$0 – $100k</option>
+              <option value="300000">$100k – $300k</option>
+              <option value="1000000">$300k – $1M</option>
+              <option value="100000000">$1M+</option>
             </select>
-            <select className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option>{fr ? "Type de bien" : "Property type"}</option>
-              <option>{fr ? "Maison" : "House"}</option><option>{fr ? "Terrain" : "Land"}</option><option>{fr ? "Appartement" : "Apartment"}</option><option>Villa</option>
+            <select value={searchType} onChange={(e) => setSearchType(e.target.value)} className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
+              <option value="">{fr ? "Type de bien" : "Property type"}</option>
+              <option value="house">{fr ? "Maison" : "House"}</option>
+              <option value="land">{fr ? "Terrain" : "Land"}</option>
+              <option value="apartment">{fr ? "Appartement" : "Apartment"}</option>
+              <option value="commercial">Commercial</option>
             </select>
-            <Link to="/listings" className="md:col-span-2 inline-flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm py-2.5 transition-colors" style={{ background: activeTab.color }}>
+            <Link to="/listings" search={searchParams} className="md:col-span-2 inline-flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm py-2.5 transition-colors" style={{ background: activeTab.color }}>
               <Search size={16} /> {fr ? "Rechercher" : "Search"}
             </Link>
           </div>
+
         </div>
       </section>
 
