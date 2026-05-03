@@ -15,7 +15,7 @@ const resources = {
       search: { placeholder: "Pays, ville, type de bien…", country: "Pays", price: "Prix max (USD)", type: "Type", verified: "Vérifié uniquement", search: "Rechercher" },
       filters: { all: "Tous", land: "Terrain", house: "Maison", apartment: "Appartement", commercial: "Commercial", farm: "Ferme" },
       property: { verified: "Vérifié TerraFrique", aiScore: "Score IA", contact: "Contacter l'agent", tour: "Visite 360°", noResults: "Aucun bien trouvé" },
-      banner: "🛡️ Pour votre sécurité, communiquez uniquement sur TerraFrique. Ne partagez jamais d'argent en dehors de la plateforme.",
+      banner: "Ne communiquez jamais en dehors de TerraFrique — tous vos échanges doivent rester sur la plateforme",
       addListing: "Ajouter un bien",
       auth: { signIn: "Se connecter", signUp: "Créer un compte", email: "E-mail", password: "Mot de passe", name: "Nom complet", role: "Je suis…", continue: "Continuer", needAccount: "Pas de compte ?", haveAccount: "Déjà inscrit ?" },
       dashboard: { title: "Mon portefeuille", us: "États-Unis", africa: "Afrique", listings: "Mes annonces", saved: "Favoris", txCount: "Transactions", terracoins: "TerraCoins" },
