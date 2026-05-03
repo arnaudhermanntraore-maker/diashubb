@@ -445,39 +445,37 @@ function Step2({ data, u, errors, fr }: StepProps) {
 }
 
 function Step3({ data, u, errors, fr }: StepProps) {
-  const addImage = () => u("images", [...data.images, ""]);
-  const setImage = (i: number, v: string) => u("images", data.images.map((x, idx) => (idx === i ? v : x)));
-  const removeImage = (i: number) => u("images", data.images.filter((_, idx) => idx !== i));
-  const setCover = (i: number) => u("cover_url", data.images[i]);
-
   return (
     <>
-      <Field label={fr ? "Photos (URL)" : "Photos (URL)"} error={errors.images}>
-        <p className="text-xs text-muted-foreground mb-2">{fr ? "Minimum 3 photos · JPG/PNG/WebP. Cliquez l'étoile pour définir la photo de couverture." : "Minimum 3 photos · JPG/PNG/WebP. Click the star to set cover photo."}</p>
-        <div className="space-y-2">
-          {data.images.map((url, i) => (
-            <div key={i} className="flex gap-2 items-center">
-              <button onClick={() => setCover(i)} title="Cover" className="shrink-0 w-8 h-8 rounded-md flex items-center justify-center" style={{ background: data.cover_url === url && url ? "var(--tf-amber)" : "var(--muted)" }}>
-                <Star size={14} fill={data.cover_url === url && url ? "white" : "none"} color={data.cover_url === url && url ? "white" : "currentColor"} />
-              </button>
-              <input value={url} onChange={(e) => setImage(i, e.target.value)} placeholder="https://…" className="flex-1 px-3 py-2 bg-muted rounded-md outline-none text-sm" />
-              {url && <img src={url} alt="" className="w-10 h-10 rounded-md object-cover" onError={(e) => (e.currentTarget.style.opacity = "0.3")} />}
-              <button onClick={() => removeImage(i)} className="shrink-0 w-8 h-8 rounded-md bg-muted flex items-center justify-center hover:bg-destructive hover:text-white"><Trash2 size={14} /></button>
-            </div>
-          ))}
-          <button onClick={addImage} className="w-full py-3 border-2 border-dashed border-border rounded-lg text-sm text-muted-foreground hover:border-tf-blue hover:text-tf-blue inline-flex items-center justify-center gap-2">
-            <Plus size={16} /> {fr ? "Ajouter une photo" : "Add a photo"}
-          </button>
-        </div>
+      <Field label={fr ? "Photos" : "Photos"} error={errors.images}>
+        <p className="text-xs text-muted-foreground mb-2">{fr ? "Minimum 3 photos · JPG/PNG/WebP, max 10 MB. Survolez une photo pour définir la couverture." : "Minimum 3 photos · JPG/PNG/WebP, max 10 MB. Hover a photo to set cover."}</p>
+        <MultiPhotoUploader
+          values={data.images.filter(Boolean)}
+          onChange={(urls) => u("images", urls)}
+          cover={data.cover_url}
+          onCover={(url) => u("cover_url", url)}
+        />
       </Field>
 
       <Field label={fr ? "Visite 360° (optionnel)" : "360° tour (optional)"}>
-        <input value={data.tour360} onChange={(e) => u("tour360", e.target.value)} placeholder="https://… (equirectangular)" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+        <SingleFileUploader
+          bucket="property-tours"
+          value={data.tour360}
+          onChange={(url) => u("tour360", url)}
+          icon="image"
+          label={fr ? "Téléverser une image équirectangulaire" : "Upload an equirectangular image"}
+        />
         <p className="text-xs text-muted-foreground mt-1">{fr ? "Une visite 360° augmente les visites de +40%" : "A 360° tour increases views by +40%"}</p>
       </Field>
 
-      <Field label={fr ? "Vidéo YouTube/Vimeo (optionnel)" : "YouTube/Vimeo video (optional)"}>
-        <input value={data.videoUrl} onChange={(e) => u("videoUrl", e.target.value)} placeholder="https://youtube.com/…" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+      <Field label={fr ? "Vidéo (optionnel)" : "Video (optional)"}>
+        <SingleFileUploader
+          bucket="property-videos"
+          value={data.videoUrl}
+          onChange={(url) => u("videoUrl", url)}
+          icon="video"
+          label={fr ? "Téléverser une vidéo (MP4/WebM, max 100 MB)" : "Upload a video (MP4/WebM, max 100 MB)"}
+        />
       </Field>
     </>
   );
@@ -487,17 +485,17 @@ function Step4({ data, u, errors, fr }: StepProps) {
   if (data.continent === "africa") {
     return (
       <>
-        <Field label={fr ? "Titre foncier (URL)" : "Title deed (URL)"} error={errors.titleDeed}>
-          <input value={data.titleDeedUrl} onChange={(e) => u("titleDeedUrl", e.target.value)} placeholder="https://… PDF/JPG/PNG" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+        <Field label={fr ? "Titre foncier" : "Title deed"} error={errors.titleDeed}>
+          <SingleFileUploader bucket="property-docs" value={data.titleDeedUrl} onChange={(url) => u("titleDeedUrl", url)} label={fr ? "Téléverser le titre foncier (PDF/JPG/PNG)" : "Upload title deed (PDF/JPG/PNG)"} />
           <span className="inline-block mt-2 px-2 py-0.5 text-[10px] rounded-full text-white" style={{ background: "var(--tf-red)" }}>{fr ? "Requis" : "Required"}</span>
           <p className="text-xs text-muted-foreground mt-1">{fr ? "Sera vérifié par notre IA et un notaire ONIG sous 48h" : "Verified by our AI + ONIG notary within 48h"}</p>
         </Field>
-        <Field label={fr ? "Plan cadastral (URL)" : "Land survey (URL)"}>
-          <input value={data.cadastralUrl} onChange={(e) => u("cadastralUrl", e.target.value)} placeholder="https://…" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+        <Field label={fr ? "Plan cadastral" : "Land survey"}>
+          <SingleFileUploader bucket="property-docs" value={data.cadastralUrl} onChange={(url) => u("cadastralUrl", url)} label={fr ? "Téléverser le plan cadastral" : "Upload land survey"} />
           <span className="inline-block mt-2 px-2 py-0.5 text-[10px] rounded-full text-white" style={{ background: "var(--tf-amber)" }}>{fr ? "Recommandé" : "Recommended"}</span>
         </Field>
         <Field label={fr ? "Permis de construire (optionnel)" : "Building permit (optional)"}>
-          <input value={data.buildingPermitUrl} onChange={(e) => u("buildingPermitUrl", e.target.value)} placeholder="https://…" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+          <SingleFileUploader bucket="property-docs" value={data.buildingPermitUrl} onChange={(url) => u("buildingPermitUrl", url)} label={fr ? "Téléverser le permis" : "Upload permit"} />
         </Field>
       </>
     );
@@ -507,14 +505,13 @@ function Step4({ data, u, errors, fr }: StepProps) {
       <Field label="MLS number (optional)">
         <input value={data.mlsNumber} onChange={(e) => u("mlsNumber", e.target.value)} className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
       </Field>
-      <Field label="Property disclosure documents (optional URL)">
-        <input value={data.titleDeedUrl} onChange={(e) => u("titleDeedUrl", e.target.value)} placeholder="https://…" className="w-full px-3 py-2 bg-muted rounded-md outline-none" />
+      <Field label="Property disclosure documents (optional)">
+        <SingleFileUploader bucket="property-docs" value={data.titleDeedUrl} onChange={(url) => u("titleDeedUrl", url)} label="Upload disclosure document" />
       </Field>
     </>
   );
 }
 
-function Step5({ data, u, errors, fr }: StepProps) {
   const fx = FX[data.country];
   const local = fx && data.priceUsd ? Math.round(Number(data.priceUsd) * fx.rate).toLocaleString() : null;
   const BOOSTS: { v: FormData["boost"]; price: string; label: string; sub: string; emoji?: string }[] = [
