@@ -21,6 +21,7 @@ const TYPES = ["all", "land", "house", "apartment", "commercial", "farm"] as con
 
 function Listings() {
   const { t } = useTranslation();
+  const nav = useNavigate();
   const [items, setItems] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
