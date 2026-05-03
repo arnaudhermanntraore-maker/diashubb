@@ -1,15 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, ShieldCheck, Coins, Gift, DollarSign, Search, Tv, Sparkles, FileCheck2, BellRing, Building2, Globe2, HardHat, BadgeCheck, Users } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { PropertyCard, type Property } from "@/components/PropertyCard";
+import {
+  ArrowRight, ShieldCheck, Coins, Gift, DollarSign, Search, Eye, Star, FileCheck2, BellRing,
+  Building2, Globe2, HardHat, BadgeCheck, Users, Plus, Home as HomeIcon, MapPin,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TerraFrique — Your home in America. Your land in Africa." },
-      { name: "description", content: "Bi-continental real estate platform. Verified titles, secure escrow, AI-scored listings across the US and Africa." },
+      { title: "TerraFrique Global — Your home in America. Your land in Africa." },
+      { name: "description", content: "Bi-continental real estate. AI-verified titles, secure escrow, trusted contractors across the US and Africa." },
       { property: "og:title", content: "TerraFrique Global" },
       { property: "og:description", content: "Your home in America. Your land in Africa." },
     ],
@@ -20,29 +21,26 @@ export const Route = createFileRoute("/")({
 const TF_NAVY = "#0A3060";
 const TF_NAVY_DEEP = "#042C53";
 const TF_BLUE = "#185FA5";
+const TF_BLUE_LIGHT = "#85B7EB";
 const TF_GREEN = "#1D9E75";
+const TF_GREEN_LIGHT = "#5DCAA5";
+const TF_GREEN_DEEP = "#0F6E56";
 const TF_AMBER = "#EF9F27";
 const TF_PURPLE = "#7C5DD3";
 const TF_LIME = "#A6CE39";
+const TF_CORAL = "#E76F51";
 
 function Home() {
-  const { t, i18n } = useTranslation();
-  const [items, setItems] = useState<Property[]>([]);
-  const [tab, setTab] = useState<"buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate">("buy_us");
+  const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
-
-  useEffect(() => {
-    supabase.from("properties").select("id,title,country,city,price_usd,type,cover_url,ai_score,tf_verified,boosted_until").eq("status", "active").order("boosted_until", { ascending: false, nullsFirst: false }).limit(8).then(({ data }) => {
-      setItems((data ?? []) as Property[]);
-    });
-  }, []);
+  const [tab, setTab] = useState<"buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate">("buy_us");
 
   const tabs = [
-    { id: "buy_us",     label: fr ? "Acheter US"      : "Buy US",          color: TF_BLUE },
-    { id: "rent_us",    label: fr ? "Louer US"        : "Rent US",         color: TF_BLUE },
-    { id: "invest_af",  label: fr ? "Investir Afrique": "Invest Africa",   color: TF_GREEN },
-    { id: "contractor", label: fr ? "Contractant"     : "Find contractor", color: TF_BLUE },
-    { id: "estimate",   label: fr ? "Estimer"         : "Estimate value",  color: TF_BLUE },
+    { id: "buy_us",     label: fr ? "Acheter US"      : "Buy in US",        color: TF_BLUE },
+    { id: "rent_us",    label: fr ? "Louer US"        : "Rent in US",       color: TF_BLUE },
+    { id: "invest_af",  label: fr ? "Investir Afrique": "Invest in Africa", color: TF_GREEN },
+    { id: "contractor", label: fr ? "Artisans"        : "Find contractor",  color: TF_BLUE },
+    { id: "estimate",   label: fr ? "Estimer"         : "Estimate value",   color: TF_BLUE },
   ] as const;
 
   const activeTab = tabs.find((x) => x.id === tab)!;
@@ -52,78 +50,94 @@ function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden text-white" style={{ background: TF_NAVY }}>
         <div className="absolute inset-0 bg-grid-overlay opacity-60 pointer-events-none" />
-        {/* Floating circles */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-20 -left-10 w-72 h-72 rounded-full animate-tf-float" style={{ background: TF_BLUE, opacity: 0.12 }} />
-          <div className="absolute top-40 right-1/3 w-96 h-96 rounded-full animate-tf-float" style={{ background: TF_GREEN, opacity: 0.12, animationDelay: "1.5s" }} />
-          <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full animate-tf-float" style={{ background: "#85B7EB", opacity: 0.1, animationDelay: "3s" }} />
+          <div className="absolute -top-20 -left-10 w-80 h-80 rounded-full blur-3xl animate-tf-float" style={{ background: TF_BLUE, opacity: 0.12 }} />
+          <div className="absolute top-32 right-1/4 w-96 h-96 rounded-full blur-3xl animate-tf-float" style={{ background: TF_GREEN, opacity: 0.12, animationDelay: "1.5s" }} />
+          <div className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full blur-3xl animate-tf-float" style={{ background: "#378ADD", opacity: 0.12, animationDelay: "3s" }} />
+          <div className="absolute -bottom-10 right-10 w-72 h-72 rounded-full blur-3xl animate-tf-float" style={{ background: TF_GREEN_DEEP, opacity: 0.12, animationDelay: "4.5s" }} />
         </div>
 
-        <div className="relative container mx-auto px-4 py-20 md:py-28 max-w-7xl grid md:grid-cols-12 gap-10 items-center">
+        <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-7xl grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-7">
-            <span className="inline-block text-[11px] uppercase tracking-[0.3em] font-semibold mb-5" style={{ color: "#85B7EB" }}>
-              {fr ? "Plateforme bi-continentale" : "Bi-continental platform"}
-            </span>
-            <h1 className="text-4xl md:text-6xl font-display font-bold leading-[1.05]">
-              {fr ? "Votre maison en " : "Your home in "}
-              <span style={{ color: "#85B7EB" }}>{fr ? "Amérique" : "America"}</span>.<br />
-              {fr ? "Votre terre en " : "Your land in "}
-              <span style={{ color: "#5DCAA5" }}>{fr ? "Afrique" : "Africa"}</span>.
-            </h1>
-            <p className="mt-5 text-base md:text-lg max-w-xl" style={{ color: "rgba(255,255,255,0.75)" }}>
-              {fr
-                ? "Achetez, vendez et investissez entre les États-Unis et l'Afrique. Titres vérifiés, paiements sécurisés, agents certifiés."
-                : "Buy, sell and invest across the US and Africa. Verified titles, secure escrow, certified agents."}
-            </p>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/listings" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm hover:scale-[1.02] transition-transform" style={{ color: TF_NAVY }}>
-                {fr ? "Explorer les biens" : "Browse properties"} <ArrowRight size={16} />
-              </Link>
-              <Link to="/auth" className="inline-flex items-center gap-2 text-white px-5 py-3 rounded-full font-semibold text-sm hover:opacity-90 transition" style={{ background: TF_GREEN }}>
-                {fr ? "Créer un compte" : "Create free account"}
-              </Link>
-              <Link to="/agents" className="inline-flex items-center gap-2 text-white px-5 py-3 rounded-full font-semibold text-sm hover:bg-white/10 transition" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.7)" }}>
-                {fr ? "Devenir agent" : "Become an agent"}
-              </Link>
+            <div className="flex flex-wrap gap-2 mb-5">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(24,95,165,0.25)", border: `1px solid ${TF_BLUE_LIGHT}`, color: TF_BLUE_LIGHT }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: TF_BLUE_LIGHT }} /> USA · MLS · 50 states
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(29,158,117,0.25)", border: `1px solid ${TF_GREEN_LIGHT}`, color: TF_GREEN_LIGHT }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: TF_GREEN_LIGHT }} /> Africa · 18 countries
+              </span>
             </div>
 
-            {/* Trust badges */}
-            <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs" style={{ color: "rgba(255,255,255,0.85)" }}>
+            <h1 className="font-display font-medium leading-[1.1]" style={{ fontSize: "clamp(26px, 4.2vw, 44px)" }}>
+              {fr ? "Votre maison en " : "Your home in "}
+              <span style={{ color: TF_BLUE_LIGHT }}>{fr ? "Amérique" : "America"}</span>.<br />
+              {fr ? "Votre terre en " : "Your land in "}
+              <span style={{ color: TF_GREEN_LIGHT }}>{fr ? "Afrique" : "Africa"}</span>.
+            </h1>
+
+            <p className="mt-4 text-[13px] md:text-sm max-w-xl" style={{ color: "rgba(255,255,255,0.75)" }}>
+              {fr
+                ? "La seule plateforme conçue pour la diaspora africaine — recherche dopée à l'IA, titres vérifiés, artisans de confiance et investissement bi-continental."
+                : "The only platform built for the African diaspora — AI-powered search, verified titles, trusted contractors and bi-continental investment."}
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/listings" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm hover:scale-[1.02] transition-transform" style={{ color: TF_NAVY }}>
+                {fr ? "Trouver un logement" : "Find a home"} <ArrowRight size={16} />
+              </Link>
+              <Link to="/listings" className="inline-flex items-center gap-2 text-white px-5 py-3 rounded-full font-semibold text-sm hover:opacity-90 transition" style={{ background: TF_GREEN }}>
+                {fr ? "Investir en Afrique" : "Invest in Africa"} <ArrowRight size={16} />
+              </Link>
+              <a href="#how" className="inline-flex items-center gap-2 text-white px-5 py-3 rounded-full font-semibold text-sm hover:bg-white/10 transition" style={{ border: "1.5px solid rgba(255,255,255,0.85)" }}>
+                {fr ? "Comment ça marche" : "How it works"}
+              </a>
+            </div>
+
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs" style={{ color: "rgba(255,255,255,0.85)" }}>
               {[
                 { icon: ShieldCheck, label: fr ? "Titres vérifiés par IA" : "AI-verified titles" },
-                { icon: Coins,       label: fr ? "100 TerraCoins offerts" : "100 TerraCoins signup" },
+                { icon: Coins,       label: fr ? "100 TerraCoins offerts" : "100 TerraCoins on signup" },
                 { icon: Gift,        label: fr ? "Inscription gratuite"   : "Free to join" },
                 { icon: DollarSign,  label: fr ? "12 $ frais de transfert": "$12 flat transfer fee" },
               ].map((b, i) => (
-                <span key={i} className="inline-flex items-center gap-1.5"><b.icon size={14} className="text-tf-green-light" /> {b.label}</span>
+                <span key={i} className="inline-flex items-center gap-1.5"><b.icon size={14} style={{ color: TF_GREEN_LIGHT }} /> {b.label}</span>
               ))}
             </div>
           </div>
 
           {/* Floating data cards */}
-          <div className="md:col-span-5 relative h-[320px] hidden md:block">
-            <FloatCard className="absolute top-0 right-2 w-60" style={{ animationDelay: "0s" }} kicker={fr ? "Marché US Atlanta" : "US market · Atlanta"} value="$412,000" sub={fr ? "Prix médian" : "Median home price"} accent={TF_BLUE} />
-            <FloatCard className="absolute top-32 left-0 w-60" style={{ animationDelay: "1s" }} kicker="Cocody · CI" value="+8% YoY" sub={fr ? "Croissance valeur" : "Value growth"} accent={TF_GREEN} />
-            <FloatCard className="absolute bottom-0 right-10 w-60" style={{ animationDelay: "2s" }} kicker="USD → XOF" value="655 XOF" sub={fr ? "Taux en direct" : "Live FX rate"} accent={TF_AMBER} />
+          <div className="md:col-span-5 relative h-[360px] hidden md:block">
+            <GlassCard className="absolute top-0 right-2 w-72" delay="0s"
+              kicker="US market · Atlanta GA" badge="Live MLS" badgeColor={TF_BLUE_LIGHT}
+              value="$412,000" sub={fr ? "Prix médian · +9% YoY" : "Median home price · +9% YoY"}
+              bars={[28, 38, 48, 60, 76]} barColor={TF_BLUE_LIGHT} />
+            <GlassCard className="absolute top-36 left-0 w-72" delay="1s"
+              kicker="Africa · Cocody CI" badge="Trending" badgeColor={TF_GREEN_LIGHT}
+              value="+8% YoY" sub={fr ? "Valeur des lots · secteur Angré" : "Plot values · Angré sector"}
+              bars={[22, 34, 46, 58, 72]} barColor={TF_GREEN_LIGHT} />
+            <GlassCard className="absolute bottom-0 right-10 w-72" delay="2s"
+              kicker="Transfer · USD → XOF" badge="Live rate" badgeColor={TF_AMBER}
+              value="655 XOF" sub={fr ? "Par USD · 12 $ frais · Wave CI" : "Per USD · $12 flat fee · Wave CI"} />
           </div>
         </div>
       </section>
 
       {/* STATS STRIP */}
       <section className="bg-white border-b border-border">
-        <div className="container mx-auto px-4 py-8 max-w-7xl grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="container mx-auto px-4 py-8 max-w-7xl grid grid-cols-2 md:grid-cols-5 gap-6 divide-x divide-border">
           {[
-            { icon: Building2, color: TF_BLUE,   num: "4.2M+",  label: fr ? "Annonces" : "Listings" },
-            { icon: Globe2,    color: TF_GREEN,  num: "12,480", label: fr ? "Biens Afrique" : "Africa properties" },
-            { icon: HardHat,   color: TF_AMBER,  num: "12k+",   label: fr ? "Contractants" : "Contractors" },
-            { icon: BadgeCheck,color: TF_PURPLE, num: "96%",    label: fr ? "Vérifiés" : "Verified" },
-            { icon: Users,     color: TF_LIME,   num: "44M+",   label: "Diaspora" },
+            { icon: Building2, color: TF_BLUE,   num: "4.2M+",  label: fr ? "Annonces US (MLS)" : "US listings (MLS)" },
+            { icon: Globe2,    color: TF_GREEN,  num: "12,480", label: fr ? "Annonces Afrique" : "Africa listings" },
+            { icon: HardHat,   color: TF_AMBER,  num: "12k+",   label: fr ? "Artisans vérifiés" : "Verified contractors" },
+            { icon: BadgeCheck,color: TF_LIME,   num: "96%",    label: fr ? "Docs vérifiés IA" : "Docs verified by AI" },
+            { icon: Users,     color: TF_PURPLE, num: "44M+",   label: fr ? "Diaspora servie" : "Diaspora served" },
           ].map((s, i) => (
-            <div key={i} className="flex flex-col items-center text-center">
-              <s.icon size={28} style={{ color: s.color }} />
+            <div key={i} className="flex flex-col items-center text-center px-2 first:border-l-0">
+              <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: `${s.color}20` }}>
+                <s.icon size={16} style={{ color: s.color }} />
+              </div>
               <div className="mt-2 text-2xl font-display font-bold text-tf-navy">{s.num}</div>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">{s.label}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{s.label}</div>
             </div>
           ))}
         </div>
@@ -150,94 +164,144 @@ function Home() {
             })}
           </div>
           <div className="bg-white border border-border rounded-2xl p-3 grid grid-cols-1 md:grid-cols-12 gap-2 shadow-soft">
+            <input className="md:col-span-4 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none" placeholder={fr ? "Ville ou code postal" : "City or ZIP code"} />
             <select className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option>{fr ? "Pays" : "Country"}</option>
-              <option>USA</option><option>Côte d'Ivoire</option><option>Sénégal</option><option>Ghana</option><option>Maroc</option>
+              <option>{fr ? "Fourchette de prix" : "Price range"}</option>
+              <option>$0 – $100k</option><option>$100k – $300k</option><option>$300k – $1M</option><option>$1M+</option>
             </select>
             <select className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option>{fr ? "Type" : "Type"}</option>
-              <option>{fr ? "Maison" : "House"}</option><option>{fr ? "Terrain" : "Land"}</option><option>{fr ? "Appartement" : "Apartment"}</option>
+              <option>{fr ? "Type de bien" : "Property type"}</option>
+              <option>{fr ? "Maison" : "House"}</option><option>{fr ? "Terrain" : "Land"}</option><option>{fr ? "Appartement" : "Apartment"}</option><option>Villa</option>
             </select>
-            <select className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option>{fr ? "Prix max" : "Max price"}</option>
-              <option>$100k</option><option>$300k</option><option>$1M</option>
-            </select>
-            <Link to="/listings" className="md:col-span-3 inline-flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm" style={{ background: activeTab.color }}>
+            <Link to="/listings" className="md:col-span-2 inline-flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm py-2.5 transition-colors" style={{ background: activeTab.color }}>
               <Search size={16} /> {fr ? "Rechercher" : "Search"}
             </Link>
           </div>
         </div>
       </section>
 
-      {/* FEATURED LISTINGS */}
-      <section className="container mx-auto px-4 py-16 max-w-7xl">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="text-3xl font-display font-bold text-tf-navy">{fr ? "Biens à la une" : "Featured properties"}</h2>
-          <Link to="/listings" className="text-sm font-semibold inline-flex items-center gap-1 text-tf-blue">{fr ? "Tout voir" : "View all"} <ArrowRight size={16} /></Link>
-        </div>
-        {items.length === 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {Array.from({ length: 4 }).map((_, i) => <div key={i} className="aspect-[4/3] bg-muted rounded-2xl animate-pulse" />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {items.map((p) => <PropertyCard key={p.id} p={p} />)}
-          </div>
-        )}
-      </section>
-
       {/* HOW IT WORKS */}
-      <section className="bg-white border-y border-border">
+      <section id="how" className="bg-muted/30 border-b border-border">
         <div className="container mx-auto px-4 py-16 max-w-6xl">
-          <h2 className="text-3xl font-display font-bold text-center mb-12 text-tf-navy">{fr ? "Comment ça marche" : "How it works"}</h2>
+          <h2 className="text-3xl font-display font-bold text-center mb-12 text-tf-navy">{fr ? "Comment fonctionne TerraFrique" : "How TerraFrique works"}</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 relative">
+            <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-px bg-border" />
             {[
-              { icon: Search,     color: TF_BLUE,   label: fr ? "Rechercher" : "Search" },
-              { icon: Tv,         color: TF_PURPLE, label: fr ? "Visite 360°" : "Tour 360°" },
-              { icon: Sparkles,   color: TF_GREEN,  label: fr ? "Score IA" : "AI Score" },
-              { icon: FileCheck2, color: TF_LIME,   label: fr ? "Vérifier" : "Verify docs" },
-              { icon: BellRing,   color: TF_AMBER,  label: fr ? "Alertes" : "Get alerts" },
+              { icon: Search,     color: TF_BLUE,   title: fr ? "Rechercher" : "Search",      sub: fr ? "US + Afrique en un seul endroit" : "US + Africa in one bar" },
+              { icon: Eye,        color: TF_PURPLE, title: fr ? "Visite 360°" : "Tour 360°",  sub: fr ? "Visitez d'abord virtuellement" : "Visit virtually first" },
+              { icon: Star,       color: TF_GREEN,  title: fr ? "Score IA" : "AI score",      sub: fr ? "Note sur 12 signaux" : "12-signal rating" },
+              { icon: FileCheck2, color: TF_LIME,   title: fr ? "Vérifier" : "Verify docs",   sub: fr ? "IA + contrôle notaire" : "AI + notary check" },
+              { icon: BellRing,   color: TF_AMBER,  title: fr ? "Alertes" : "Get alerts",     sub: fr ? "Match = notification" : "Match = notification" },
             ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center text-center relative">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-white shadow-soft" style={{ background: s.color }}>
+              <div key={i} className="flex flex-col items-center text-center relative bg-muted/30">
+                <div className="text-[10px] font-bold mb-2 px-2 py-0.5 rounded-full text-white" style={{ background: s.color }}>{i + 1}</div>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-white shadow-soft relative z-10" style={{ background: s.color }}>
                   <s.icon size={26} />
                 </div>
-                <div className="mt-3 text-sm font-semibold text-tf-navy">{s.label}</div>
+                <div className="mt-3 text-sm font-semibold text-tf-navy">{s.title}</div>
+                <div className="mt-1 text-[11px] text-muted-foreground max-w-[160px]">{s.sub}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* FEATURED US HOMES */}
+      <SectionHeader title={fr ? "Maisons US à la une" : "Featured US homes for sale"} link={fr ? "Tout voir" : "View all"} />
+      <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <USCard boosted location="Atlanta GA" status={fr ? "À vendre" : "For sale"} statusColor={TF_GREEN} title="4bd · 3ba · 2,100 sqft" subtitle="Buckhead, Atlanta GA" price="$485,000" tags={["MLS", "360°", "AI 87"]} ribbon={fr ? "À la une · Score 87" : "Featured · Score 87"} bg={TF_BLUE_LIGHT} />
+        <USCard location="Houston TX" locColor={TF_GREEN} status={fr ? "À vendre" : "For sale"} statusColor={TF_GREEN} title="3bd · 2ba · 1,650 sqft" subtitle="Sugar Land, Houston TX" price="$312,000" tags={[fr ? "MLS vérifié" : "MLS verified"]} bg={TF_GREEN_LIGHT} />
+        <USCard location="Maryland" status="Hot" statusColor={TF_CORAL} title="5bd · 4ba · 3,200 sqft" subtitle="Silver Spring, MD" price="$678,000" tags={["MLS", "Pool"]} bg={TF_AMBER} icon="building" />
+        <USCard location="New York NY" locColor={TF_PURPLE} status={fr ? "À louer" : "For rent"} statusColor={TF_PURPLE} title="2bd · 2ba · Condo" subtitle="Harlem, New York NY" price="$2,850/mo" tags={[fr ? "MLS vérifié" : "MLS verified"]} bg={TF_PURPLE} icon="apt" />
+        <AddCard label={fr ? "Lister un bien" : "List a property"} />
+      </div>
+
+      {/* AFRICA */}
+      <SectionHeader title={fr ? "Investir en Afrique — payer en USD" : "Invest in Africa — pay in USD"} link={fr ? "Tout parcourir" : "Browse all"} />
+      <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <AfCard boosted location="Côte d'Ivoire" status="Available" title={fr ? "Terrain · 400m² · Cocody" : "Plot · 400m² · Cocody"} subtitle="Abidjan, CI" price="$72,000" tags={[fr ? "Titre vérifié" : "Title verified", "360°"]} ribbon={fr ? "Meilleure offre" : "Best value"} bg={TF_LIME} />
+        <AfCard location="Senegal" locColor={TF_PURPLE} status="Available" title="Villa · 220m² · Almadies" subtitle="Dakar, SN" price="$128,000" tags={[fr ? "Titre foncier" : "Title deed", fr ? "Vue mer" : "Sea view"]} bg={TF_PURPLE} />
+        <AfCard location="Ghana" locColor={TF_AMBER} status="Available" title="Plot AC-17 · 500m²" subtitle="Airport City, Accra" price="$48,000" tags={["Indenture deed"]} bg={TF_AMBER} />
+        <AfCard location="Morocco" locColor={TF_CORAL} status="Available" title="Villa · 310m² · Rabat" subtitle="Hay Riad, MA" price="$420,000" tags={["Titre", "Pool"]} bg={TF_CORAL} />
+        <AddCard label={fr ? "Lister en Afrique" : "List in Africa"} />
+      </div>
+
+      {/* CONTRACTORS */}
+      <SectionHeader title={fr ? "Artisans vérifiés près de chez vous" : "Verified contractors near you"} link={fr ? "Voir tous" : "See all"} />
+      <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <ContractorCard featured initials="MJ" color={TF_BLUE} name="Marcus Johnson" meta={fr ? "Entrepreneur général · 4.9★ · Atlanta GA" : "General contractor · 4.9★ · Atlanta GA"} rate="$85/hr" badge={fr ? "Antécédents vérifiés" : "Background checked"} badgeColor={TF_BLUE} />
+        <ContractorCard initials="RW" color={TF_GREEN} name="Rivera & Williams" meta={fr ? "Électriciens · 4.8★ · Houston TX" : "Electricians · 4.8★ · Houston TX"} rate="$95/hr" badge={fr ? "Disponible" : "Available now"} badgeColor={TF_GREEN} />
+        <ContractorCard initials="AO" color={TF_AMBER} name="Adebayo Oluwole" meta={fr ? "Plombier · 4.7★ · Atlanta GA" : "Plumber · 4.7★ · Atlanta GA"} rate="$80/hr" badge={fr ? "Disponible" : "Available"} badgeColor={TF_GREEN} />
+        <ContractorCard initials="KD" color={TF_PURPLE} name="Kwame Design Build" meta={fr ? "Rénovation · 4.9★ · Washington DC" : "Renovation · 4.9★ · Washington DC"} rate={fr ? "Devis projet" : "Project quote"} badge={fr ? "Antécédents vérifiés" : "Background checked"} badgeColor={TF_BLUE} />
+        <AddCard label={fr ? "Rejoindre comme artisan" : "Join as contractor"} />
+      </div>
+
+      {/* MARKET INTELLIGENCE */}
+      <section className="container mx-auto px-4 py-12 max-w-7xl">
+        <h2 className="text-2xl font-display font-bold text-tf-navy mb-6">{fr ? "Intelligence marché en direct" : "Live market intelligence"}</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <MarketCard title="Cocody · Abidjan" badge="+8% YoY" badgeColor={TF_GREEN} subtitle={fr ? "Prix par m² · FCFA" : "Plot price per m² · FCFA"}
+            bars={[40, 56, 68, 80, 96]} barFrom="#9FE1CB" barTo={TF_GREEN_DEEP}
+            stats={[
+              { label: fr ? "Prix moyen/m²" : "Avg price/m²", value: "112,500 FCFA", color: TF_GREEN_DEEP },
+              { label: fr ? "Jours sur marché" : "Days on market", value: "34 days" },
+              { label: fr ? "Zone chaude" : "Hot zone", value: "Bingerville +14%", pillColor: TF_GREEN },
+            ]} />
+          <MarketCard title="Atlanta · Georgia" badge="+9% YoY" badgeColor={TF_BLUE} subtitle={fr ? "Prix médian · USD" : "Median home price · USD"}
+            bars={[40, 54, 66, 78, 96]} barFrom="#B5D4F4" barTo="#0C447C"
+            stats={[
+              { label: fr ? "Prix médian" : "Median price", value: "$412,000", color: TF_BLUE },
+              { label: fr ? "Jours sur marché" : "Days on market", value: "28 days" },
+              { label: fr ? "Zone chaude" : "Hot zone", value: "SW Atlanta +12%", pillColor: TF_BLUE },
+            ]} />
+        </div>
+      </section>
+
       {/* DIASPORA BANNER */}
       <section className="text-white" style={{ background: TF_NAVY_DEEP }}>
-        <div className="container mx-auto px-4 py-14 max-w-5xl flex flex-col md:flex-row items-center gap-8 justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative w-24 h-16">
-              <span className="absolute left-0 top-0 w-16 h-16 rounded-full overflow-hidden ring-4 ring-white/20 inline-flex items-center justify-center text-2xl" style={{ background: "#012169" }}>🇺🇸</span>
-              <span className="absolute right-0 top-0 w-16 h-16 rounded-full overflow-hidden ring-4 ring-white/20 inline-flex items-center justify-center text-2xl" style={{ background: TF_GREEN }}>🌍</span>
+        <div className="container mx-auto px-4 py-12 max-w-5xl flex flex-col md:flex-row items-center gap-8 justify-between">
+          <div className="flex items-center gap-5">
+            <div className="relative w-24 h-16 shrink-0">
+              <span className="absolute left-0 top-0 w-16 h-16 rounded-full ring-4 ring-white/20 inline-flex items-center justify-center text-2xl" style={{ background: "#012169" }}>🇺🇸</span>
+              <span className="absolute right-0 top-0 w-16 h-16 rounded-full ring-4 ring-white/20 inline-flex items-center justify-center text-2xl" style={{ background: TF_GREEN }}>🌍</span>
             </div>
             <div>
-              <h3 className="font-display font-bold text-2xl">{fr ? "Vous êtes de la diaspora africaine aux US ?" : "Part of the African diaspora in the US?"}</h3>
+              <h3 className="font-display font-bold text-2xl">{fr ? "Membre de la diaspora africaine aux US ?" : "Part of the African diaspora in the US?"}</h3>
               <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
-                {fr ? "Investissez chez vous, sans quitter chez vous." : "Invest back home, without leaving home."}
+                {fr ? "Votre maison US + votre investissement africain — un seul tableau de bord, une seule plateforme." : "Your US home + your African investment — one dashboard, one platform."}
               </p>
             </div>
           </div>
-          <Link to="/dashboard" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm shrink-0" style={{ color: TF_NAVY }}>
-            {fr ? "Portail diaspora" : "Open diaspora portal"} <ArrowRight size={16} />
+          <Link to="/dashboard" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm shrink-0" style={{ color: TF_NAVY_DEEP }}>
+            {fr ? "Ouvrir le portail diaspora" : "Open diaspora portal"} <ArrowRight size={16} />
           </Link>
         </div>
       </section>
 
+      {/* TESTIMONIALS */}
+      <section className="container mx-auto px-4 py-16 max-w-7xl">
+        <h2 className="text-2xl font-display font-bold text-tf-navy mb-8">{fr ? "Ce que disent nos membres" : "What our members say"}</h2>
+        <div className="grid md:grid-cols-3 gap-5">
+          <Testimonial initials="KO" color={TF_GREEN} name="Kwame Osei" loc={fr ? "Atlanta GA · Investisseur en CI" : "Atlanta GA · Invested in CI"} quote={fr ? "Acheté mon terrain à Cocody depuis Atlanta en 3 semaines. Titre vérifié, payé en USD, suivi depuis mon téléphone." : "Bought my plot in Cocody from Atlanta in 3 weeks. Title verified, paid in USD, tracked from my phone."} />
+          <Testimonial initials="AN" color={TF_PURPLE} name="Amara N'Diaye" loc={fr ? "Houston TX · Premier achat" : "Houston TX · First-time buyer"} quote={fr ? "L'IA m'a trouvé un prêteur acceptant mon ITIN. Pré-approuvé en 48h. Acheter aux US n'a jamais été aussi fluide." : "AI matched me with a lender accepting my ITIN. Pre-approved in 48h. Never thought buying a US home could be this smooth."} />
+          <Testimonial initials="MJ" color={TF_GREEN} name="Marcus Johnson" loc={fr ? "Atlanta GA · Artisan" : "Atlanta GA · Contractor"} quote={fr ? "Passé de 2 chantiers par mois à 14. Les paiements sont garantis et mes avis parlent." : "From 2 jobs per month to 14. Payments are guaranteed and my reviews speak."} />
+        </div>
+      </section>
+
       {/* CTA SIGNUP */}
-      <section className="text-white text-center" style={{ background: TF_NAVY }}>
-        <div className="container mx-auto px-4 py-16 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-display font-bold">{fr ? "Prêt à commencer ?" : "Ready to get started?"}</h2>
-          <p className="mt-3" style={{ color: "rgba(255,255,255,0.75)" }}>
-            {fr ? "Rejoignez 44M+ membres de la diaspora qui investissent intelligemment." : "Join 44M+ diaspora members investing smarter."}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3 justify-center">
+      <section className="text-white relative overflow-hidden" style={{ background: TF_NAVY }}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-10 w-72 h-72 rounded-full blur-3xl animate-tf-float" style={{ background: TF_BLUE, opacity: 0.08 }} />
+          <div className="absolute bottom-0 right-10 w-72 h-72 rounded-full blur-3xl animate-tf-float" style={{ background: TF_GREEN, opacity: 0.08, animationDelay: "2s" }} />
+        </div>
+        <div className="relative container mx-auto px-4 py-14 max-w-6xl flex flex-col md:flex-row items-center gap-6 justify-between">
+          <div>
+            <h2 className="text-3xl font-display font-bold">{fr ? "Rejoignez TerraFrique Global — gratuit pour toujours" : "Join TerraFrique Global — free forever"}</h2>
+            <p className="mt-2 text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>
+              {fr ? "3 minutes · 100 TerraCoins offerts · Sans carte bancaire" : "3 minutes · 100 TerraCoins on signup · No credit card"}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <Link to="/auth" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm" style={{ color: TF_NAVY }}>
               {fr ? "Créer un compte gratuit" : "Create free account"} <ArrowRight size={16} />
             </Link>
@@ -251,15 +315,176 @@ function Home() {
   );
 }
 
-function FloatCard({ className = "", style, kicker, value, sub, accent }: { className?: string; style?: React.CSSProperties; kicker: string; value: string; sub: string; accent: string }) {
+/* ============== Sub-components ============== */
+
+function GlassCard({ className = "", delay = "0s", kicker, badge, badgeColor, value, sub, bars, barColor }: {
+  className?: string; delay?: string; kicker: string; badge: string; badgeColor: string; value: string; sub: string; bars?: number[]; barColor?: string;
+}) {
   return (
-    <div
-      className={`bg-white text-foreground rounded-2xl shadow-elegant p-4 animate-tf-float ${className}`}
-      style={{ borderLeft: `4px solid ${accent}`, ...style }}
-    >
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kicker}</div>
-      <div className="mt-1 text-2xl font-display font-bold" style={{ color: accent }}>{value}</div>
-      <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>
+    <div className={`rounded-2xl p-4 animate-tf-float backdrop-blur-md ${className}`}
+      style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "0 20px 40px -20px rgba(0,0,0,0.5)", animationDelay: delay }}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>{kicker}</div>
+        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${badgeColor}25`, color: badgeColor }}>{badge}</span>
+      </div>
+      <div className="mt-2 text-[18px] font-display font-bold text-white">{value}</div>
+      <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.65)" }}>{sub}</div>
+      {bars && barColor && (
+        <div className="mt-3 flex items-end gap-1.5 h-10">
+          {bars.map((h, i) => <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: barColor, opacity: 0.3 + i * 0.15 }} />)}
+        </div>
+      )}
     </div>
   );
+}
+
+function SectionHeader({ title, link }: { title: string; link: string }) {
+  return (
+    <section className="container mx-auto px-4 pt-14 pb-4 max-w-7xl">
+      <div className="flex items-end justify-between">
+        <h2 className="text-2xl font-display font-bold text-tf-navy">{title}</h2>
+        <Link to="/listings" className="text-sm font-semibold inline-flex items-center gap-1 text-tf-blue">{link} <ArrowRight size={16} /></Link>
+      </div>
+    </section>
+  );
+}
+
+function PropertyShell({ children, boosted, accent }: { children: React.ReactNode; boosted?: boolean; accent?: string }) {
+  return (
+    <div className="bg-white rounded-2xl border overflow-hidden flex flex-col"
+      style={{ borderColor: boosted ? TF_AMBER : (accent || "var(--border)"), borderWidth: boosted ? 1.5 : 1 }}>
+      {children}
+    </div>
+  );
+}
+
+function USCard(props: { boosted?: boolean; location: string; locColor?: string; status: string; statusColor: string; title: string; subtitle: string; price: string; tags: string[]; ribbon?: string; bg: string; icon?: "house" | "building" | "apt" }) {
+  const Icon = props.icon === "building" ? Building2 : props.icon === "apt" ? Building2 : HomeIcon;
+  return (
+    <PropertyShell boosted={props.boosted} accent={TF_BLUE}>
+      <div className="relative h-20 flex items-center justify-center" style={{ background: `${props.bg}30` }}>
+        <Icon size={36} style={{ color: props.bg }} />
+        <span className="absolute top-1.5 left-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: props.locColor || TF_BLUE }}>{props.location}</span>
+        <span className="absolute top-1.5 right-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: props.statusColor }}>{props.status}</span>
+        {props.ribbon && <span className="absolute bottom-1.5 left-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: TF_AMBER }}>{props.ribbon}</span>}
+      </div>
+      <div className="p-3 flex-1 flex flex-col">
+        <div className="text-sm font-semibold text-tf-navy">{props.title}</div>
+        <div className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5"><MapPin size={10} />{props.subtitle}</div>
+        <div className="mt-2 text-lg font-display font-bold" style={{ color: TF_BLUE }}>{props.price}</div>
+        <div className="mt-2 flex flex-wrap gap-1">
+          {props.tags.map((t) => <span key={t} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{t}</span>)}
+        </div>
+      </div>
+    </PropertyShell>
+  );
+}
+
+function AfCard(props: { boosted?: boolean; location: string; locColor?: string; status: string; title: string; subtitle: string; price: string; tags: string[]; ribbon?: string; bg: string }) {
+  return (
+    <PropertyShell boosted={props.boosted} accent={TF_GREEN}>
+      <div className="relative h-20 flex items-center justify-center" style={{ background: `${props.bg}30` }}>
+        <Globe2 size={36} style={{ color: props.bg }} />
+        <span className="absolute top-1.5 left-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: props.locColor || TF_GREEN }}>{props.location}</span>
+        <span className="absolute top-1.5 right-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: TF_GREEN }}>{props.status}</span>
+        {props.ribbon && <span className="absolute bottom-1.5 left-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: TF_AMBER }}>{props.ribbon}</span>}
+      </div>
+      <div className="p-3 flex-1 flex flex-col">
+        <div className="text-sm font-semibold text-tf-navy">{props.title}</div>
+        <div className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5"><MapPin size={10} />{props.subtitle}</div>
+        <div className="mt-2 text-lg font-display font-bold" style={{ color: TF_GREEN_DEEP }}>{props.price}</div>
+        <div className="mt-2 flex flex-wrap gap-1">
+          {props.tags.map((t) => <span key={t} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{t}</span>)}
+        </div>
+      </div>
+    </PropertyShell>
+  );
+}
+
+function AddCard({ label }: { label: string }) {
+  return (
+    <Link to="/listings/new" className="rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center text-center p-6 hover:border-tf-blue hover:bg-muted/30 transition-colors min-h-[200px]">
+      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-tf-blue"><Plus size={20} /></div>
+      <div className="mt-2 text-sm font-semibold text-tf-navy">{label}</div>
+    </Link>
+  );
+}
+
+function ContractorCard(props: { featured?: boolean; initials: string; color: string; name: string; meta: string; rate: string; badge: string; badgeColor: string }) {
+  return (
+    <div className="bg-white rounded-2xl p-4 border flex flex-col"
+      style={{ borderColor: props.featured ? TF_BLUE : "var(--border)", borderWidth: props.featured ? 2 : 1 }}>
+      <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-base" style={{ background: props.color }}>{props.initials}</div>
+      <div className="mt-3 text-sm font-semibold text-tf-navy">{props.name}</div>
+      <div className="text-[11px] text-muted-foreground mt-0.5">{props.meta}</div>
+      <div className="mt-3 text-base font-display font-bold" style={{ color: TF_BLUE }}>{props.rate}</div>
+      <span className="mt-2 text-[10px] font-semibold px-2 py-1 rounded-full self-start text-white" style={{ background: props.badgeColor }}>{props.badge}</span>
+    </div>
+  );
+}
+
+function MarketCard({ title, badge, badgeColor, subtitle, bars, barFrom, barTo, stats }: {
+  title: string; badge: string; badgeColor: string; subtitle: string;
+  bars: number[]; barFrom: string; barTo: string;
+  stats: { label: string; value: string; color?: string; pillColor?: string }[];
+}) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May"];
+  const colors = [barFrom, mix(barFrom, barTo, 0.25), mix(barFrom, barTo, 0.5), mix(barFrom, barTo, 0.75), barTo];
+  return (
+    <div className="bg-white rounded-2xl border border-border p-5 shadow-soft">
+      <div className="flex items-center justify-between">
+        <div className="text-base font-display font-semibold text-tf-navy">{title}</div>
+        <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ background: badgeColor }}>{badge}</span>
+      </div>
+      <div className="text-[11px] text-muted-foreground mt-1">{subtitle}</div>
+      <div className="mt-4 flex items-end gap-3 h-32">
+        {bars.map((h, i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1">
+            <div className="w-full rounded-t" style={{ height: `${h}%`, background: colors[i] }} />
+            <div className="text-[10px] font-semibold" style={{ color: i === bars.length - 1 ? barTo : "var(--muted-foreground)" }}>{months[i]}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 space-y-2">
+        {stats.map((s, i) => (
+          <div key={i} className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">{s.label}</span>
+            {s.pillColor
+              ? <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ background: s.pillColor }}>{s.value}</span>
+              : <span className="font-semibold" style={{ color: s.color || "var(--foreground)" }}>{s.value}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Testimonial({ initials, color, name, loc, quote }: { initials: string; color: string; name: string; loc: string; quote: string }) {
+  return (
+    <div className="bg-white rounded-2xl border border-border p-5 shadow-soft flex flex-col">
+      <div className="flex gap-0.5" style={{ color: TF_AMBER }}>
+        {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
+      </div>
+      <p className="text-sm mt-3 text-foreground/85 flex-1">&ldquo;{quote}&rdquo;</p>
+      <div className="mt-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ background: color }}>{initials}</div>
+        <div>
+          <div className="text-sm font-semibold text-tf-navy">{name}</div>
+          <div className="text-[11px] text-muted-foreground">{loc}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function mix(a: string, b: string, t: number) {
+  const pa = hex(a), pb = hex(b);
+  const r = Math.round(pa[0] + (pb[0] - pa[0]) * t);
+  const g = Math.round(pa[1] + (pb[1] - pa[1]) * t);
+  const bl = Math.round(pa[2] + (pb[2] - pa[2]) * t);
+  return `rgb(${r},${g},${bl})`;
+}
+function hex(h: string): [number, number, number] {
+  const v = h.replace("#", "");
+  return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
 }
