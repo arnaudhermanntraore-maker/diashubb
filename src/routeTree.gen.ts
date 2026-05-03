@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
@@ -24,6 +25,11 @@ import { Route as ListingsNewRouteImport } from './routes/listings.new'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
+const SafetyRoute = SafetyRouteImport.update({
+  id: '/safety',
+  path: '/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
+  '/safety': typeof SafetyRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
+  '/safety': typeof SafetyRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
+  '/safety': typeof SafetyRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/safety'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/safety'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/safety'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   DemoLoginRoute: typeof DemoLoginRoute
   ListingsRoute: typeof ListingsRouteWithChildren
   MessagesRoute: typeof MessagesRoute
+  SafetyRoute: typeof SafetyRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
@@ -213,6 +226,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/safety': {
+      id: '/safety'
+      path: '/safety'
+      fullPath: '/safety'
+      preLoaderRoute: typeof SafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/messages': {
       id: '/messages'
       path: '/messages'
@@ -337,6 +357,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoLoginRoute: DemoLoginRoute,
   ListingsRoute: ListingsRouteWithChildren,
   MessagesRoute: MessagesRoute,
+  SafetyRoute: SafetyRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
