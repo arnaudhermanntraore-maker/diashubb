@@ -102,7 +102,7 @@ function NewListing() {
   const allErrors = useMemo(() => ({ ...validateStep(1, data), ...validateStep(2, data), ...validateStep(3, data) }), [data]);
   const canSubmit = Object.keys(allErrors).length === 0;
 
-  const next = () => { if (Object.keys(errors).length === 0) setStep((s) => Math.min(3, s + 1)); else toast.error(fr ? "Corrigez les champs en rouge" : "Fix the highlighted fields"); };
+  const next = () => { if (Object.keys(errors).length === 0) setStep((s) => Math.min(4, s + 1)); else toast.error(fr ? "Corrigez les champs en rouge" : "Fix the highlighted fields"); };
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   const submit = async () => {
