@@ -41,7 +41,7 @@ export function Chatbot() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open chat"
-          className="fixed bottom-24 right-6 z-30 w-14 h-14 rounded-full text-white shadow-elegant flex items-center justify-center hover:scale-105 transition-transform"
+          className="fixed bottom-44 right-6 z-30 w-14 h-14 rounded-full text-white shadow-elegant flex items-center justify-center hover:scale-105 transition-transform"
           style={{ background: "var(--tf-navy)" }}
         >
           <MessageCircle size={24} />
