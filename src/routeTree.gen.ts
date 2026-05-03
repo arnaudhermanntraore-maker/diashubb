@@ -26,6 +26,7 @@ import { Route as ListingsNewRouteImport } from './routes/listings_.new'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
+import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estimate'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
 const SafetyRoute = SafetyRouteImport.update({
@@ -113,6 +114,11 @@ const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   path: '/api/public/stripe-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEstimateRoute = ApiPublicEstimateRouteImport.update({
+  id: '/api/public/estimate',
+  path: '/api/public/estimate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
   id: '/api/public/chat',
   path: '/api/public/chat',
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -157,6 +164,7 @@ export interface FileRoutesByTo {
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesById {
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRouteTypes {
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
+    | '/api/public/estimate'
     | '/api/public/stripe-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
+    | '/api/public/estimate'
     | '/api/public/stripe-webhook'
   id:
     | '__root__'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/listings_/new'
     | '/property/$id'
     | '/api/public/chat'
+    | '/api/public/estimate'
     | '/api/public/stripe-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -261,6 +273,7 @@ export interface RootRouteChildren {
   ListingsNewRoute: typeof ListingsNewRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
+  ApiPublicEstimateRoute: typeof ApiPublicEstimateRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
 
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/estimate': {
+      id: '/api/public/estimate'
+      path: '/api/public/estimate'
+      fullPath: '/api/public/estimate'
+      preLoaderRoute: typeof ApiPublicEstimateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/chat': {
       id: '/api/public/chat'
       path: '/api/public/chat'
@@ -413,6 +433,7 @@ const rootRouteChildren: RootRouteChildren = {
   ListingsNewRoute: ListingsNewRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
+  ApiPublicEstimateRoute: ApiPublicEstimateRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
