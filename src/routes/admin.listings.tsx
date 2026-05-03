@@ -20,7 +20,8 @@ interface ListingRow {
   cover_url: string | null;
 }
 
-const STATUSES = ["all", "draft", "active", "sold", "archived"] as const;
+type PropStatus = "active" | "archived" | "draft" | "pending" | "sold";
+const STATUSES = ["all", "draft", "pending", "active", "sold", "archived"] as const;
 
 export const Route = createFileRoute("/admin/listings")({
   beforeLoad: async () => {
