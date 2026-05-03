@@ -29,6 +29,7 @@ function Listings() {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [type, setType] = useState<typeof TYPES[number]>("all");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [mapRegion, setMapRegion] = useState<"usa" | "africa">("usa");
 
   useEffect(() => {
     setLoading(true);
