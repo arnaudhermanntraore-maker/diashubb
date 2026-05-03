@@ -42,10 +42,10 @@ export function Chatbot() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open chat"
-          className="fixed bottom-44 right-6 z-30 w-14 h-14 rounded-full text-white shadow-elegant flex items-center justify-center hover:scale-105 transition-transform"
+          className="fixed bottom-44 right-6 z-30 w-16 h-16 rounded-full shadow-elegant flex items-center justify-center hover:scale-110 transition-transform overflow-hidden ring-2 ring-white/80"
           style={{ background: "var(--tf-navy)" }}
         >
-          <MessageCircle size={24} />
+          <img src={terraMascot} alt="Terra assistant" width={64} height={64} loading="lazy" className="w-full h-full object-cover" />
         </button>
       )}
       {open && (
