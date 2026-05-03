@@ -39,14 +39,24 @@ const TYPES = ["all", "land", "house", "apartment", "commercial", "farm"] as con
 function Listings() {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const sp = Route.useSearch();
   const [items, setItems] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(sp.q ?? "");
   const [country, setCountry] = useState("");
-  const [maxPrice, setMaxPrice] = useState<string>("");
-  const [type, setType] = useState<typeof TYPES[number]>("all");
+  const [maxPrice, setMaxPrice] = useState<string>(sp.maxPrice ? String(sp.maxPrice) : "");
+  const initialType = (sp.type && (TYPES as readonly string[]).includes(sp.type) ? sp.type : "all") as typeof TYPES[number];
+  const [type, setType] = useState<typeof TYPES[number]>(initialType);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [mapRegion, setMapRegion] = useState<"usa" | "africa">("usa");
+  const [region, setRegion] = useState<"all" | "usa" | "africa">(sp.region ?? "all");
+  const [mapRegion, setMapRegion] = useState<"usa" | "africa">(sp.region === "africa" ? "africa" : "usa");
+
+  useEffect(() => {
+    if (sp.q !== undefined) setQ(sp.q);
+    if (sp.maxPrice !== undefined) setMaxPrice(String(sp.maxPrice));
+    if (sp.type && (TYPES as readonly string[]).includes(sp.type)) setType(sp.type as typeof TYPES[number]);
+    if (sp.region) { setRegion(sp.region); setMapRegion(sp.region); }
+  }, [sp.q, sp.maxPrice, sp.type, sp.region]);
 
   useEffect(() => {
     setLoading(true);
@@ -61,8 +71,10 @@ function Listings() {
     if (maxPrice && Number(p.price_usd) > Number(maxPrice)) return false;
     if (type !== "all" && p.type !== type) return false;
     if (verifiedOnly && !p.tf_verified) return false;
+    if (region === "usa" && p.country !== "US") return false;
+    if (region === "africa" && !AFRICA_COUNTRIES.has(p.country)) return false;
     return true;
-  }), [items, q, country, maxPrice, type, verifiedOnly]);
+  }), [items, q, country, maxPrice, type, verifiedOnly, region]);
 
   const countries = useMemo(() => Array.from(new Set(items.map((p) => p.country))).sort(), [items]);
 
