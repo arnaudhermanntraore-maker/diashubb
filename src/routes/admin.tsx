@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { releaseEscrow, refundEscrow } from "@/server/payments.functions";
+import { CurrencyRatesTab } from "@/components/admin/CurrencyRatesTab";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
