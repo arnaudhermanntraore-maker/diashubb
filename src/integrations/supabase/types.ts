@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      agencies: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          legal_name: string | null
+          logo_url: string | null
+          name: string
+          owner_id: string
+          phone: string
+          registration_number: string | null
+          rejection_reason: string | null
+          status: string
+          updated_at: string
+          verified_at: string | null
+          verified_by: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country: string
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          legal_name?: string | null
+          logo_url?: string | null
+          name: string
+          owner_id: string
+          phone: string
+          registration_number?: string | null
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          legal_name?: string | null
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          phone?: string
+          registration_number?: string | null
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           active: boolean
