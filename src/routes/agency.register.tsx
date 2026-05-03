@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -85,14 +85,14 @@ function AgencyRegister() {
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
-  const countryOptions = (() => {
+  const countryOptions = useMemo(() => {
     const dn = typeof Intl !== "undefined" && "DisplayNames" in Intl
       ? new Intl.DisplayNames([fr ? "fr" : "en"], { type: "region" })
       : null;
     return ISO_COUNTRY_CODES
       .map((code) => ({ code, name: (dn?.of(code) ?? code) as string }))
       .sort((a, b) => a.name.localeCompare(b.name, fr ? "fr" : "en"));
-  })();
+  }, [fr]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
