@@ -1,34 +1,97 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { Users, HardHat, Compass, Briefcase, ArrowRight } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { PartnerDirectory, type PartnerCard } from "@/components/PartnerDirectory";
 
 export const Route = createFileRoute("/agents")({
-  head: () => ({ meta: [{ title: "Agents & Pros — TerraFrique" }] }),
-  component: Agents,
+  head: () => ({
+    meta: [
+      { title: "Agences immobilières certifiées — TerraFrique" },
+      { name: "description", content: "Trouvez un agent de confiance pour votre achat aux USA ou en Afrique." },
+    ],
+  }),
+  component: AgentsPage,
 });
 
-function Agents() {
-  const { t } = useTranslation();
-  const groups = [
-    { icon: Users, key: "agents", title: "Real-estate agents", text: "Certified to list and represent properties on TerraFrique." },
-    { icon: HardHat, key: "contractors", title: "Contractors", text: "Vetted builders for renovations, new construction, inspections." },
-    { icon: Compass, key: "surveyors", title: "Surveyors", text: "Title verification and land surveys — the backbone of TF Verified." },
-    { icon: Briefcase, key: "brokers", title: "Brokers", text: "Earn commissions by sourcing buyers across continents." },
-  ];
+const AGENCIES: PartnerCard[] = [
+  {
+    id: "agency-afriimmo",
+    initials: "AI",
+    avatarColor: "var(--tf-blue)",
+    badge: { label: "Certifié TerraFrique", tone: "green" },
+    name: "AfriImmo Group",
+    location: "Atlanta, GA · USA",
+    region: "usa",
+    speciality: "Achat · Vente · Diaspora",
+    listings: 147,
+    rating: 4.9,
+    reviews: 23,
+    since: 2023,
+    languages: ["FR", "EN"],
+    online: true,
+    certified: true,
+    featured: true,
+  },
+  {
+    id: "agency-ndiaye",
+    initials: "ND",
+    avatarColor: "#7C3AED",
+    badge: { label: "Vérifié", tone: "blue" },
+    name: "N'Diaye Immobilier",
+    location: "Dakar, Sénégal · Afrique",
+    region: "africa",
+    speciality: "Terrains · Villas · Investissement",
+    listings: 89,
+    rating: 4.8,
+    since: 2022,
+    languages: ["FR"],
+  },
+  {
+    id: "agency-kouassi",
+    initials: "KR",
+    avatarColor: "var(--tf-green)",
+    badge: { label: "Certifié TerraFrique", tone: "green" },
+    name: "Kouassi Realty",
+    location: "Abidjan, CI · Afrique",
+    region: "africa",
+    speciality: "Résidentiel · Commercial",
+    listings: 63,
+    rating: 4.7,
+    since: 2023,
+    languages: ["FR", "EN"],
+    online: true,
+    certified: true,
+  },
+  {
+    id: "agency-premium-atl",
+    initials: "PA",
+    avatarColor: "#EF9F27",
+    badge: { label: "Vérifié", tone: "blue" },
+    name: "Premium Atlanta Homes",
+    location: "Atlanta, GA · USA",
+    region: "usa",
+    speciality: "Luxury · First-time buyers",
+    listings: 211,
+    rating: 4.9,
+    since: 2021,
+    languages: ["EN", "FR"],
+  },
+];
+
+function AgentsPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <h1 className="text-4xl font-display font-bold">Join our network</h1>
-      <p className="text-muted-foreground mt-2 max-w-2xl">{t("hero.subtitle")}</p>
-      <div className="grid md:grid-cols-2 gap-5 mt-10">
-        {groups.map((g) => (
-          <div key={g.key} className="bg-card border border-border rounded-2xl p-6 shadow-soft">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4"><g.icon size={22} /></div>
-            <h2 className="font-display text-xl font-semibold">{g.title}</h2>
-            <p className="text-sm text-muted-foreground mt-2">{g.text}</p>
-            <Link to="/auth" className="mt-4 inline-flex items-center gap-1 text-primary font-medium text-sm">Register <ArrowRight size={14} /></Link>
-          </div>
-        ))}
-      </div>
-    </div>
+    <PartnerDirectory
+      title="Agences immobilières certifiées"
+      subtitle="Trouvez un agent de confiance pour votre achat aux USA ou en Afrique."
+      searchPlaceholder="Rechercher une agence..."
+      cards={AGENCIES}
+      ctaTitle="Vous êtes agent ou agence immobilière ?"
+      ctaText="Rejoignez TerraFrique et accédez à 44M+ d'acheteurs de la diaspora africaine."
+      ctaButton="Devenir partenaire"
+      steps={[
+        { title: "Créez votre profil certifié", text: "Vérification KYC et badge TerraFrique en 48h." },
+        { title: "Publiez vos annonces FR/EN", text: "Outil bilingue, photos 360°, score IA inclus." },
+        { title: "Recevez des leads qualifiés", text: "Acheteurs vérifiés, messagerie sécurisée." },
+      ]}
+      partnerKind="agent"
+    />
   );
 }
