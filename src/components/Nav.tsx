@@ -9,10 +9,8 @@ const NavIcon = ({ to, icon: Icon, label, search, exact }: { to: string; icon: t
   <Link
     to={to}
     search={search as never}
-    className="group flex flex-col items-center justify-center gap-0.5 px-2.5 h-full text-foreground/70 hover:opacity-80 transition-colors"
-    activeProps={{ className: "!text-white", style: { color: "var(--tf-blue)" } }}
+    className="group flex flex-col items-center justify-center gap-0.5 px-2.5 h-full text-foreground/70 hover:text-tf-blue transition-colors data-[status=active]:text-tf-blue"
     activeOptions={{ exact: exact ?? false, includeSearch: false }}
-    style={{ ["--hover" as never]: "var(--tf-blue)" }}
   >
     <Icon size={18} strokeWidth={2} />
     <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{label}</span>
