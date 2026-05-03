@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
+import { Route as DemoLoginRouteImport } from './routes/demo-login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AgentsRouteImport } from './routes/agents'
@@ -29,6 +30,11 @@ const MessagesRoute = MessagesRouteImport.update({
 const ListingsRoute = ListingsRouteImport.update({
   id: '/listings',
   path: '/listings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoLoginRoute = DemoLoginRouteImport.update({
+  id: '/demo-login',
+  path: '/demo-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
   '/listings/new': typeof ListingsNewRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
   '/listings/new': typeof ListingsNewRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
   '/messages': typeof MessagesRoute
   '/listings/new': typeof ListingsNewRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/dashboard'
+    | '/demo-login'
     | '/listings'
     | '/messages'
     | '/listings/new'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/dashboard'
+    | '/demo-login'
     | '/listings'
     | '/messages'
     | '/listings/new'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/dashboard'
+    | '/demo-login'
     | '/listings'
     | '/messages'
     | '/listings/new'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  DemoLoginRoute: typeof DemoLoginRoute
   ListingsRoute: typeof ListingsRouteWithChildren
   MessagesRoute: typeof MessagesRoute
   PropertyIdRoute: typeof PropertyIdRoute
@@ -186,6 +199,13 @@ declare module '@tanstack/react-router' {
       path: '/listings'
       fullPath: '/listings'
       preLoaderRoute: typeof ListingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-login': {
+      id: '/demo-login'
+      path: '/demo-login'
+      fullPath: '/demo-login'
+      preLoaderRoute: typeof DemoLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  DemoLoginRoute: DemoLoginRoute,
   ListingsRoute: ListingsRouteWithChildren,
   MessagesRoute: MessagesRoute,
   PropertyIdRoute: PropertyIdRoute,
