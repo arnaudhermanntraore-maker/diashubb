@@ -83,7 +83,7 @@ function SignupPage() {
 
   const T = (en: string, frTxt: string) => (fr ? frTxt : en);
 
-  const PROFILES: { key: ProfileKey; bg: string; stroke: string; svg: JSX.Element; name: [string, string]; desc: [string, string]; hint: [string, string] }[] = [
+  const PROFILES: { key: ProfileKey; bg: string; stroke: string; svg: React.ReactNode; name: [string, string]; desc: [string, string]; hint: [string, string] }[] = [
     { key: "buyer", bg: "#E6F1FB", stroke: "#185FA5", svg: <PathHouse />, name: ["Homebuyer", "Acheteur"], desc: ["I'm looking to buy or rent in the US", "J'achète ou loue aux USA"], hint: ["Access to MLS listings, AI score, mortgage matcher and alerts.", "Accès aux annonces MLS, score IA, simulateur prêt et alertes."] },
     { key: "diaspora", bg: "#E1F5EE", stroke: "#0F6E56", svg: <PathGlobe />, name: ["Diaspora investor", "Investisseur diaspora"], desc: ["US home + Africa investment", "Maison USA + investissement Afrique"], hint: ["US + Africa dual dashboard, transfer tool and bi-continental portfolio.", "Dashboard bi-continental, outil de transfert et portefeuille USA + Afrique."] },
     { key: "agent", bg: "#FAEEDA", stroke: "#854F0B", svg: <PathBuilding />, name: ["Agent / Seller", "Agent / Vendeur"], desc: ["I list and sell properties", "Je publie et vends des biens"], hint: ["Listing tools, boost annonces, verified agency badge.", "Outils de publication, boost, badge agence certifiée."] },

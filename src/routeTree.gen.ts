@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -29,6 +30,11 @@ import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.
 import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estimate'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SafetyRoute = SafetyRouteImport.update({
   id: '/safety',
   path: '/safety',
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
+  '/signup': typeof SignupRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
+  '/signup': typeof SignupRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
+  '/signup': typeof SignupRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings_/new': typeof ListingsNewRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/safety'
+    | '/signup'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/safety'
+    | '/signup'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/safety'
+    | '/signup'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings_/new'
@@ -268,6 +280,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   ProfileRoute: typeof ProfileRoute
   SafetyRoute: typeof SafetyRoute
+  SignupRoute: typeof SignupRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
   AgencyRegisterRoute: typeof AgencyRegisterRoute
   ListingsNewRoute: typeof ListingsNewRoute
@@ -279,6 +292,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/safety': {
       id: '/safety'
       path: '/safety'
@@ -428,6 +448,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   ProfileRoute: ProfileRoute,
   SafetyRoute: SafetyRoute,
+  SignupRoute: SignupRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
   AgencyRegisterRoute: AgencyRegisterRoute,
   ListingsNewRoute: ListingsNewRoute,
