@@ -23,12 +23,18 @@ export function PropertyCard({ p }: { p: Property }) {
   const accent = isUSA ? "var(--tf-blue)" : "var(--tf-green)";
   const boosted = p.boosted_until && new Date(p.boosted_until) > new Date();
 
+  const daysLeft = boosted ? Math.ceil((new Date(p.boosted_until!).getTime() - Date.now()) / 86400000) : 0;
+
   return (
     <Link
       to="/property/$id"
       params={{ id: p.id }}
-      className="group block bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-elegant transition-all border border-border"
-      style={{ borderLeft: `4px solid ${accent}` }}
+      className="group block bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-elegant transition-all border"
+      style={{
+        borderLeft: `4px solid ${accent}`,
+        borderColor: boosted ? "var(--tf-amber)" : "var(--border)",
+        borderWidth: boosted ? "1.5px" : "1px",
+      }}
     >
       <div className="relative aspect-[4/3] bg-muted overflow-hidden">
         {p.cover_url ? (
@@ -41,14 +47,19 @@ export function PropertyCard({ p }: { p: Property }) {
             <ShieldCheck size={12} /> {t("property.verified")}
           </div>
         )}
-        {p.ai_score != null && p.ai_score > 0 && (
+        {boosted && (
+          <div className="absolute top-3 right-3 inline-flex items-center gap-1 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "var(--tf-amber)" }}>
+            BOOST ACTIF
+          </div>
+        )}
+        {!boosted && p.ai_score != null && p.ai_score > 0 && (
           <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-white text-tf-navy text-xs font-bold px-2 py-1 rounded-full shadow-soft">
             <Sparkles size={12} className="text-tf-amber" /> {p.ai_score}
           </div>
         )}
         {boosted && (
           <div className="absolute bottom-0 left-0 right-0 text-white text-[10px] font-bold uppercase tracking-wider py-1 text-center inline-flex items-center justify-center gap-1" style={{ background: "var(--tf-amber)" }}>
-            <Flame size={12} /> Boosted
+            <Flame size={12} /> Mis en avant · J{daysLeft > 0 ? `-${daysLeft}` : ""} encore
           </div>
         )}
       </div>

@@ -137,6 +137,60 @@ export type Database = {
         }
         Relationships: []
       }
+      boosts: {
+        Row: {
+          amount_usd: number
+          audience: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          item_id: string
+          item_type: string
+          plan: string
+          starts_at: string | null
+          stats: Json
+          status: string
+          stripe_session_id: string | null
+          terracoins_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_usd?: number
+          audience?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          item_id: string
+          item_type: string
+          plan: string
+          starts_at?: string | null
+          stats?: Json
+          status?: string
+          stripe_session_id?: string | null
+          terracoins_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_usd?: number
+          audience?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          plan?: string
+          starts_at?: string | null
+          stats?: Json
+          status?: string
+          stripe_session_id?: string | null
+          terracoins_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       commissions: {
         Row: {
           amount_usd: number

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { createDepositCheckout } from "@/server/payments.functions";
 import { MapView } from "@/components/MapView";
+import { BoostButton } from "@/components/BoostModal";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
@@ -101,6 +102,12 @@ function PropertyDetail() {
               <Lock size={16} /> {paying ? "…" : `Pay 5% deposit ($${Math.max(50, Math.round(Number(p.price_usd) * 0.05)).toLocaleString()})`}
             </button>
             <p className="text-[11px] text-muted-foreground mt-2 text-center">Held in escrow · released by TerraFrique on title transfer</p>
+            {user?.id === p.agent_id && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <BoostButton itemType="property" itemId={p.id} itemTitle={p.title} itemPrice={p.price_usd} itemThumb={p.cover_url} className="w-full justify-center py-2.5 text-sm" />
+                <p className="text-[11px] text-muted-foreground mt-2 text-center">Boostez cette annonce pour plus de visibilité</p>
+              </div>
+            )}
           </div>
         </aside>
       </div>
