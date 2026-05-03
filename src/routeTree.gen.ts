@@ -22,6 +22,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
+import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
@@ -90,6 +91,11 @@ const ListingsNewRoute = ListingsNewRouteImport.update({
   path: '/listings/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgencyDashboardRoute = AgencyDashboardRouteImport.update({
+  id: '/agency/dashboard',
+  path: '/agency/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
   path: '/api/public/stripe-webhook',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
+  '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
+  '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/safety': typeof SafetyRoute
+  '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/messages'
     | '/safety'
+    | '/agency/dashboard'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/messages'
     | '/safety'
+    | '/agency/dashboard'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/messages'
     | '/safety'
+    | '/agency/dashboard'
     | '/listings_/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -219,6 +231,7 @@ export interface RootRouteChildren {
   ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
   SafetyRoute: typeof SafetyRoute
+  AgencyDashboardRoute: typeof AgencyDashboardRoute
   ListingsNewRoute: typeof ListingsNewRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListingsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agency/dashboard': {
+      id: '/agency/dashboard'
+      path: '/agency/dashboard'
+      fullPath: '/agency/dashboard'
+      preLoaderRoute: typeof AgencyDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
       path: '/api/public/stripe-webhook'
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
   SafetyRoute: SafetyRoute,
+  AgencyDashboardRoute: AgencyDashboardRoute,
   ListingsNewRoute: ListingsNewRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
