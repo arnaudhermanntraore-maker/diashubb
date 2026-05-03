@@ -229,6 +229,36 @@ export type Database = {
           },
         ]
       }
+      currency_rates: {
+        Row: {
+          code: string
+          country: string
+          locale: string
+          rate: number
+          symbol: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          country: string
+          locale?: string
+          rate: number
+          symbol: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          country?: string
+          locale?: string
+          rate?: number
+          symbol?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       feature_flags: {
         Row: {
           description: string | null
