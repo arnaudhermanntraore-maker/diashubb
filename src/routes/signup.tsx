@@ -41,9 +41,6 @@ function SignupPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [checks, setChecks] = useState({ terms: false, fair: false, news: true });
   const [busy, setBusy] = useState(false);
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const [otpAttempts, setOtpAttempts] = useState(3);
-  const [seconds, setSeconds] = useState(300);
   
   const [geoText, setGeoText] = useState<string | null>(null);
   const [geoErr, setGeoErr] = useState(false);
@@ -72,13 +69,6 @@ function SignupPage() {
     }, () => setGeoErr(true), { timeout: 6000 });
   }, [step, geoText, geoErr]);
 
-  // OTP countdown
-  useEffect(() => {
-    if (step !== 4) return;
-    if (seconds <= 0) return;
-    const t = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [step, seconds]);
 
   const country = COUNTRIES.find((c) => c.code === info.country) || COUNTRIES[0];
 
@@ -119,17 +109,6 @@ function SignupPage() {
     return `${country.dial}${digits}`.replace(/\s+/g, "");
   };
 
-  const sendPhoneOtp = async () => {
-    const phone = e164Phone();
-    const { error } = await supabase.auth.updateUser({ phone });
-    if (error) { toast.error(error.message); return false; }
-    toast.success(T(`Code sent to ${phone}`, `Code envoyé au ${phone}`));
-    setSeconds(300);
-    setOtpAttempts(3);
-    setOtp(["", "", "", "", "", ""]);
-    return true;
-  };
-
   const submitAccount = async () => {
     setShowSummary(true);
     const errs: string[] = [];
@@ -157,38 +136,17 @@ function SignupPage() {
         },
       },
     });
-    if (error) { setBusy(false); toast.error(error.message); return; }
-    // Send real SMS OTP via Supabase phone auth (Twilio)
-    const ok = await sendPhoneOtp();
     setBusy(false);
-    if (ok) setStep(4);
-  };
-
-  const verifyOtp = async () => {
-    const code = otp.join("");
-    if (code.length !== 6) return;
-    setBusy(true);
-    const phone = e164Phone();
-    const { error } = await supabase.auth.verifyOtp({ phone, token: code, type: "phone_change" });
-    setBusy(false);
-    if (error) {
-      const left = otpAttempts - 1;
-      setOtpAttempts(left);
-      setOtp(["", "", "", "", "", ""]);
-      otpRefs.current[0]?.focus();
-      if (left <= 0) toast.error(T("Too many attempts. Please request a new code.", "Trop de tentatives. Demandez un nouveau code."));
-      else toast.error(T(`Incorrect code. ${left} attempts remaining.`, `Code incorrect. ${left} tentatives restantes.`));
-      return;
-    }
-    // Award TerraCoins on profile
+    if (error) { toast.error(error.message); return; }
+    // Award TerraCoins if session is active (auto-confirm enabled)
     try {
       const { data: u } = await supabase.auth.getUser();
       if (u?.user) await supabase.from("profiles").update({ terracoins: 100, country: info.country, lang_pref: country.lang }).eq("id", u.user.id);
     } catch {}
+    toast.success(T("Check your email to confirm your account", "Vérifiez votre email pour confirmer votre compte"));
     setStep(5);
   };
 
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // ============ STEPS ============
   return (
@@ -236,21 +194,21 @@ function SignupPage() {
       <section className="flex-1 overflow-y-auto" style={{ padding: "20px 24px" }}>
         {/* Progress */}
         <div className="flex items-center" style={{ marginBottom: 20, maxWidth: 520 }}>
-          {[1, 2, 3, 4].map((n, idx) => {
+          {[1, 2, 3].map((n, idx) => {
             const done = step > n || step === 5;
             const active = step === n;
             const bg = done ? "#1D9E75" : active ? "#185FA5" : "#F3F4F6";
             const color = done || active ? "white" : "#9CA3AF";
-            const label = [T("Profile", "Profil"), T("Your info", "Infos"), T("Password", "Mot de passe"), T("Verify", "Vérif.")][idx];
+            const label = [T("Profile", "Profil"), T("Your info", "Infos"), T("Password", "Mot de passe")][idx];
             return (
-              <div key={n} className="flex items-center" style={{ flex: idx < 3 ? 1 : "none" }}>
+              <div key={n} className="flex items-center" style={{ flex: idx < 2 ? 1 : "none" }}>
                 <div className="flex flex-col items-center">
                   <div style={{ width: 30, height: 30, borderRadius: "50%", background: bg, color, border: !done && !active ? "0.5px solid #E5E7EB" : "none" }} className="flex items-center justify-center text-xs font-medium">
                     {done ? <PathCheck stroke="white" size={14} /> : n}
                   </div>
                   <div style={{ fontSize: 9, marginTop: 4, color: done || active ? "#185FA5" : "#9CA3AF", fontWeight: done || active ? 700 : 400 }}>{label}</div>
                 </div>
-                {idx < 3 && <div style={{ flex: 1, height: 1, background: done ? "#1D9E75" : "#E5E7EB", margin: "0 6px", marginBottom: 14, transition: "background 0.3s" }} />}
+                {idx < 2 && <div style={{ flex: 1, height: 1, background: done ? "#1D9E75" : "#E5E7EB", margin: "0 6px", marginBottom: 14, transition: "background 0.3s" }} />}
               </div>
             );
           })}
@@ -261,7 +219,7 @@ function SignupPage() {
 
           {step === 1 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 1 of 4", "Étape 1 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 1 of 3", "Étape 1 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("What's your profile?", "Quel est votre profil ?")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("Choose the role that best fits your main activity. You can add more later.", "Choisissez votre rôle principal. Vous pourrez en ajouter d'autres ensuite.")}</p>
               <div className="grid grid-cols-2" style={{ gap: 7, marginBottom: 14 }}>
@@ -291,7 +249,7 @@ function SignupPage() {
 
           {step === 2 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 2 of 4", "Étape 2 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 2 of 3", "Étape 2 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Tell us about yourself", "Parlez-nous de vous")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>{T("Your location is detected automatically.", "Votre localisation est détectée automatiquement.")}</p>
 
@@ -338,7 +296,7 @@ function SignupPage() {
 
           {step === 3 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 3 of 4", "Étape 3 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 3 of 3", "Étape 3 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Create your password", "Créez votre mot de passe")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("At least 8 characters. Mix letters, numbers and symbols.", "Minimum 8 caractères. Mélangez lettres, chiffres et symboles.")}</p>
 
@@ -387,54 +345,7 @@ function SignupPage() {
             </>
           )}
 
-          {step === 4 && (
-            <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 4 of 4 · Almost there!", "Étape 4 sur 4 · Presque terminé !")}</div>
-              <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Verify your phone", "Vérifiez votre téléphone")}</h1>
-              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>
-                {T("We sent a 6-digit code to ", "Nous avons envoyé un code à 6 chiffres au ")}
-                <span className="font-bold" style={{ color: "#185FA5" }}>{country.dial} {info.phone}</span>
-              </p>
-              
 
-              <div className="flex justify-center gap-2 my-4">
-                {otp.map((d, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { otpRefs.current[i] = el; }}
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={d}
-                    onPaste={(e) => {
-                      const txt = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-                      if (txt.length === 6) { e.preventDefault(); setOtp(txt.split("")); otpRefs.current[5]?.focus(); }
-                    }}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, "");
-                      const next = [...otp]; next[i] = v.slice(-1); setOtp(next);
-                      if (v && i < 5) otpRefs.current[i + 1]?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
-                    }}
-                    style={{ width: 44, height: 52, borderRadius: 8, fontSize: 22, fontWeight: 500, textAlign: "center", border: d ? "2px solid #1D9E75" : "0.5px solid #E5E7EB", background: d ? "#E1F5EE" : "white", color: d ? "#085041" : "#111827" }}
-                  />
-                ))}
-              </div>
-
-              <div className="text-center text-xs">
-                {seconds > 0 ? (
-                  <span className="text-muted-foreground">{T("Code expires in ", "Le code expire dans ")}<b style={{ color: "#185FA5" }}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</b></span>
-                ) : (
-                  <span style={{ color: "#E24B4A" }}>{T("Code expired. ", "Code expiré. ")}<button onClick={() => { sendPhoneOtp(); }} className="text-tf-blue underline">{T("Resend code", "Renvoyer le code")}</button></span>
-                )}
-              </div>
-
-              <button disabled={otp.some((d) => !d) || busy} onClick={verifyOtp} style={{ width: "100%", background: otp.some((d) => !d) ? "#E5E7EB" : "#1D9E75", color: otp.some((d) => !d) ? "#9CA3AF" : "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500, marginTop: 16 }}>
-                {busy ? T("Verifying…", "Vérification…") : T("Verify & activate account →", "Vérifier & activer mon compte →")}
-              </button>
-            </>
-          )}
 
           {step === 5 && (
             <div className="text-center pt-4">
