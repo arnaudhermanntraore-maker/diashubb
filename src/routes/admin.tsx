@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { releaseEscrow, refundEscrow } from "@/server/payments.functions";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -15,15 +17,55 @@ export const Route = createFileRoute("/admin")({
 
 interface FFlag { id: string; key: string; enabled: boolean; description: string | null; }
 interface AuditRow { id: string; user_id: string | null; action: string; created_at: string; metadata: Record<string, unknown>; }
+interface TxRow { id: string; buyer_id: string; seller_id: string; amount_usd: number; status: string; method: string; created_at: string; property_id: string | null; external_ref: string | null; }
 
 function Admin() {
   const { t } = useTranslation();
   const { isAdmin, loading } = useAuth();
   const [flags, setFlags] = useState<FFlag[]>([]);
   const [audit, setAudit] = useState<AuditRow[]>([]);
+  const [txs, setTxs] = useState<TxRow[]>([]);
   const [counts, setCounts] = useState({ users: 0, props: 0, txs: 0 });
-  const [tab, setTab] = useState<"overview" | "flags" | "audit">("overview");
+  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit">("overview");
   const [newFlag, setNewFlag] = useState("");
+  const [busy, setBusy] = useState<string | null>(null);
+  const release = useServerFn(releaseEscrow);
+  const refund = useServerFn(refundEscrow);
+
+  const reloadTx = async () => {
+    const { data } = await supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(100);
+    setTxs((data ?? []) as TxRow[]);
+  };
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    (async () => {
+      const [{ data: f }, { data: a }, { count: u }, { count: p }, { count: tx }] = await Promise.all([
+        supabase.from("feature_flags").select("*").order("key"),
+        supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("properties").select("id", { count: "exact", head: true }),
+        supabase.from("transactions").select("id", { count: "exact", head: true }),
+      ]);
+      setFlags((f ?? []) as FFlag[]); setAudit((a ?? []) as AuditRow[]);
+      setCounts({ users: u ?? 0, props: p ?? 0, txs: tx ?? 0 });
+      reloadTx();
+    })();
+  }, [isAdmin]);
+
+  const handleRelease = async (id: string) => {
+    setBusy(id);
+    try { await release({ data: { transactionId: id } }); toast.success("Escrow released"); await reloadTx(); }
+    catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(null); }
+  };
+  const handleRefund = async (id: string) => {
+    if (!confirm("Refund this transaction?")) return;
+    setBusy(id);
+    try { await refund({ data: { transactionId: id } }); toast.success("Refunded"); await reloadTx(); }
+    catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(null); }
+  };
 
   useEffect(() => {
     if (!isAdmin) return;
