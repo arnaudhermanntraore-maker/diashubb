@@ -15,6 +15,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as DiasporaRouteImport } from './routes/diaspora'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContractorsRouteImport } from './routes/contractors'
@@ -66,6 +67,11 @@ const ListingsRoute = ListingsRouteImport.update({
 const FavoritesRoute = FavoritesRouteImport.update({
   id: '/favorites',
   path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiasporaRoute = DiasporaRouteImport.update({
+  id: '/diaspora',
+  path: '/diaspora',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoLoginRoute = DemoLoginRouteImport.update({
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
@@ -251,6 +259,7 @@ export interface FileRoutesById {
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/diaspora'
     | '/favorites'
     | '/listings'
     | '/messages'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/diaspora'
     | '/favorites'
     | '/listings'
     | '/messages'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/diaspora'
     | '/favorites'
     | '/listings'
     | '/messages'
@@ -374,6 +386,7 @@ export interface RootRouteChildren {
   ContractorsRoute: typeof ContractorsRoute
   DashboardRoute: typeof DashboardRoute
   DemoLoginRoute: typeof DemoLoginRoute
+  DiasporaRoute: typeof DiasporaRoute
   FavoritesRoute: typeof FavoritesRoute
   ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
@@ -431,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/favorites'
       fullPath: '/favorites'
       preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diaspora': {
+      id: '/diaspora'
+      path: '/diaspora'
+      fullPath: '/diaspora'
+      preLoaderRoute: typeof DiasporaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo-login': {
@@ -619,6 +639,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContractorsRoute: ContractorsRoute,
   DashboardRoute: DashboardRoute,
   DemoLoginRoute: DemoLoginRoute,
+  DiasporaRoute: DiasporaRoute,
   FavoritesRoute: FavoritesRoute,
   ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
