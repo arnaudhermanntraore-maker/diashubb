@@ -44,7 +44,7 @@ function SignupPage() {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [otpAttempts, setOtpAttempts] = useState(3);
   const [seconds, setSeconds] = useState(300);
-  const [demoCode, setDemoCode] = useState("");
+  
   const [geoText, setGeoText] = useState<string | null>(null);
   const [geoErr, setGeoErr] = useState(false);
 
