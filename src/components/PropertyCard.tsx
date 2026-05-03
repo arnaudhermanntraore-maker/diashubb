@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck, Sparkles, MapPin, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 export interface Property {
   id: string;
