@@ -35,7 +35,7 @@ const resources = {
       search: { placeholder: "Country, city, property type…", country: "Country", price: "Max price (USD)", type: "Type", verified: "Verified only", search: "Search" },
       filters: { all: "All", land: "Land", house: "House", apartment: "Apartment", commercial: "Commercial", farm: "Farm" },
       property: { verified: "TerraFrique Verified", aiScore: "AI Score", contact: "Contact agent", tour: "360° tour", noResults: "No properties found" },
-      banner: "Never communicate outside TerraFrique — all your exchanges must stay on the platform",
+      banner: "TerraFrique protects every transaction. Never communicate outside this platform. Never share banking information in messages.",
       addListing: "Add listing",
       auth: { signIn: "Sign in", signUp: "Create account", email: "Email", password: "Password", name: "Full name", role: "I am a…", continue: "Continue", needAccount: "No account?", haveAccount: "Already registered?" },
       dashboard: { title: "My portfolio", us: "United States", africa: "Africa", listings: "My listings", saved: "Saved", txCount: "Transactions", terracoins: "TerraCoins" },
