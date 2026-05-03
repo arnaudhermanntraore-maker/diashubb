@@ -156,6 +156,8 @@ function Admin() {
           ))}
         </div>
       )}
+
+      {tab === "rates" && <CurrencyRatesTab />}
     </div>
   );
 }
