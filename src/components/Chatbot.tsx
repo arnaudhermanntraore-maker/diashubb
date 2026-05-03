@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import terraMascot from "@/assets/terra-chatbot.png";
 
 interface Msg { role: "user" | "assistant"; content: string; }
 
