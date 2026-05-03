@@ -1,10 +1,24 @@
 import { createRootRoute, Outlet, HeadContent, Scripts, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Nav, FloatingAddListing, SecurityBanner } from "@/components/Nav";
 import { Chatbot } from "@/components/Chatbot";
 import { Toaster } from "@/components/ui/sonner";
+import { isDatabaseEmpty, seedDemoData } from "@/server/seed.functions";
 import "@/lib/i18n";
+
+function DemoSeeder() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("tf_seed_checked")) return;
+    sessionStorage.setItem("tf_seed_checked", "1");
+    isDatabaseEmpty()
+      .then((r) => { if (r.empty) return seedDemoData(); })
+      .catch((e) => console.warn("[seed]", e));
+  }, []);
+  return null;
+}
 
 function NotFoundComponent() {
   return (
@@ -36,6 +50,7 @@ export const Route = createRootRoute({
   ),
   component: () => (
     <AuthProvider>
+      <DemoSeeder />
       <SecurityBanner />
       <Nav />
       <main className="min-h-[calc(100vh-8rem)]"><Outlet /></main>
