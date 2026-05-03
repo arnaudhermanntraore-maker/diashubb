@@ -395,7 +395,7 @@ function SignupPage() {
                 {T("We sent a 6-digit code to ", "Nous avons envoyé un code à 6 chiffres au ")}
                 <span className="font-bold" style={{ color: "#185FA5" }}>{country.dial} {info.phone}</span>
               </p>
-              {demoCode && <div className="text-xs mb-2" style={{ color: "#0C447C" }}>{T("Demo code", "Code démo")}: <b>{demoCode}</b></div>}
+              
 
               <div className="flex justify-center gap-2 my-4">
                 {otp.map((d, i) => (
