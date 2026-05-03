@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { releaseEscrow, refundEscrow } from "@/server/payments.functions";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -15,15 +17,25 @@ export const Route = createFileRoute("/admin")({
 
 interface FFlag { id: string; key: string; enabled: boolean; description: string | null; }
 interface AuditRow { id: string; user_id: string | null; action: string; created_at: string; metadata: Record<string, unknown>; }
+interface TxRow { id: string; buyer_id: string; seller_id: string; amount_usd: number; status: string; method: string; created_at: string; property_id: string | null; external_ref: string | null; }
 
 function Admin() {
   const { t } = useTranslation();
   const { isAdmin, loading } = useAuth();
   const [flags, setFlags] = useState<FFlag[]>([]);
   const [audit, setAudit] = useState<AuditRow[]>([]);
+  const [txs, setTxs] = useState<TxRow[]>([]);
   const [counts, setCounts] = useState({ users: 0, props: 0, txs: 0 });
-  const [tab, setTab] = useState<"overview" | "flags" | "audit">("overview");
+  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit">("overview");
   const [newFlag, setNewFlag] = useState("");
+  const [busy, setBusy] = useState<string | null>(null);
+  const release = useServerFn(releaseEscrow);
+  const refund = useServerFn(refundEscrow);
+
+  const reloadTx = async () => {
+    const { data } = await supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(100);
+    setTxs((data ?? []) as TxRow[]);
+  };
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -37,8 +49,25 @@ function Admin() {
       ]);
       setFlags((f ?? []) as FFlag[]); setAudit((a ?? []) as AuditRow[]);
       setCounts({ users: u ?? 0, props: p ?? 0, txs: tx ?? 0 });
+      reloadTx();
     })();
   }, [isAdmin]);
+
+  const handleRelease = async (id: string) => {
+    setBusy(id);
+    try { await release({ data: { transactionId: id } }); toast.success("Escrow released"); await reloadTx(); }
+    catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(null); }
+  };
+  const handleRefund = async (id: string) => {
+    if (!confirm("Refund this transaction?")) return;
+    setBusy(id);
+    try { await refund({ data: { transactionId: id } }); toast.success("Refunded"); await reloadTx(); }
+    catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(null); }
+  };
+
+
 
   const toggle = async (f: FFlag) => {
     const { error } = await supabase.from("feature_flags").update({ enabled: !f.enabled }).eq("id", f.id);
@@ -57,7 +86,7 @@ function Admin() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
       <div className="mt-6 flex gap-2 border-b border-border">
-        {(["overview", "flags", "audit"] as const).map((k) => (
+        {(["overview", "flags", "escrow", "audit"] as const).map((k) => (
           <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k}</button>
         ))}
       </div>
@@ -87,6 +116,30 @@ function Admin() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {tab === "escrow" && (
+        <div className="mt-6 bg-card border border-border rounded-2xl divide-y divide-border">
+          {txs.length === 0 && <div className="p-6 text-center text-muted-foreground text-sm">No transactions.</div>}
+          {txs.map((tx) => {
+            const canRelease = tx.status === "escrowed";
+            const canRefund = ["escrowed", "pending"].includes(tx.status);
+            const color = tx.status === "released" ? "text-success" : tx.status === "refunded" ? "text-muted-foreground" : tx.status === "escrowed" ? "text-accent-foreground" : "text-foreground";
+            return (
+              <div key={tx.id} className="flex items-center justify-between gap-3 p-4 flex-wrap">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="font-display font-semibold">${Number(tx.amount_usd).toLocaleString()} <span className={`text-xs uppercase ml-2 ${color}`}>{tx.status}</span></div>
+                  <div className="text-xs text-muted-foreground font-mono mt-0.5">{tx.method} · buyer {tx.buyer_id.slice(0,8)} → seller {tx.seller_id.slice(0,8)}</div>
+                  <div className="text-[11px] text-muted-foreground">{new Date(tx.created_at).toLocaleString()}</div>
+                </div>
+                <div className="flex gap-2">
+                  <button disabled={!canRelease || busy === tx.id} onClick={() => handleRelease(tx.id)} className="bg-success text-success-foreground rounded-full px-4 py-1.5 text-xs font-medium disabled:opacity-40">Release</button>
+                  <button disabled={!canRefund || busy === tx.id} onClick={() => handleRefund(tx.id)} className="bg-muted rounded-full px-4 py-1.5 text-xs font-medium disabled:opacity-40">Refund</button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 

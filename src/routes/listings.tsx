@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, MapPin } from "lucide-react";
+import { Search } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard, type Property } from "@/components/PropertyCard";
+import { MapView } from "@/components/MapView";
 
 export const Route = createFileRoute("/listings")({
   head: () => ({
@@ -19,6 +21,7 @@ const TYPES = ["all", "land", "house", "apartment", "commercial", "farm"] as con
 
 function Listings() {
   const { t } = useTranslation();
+  const nav = useNavigate();
   const [items, setItems] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -29,7 +32,7 @@ function Listings() {
 
   useEffect(() => {
     setLoading(true);
-    supabase.from("properties").select("id,title,country,city,price_usd,type,cover_url,ai_score,tf_verified").eq("status", "active").order("created_at", { ascending: false }).limit(60).then(({ data }) => {
+    supabase.from("properties").select("id,title,country,city,price_usd,type,cover_url,ai_score,tf_verified,lat,lng").eq("status", "active").order("created_at", { ascending: false }).limit(60).then(({ data }) => {
       setItems((data ?? []) as Property[]); setLoading(false);
     });
   }, []);
@@ -68,13 +71,12 @@ function Listings() {
         </div>
       </div>
 
-      {/* Map placeholder */}
-      <div className="mb-8 h-64 rounded-2xl bg-gradient-earth border border-border flex items-center justify-center text-center px-4">
-        <div>
-          <MapPin className="mx-auto mb-2 text-primary" />
-          <p className="font-display font-semibold">Interactive map</p>
-          <p className="text-xs text-muted-foreground mt-1">Add a Mapbox token to enable the map view of {filtered.length} properties.</p>
-        </div>
+      <div className="mb-8">
+        <MapView
+          height="380px"
+          markers={filtered.filter((p) => p.lat != null && p.lng != null).map((p) => ({ id: p.id, lat: p.lat as number, lng: p.lng as number, title: p.title, price_usd: Number(p.price_usd) }))}
+          onMarkerClick={(id) => nav({ to: "/property/$id", params: { id } })}
+        />
       </div>
 
       {loading ? (

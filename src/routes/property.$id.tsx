@@ -1,10 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ShieldCheck, Sparkles, MapPin, MessageSquare, Compass } from "lucide-react";
+import { ShieldCheck, Sparkles, MapPin, MessageSquare, Compass, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { createDepositCheckout } from "@/server/payments.functions";
+import { MapView } from "@/components/MapView";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
@@ -15,6 +18,7 @@ interface FullProperty {
   country: string; city: string | null; price_usd: number;
   type: string; cover_url: string | null; tour_360_url: string | null;
   ai_score: number | null; tf_verified: boolean; agent_id: string;
+  lat: number | null; lng: number | null;
 }
 
 function PropertyDetail() {
@@ -24,6 +28,8 @@ function PropertyDetail() {
   const navigate = useNavigate();
   const [p, setP] = useState<FullProperty | null>(null);
   const [loading, setLoading] = useState(true);
+  const [paying, setPaying] = useState(false);
+  const startCheckout = useServerFn(createDepositCheckout);
 
   useEffect(() => {
     supabase.from("properties").select("*").eq("id", id).maybeSingle().then(({ data }) => {
@@ -38,6 +44,23 @@ function PropertyDetail() {
     const content = btoa(unescape(encodeURIComponent(`Hi, I'm interested in "${p.title}".`)));
     const { error } = await supabase.from("messages").insert({ sender_id: user.id, receiver_id: p.agent_id, property_id: p.id, content_encrypted: content });
     if (error) toast.error(error.message); else { toast.success("Message sent"); navigate({ to: "/messages" }); }
+  };
+
+  const payDeposit = async () => {
+    if (!user) { toast(t("auth.signIn") + " required"); navigate({ to: "/auth" }); return; }
+    if (!p) return;
+    setPaying(true);
+    try {
+      const deposit = Math.max(50, Math.round(Number(p.price_usd) * 0.05)); // 5% deposit
+      const origin = window.location.origin;
+      const r = await startCheckout({ data: {
+        propertyId: p.id, amountUsd: deposit,
+        successUrl: `${origin}/dashboard?deposit=ok`,
+        cancelUrl: `${origin}/property/${p.id}?deposit=cancel`,
+      }});
+      if (r.url) window.location.href = r.url;
+    } catch (e) { toast.error((e as Error).message); }
+    finally { setPaying(false); }
   };
 
   if (loading) return <div className="container mx-auto px-4 py-10 max-w-5xl"><div className="h-96 bg-muted rounded-2xl animate-pulse" /></div>;
@@ -57,6 +80,11 @@ function PropertyDetail() {
           <h1 className="mt-6 text-3xl font-display font-bold">{p.title}</h1>
           <p className="text-sm text-muted-foreground inline-flex items-center gap-1 mt-1"><MapPin size={14} />{p.city ? `${p.city}, ` : ""}{p.country}</p>
           <p className="mt-6 text-foreground/85 leading-relaxed whitespace-pre-line">{p.description || "No description provided."}</p>
+          {p.lat != null && p.lng != null && (
+            <div className="mt-6">
+              <MapView height="320px" markers={[{ id: p.id, lat: p.lat, lng: p.lng, title: p.title, price_usd: Number(p.price_usd) }]} />
+            </div>
+          )}
         </div>
         <aside className="md:col-span-1 space-y-3">
           <div className="bg-card border border-border rounded-2xl p-5 shadow-soft">
@@ -69,6 +97,10 @@ function PropertyDetail() {
             <button onClick={contact} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-full py-3 font-medium hover:bg-primary/90 transition-colors">
               <MessageSquare size={16} /> {t("property.contact")}
             </button>
+            <button onClick={payDeposit} disabled={paying} className="mt-2 w-full inline-flex items-center justify-center gap-2 bg-success text-success-foreground rounded-full py-3 font-medium hover:opacity-90 transition disabled:opacity-50">
+              <Lock size={16} /> {paying ? "…" : `Pay 5% deposit ($${Math.max(50, Math.round(Number(p.price_usd) * 0.05)).toLocaleString()})`}
+            </button>
+            <p className="text-[11px] text-muted-foreground mt-2 text-center">Held in escrow · released by TerraFrique on title transfer</p>
           </div>
         </aside>
       </div>
