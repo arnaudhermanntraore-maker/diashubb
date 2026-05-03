@@ -786,3 +786,124 @@ function PublishEligibilityGate({
     </div>
   );
 }
+
+function ReviewStep({ data, fr, goTo }: { data: FormData; fr: boolean; goTo: (n: number) => void }) {
+  const cover = data.cover_url || data.images.filter(Boolean)[0];
+  const fx = FX[data.country];
+  const local = fx && data.priceUsd ? Math.round(Number(data.priceUsd) * fx.rate).toLocaleString() : null;
+  const typeLabel = TYPE_OPTIONS.find((o) => o.v === data.type);
+  const countryLabel = data.continent === "usa"
+    ? `${data.state}, USA`
+    : (AFRICA_COUNTRIES.find(([c]) => c === data.country)?.[1] ?? data.country);
+  const photoCount = data.images.filter(Boolean).length;
+  const docCount = [data.titleDeedUrl, data.cadastralUrl, data.buildingPermitUrl, data.mlsNumber].filter(Boolean).length;
+
+  const SectionHeader = ({ title, step }: { title: string; step: number }) => (
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="font-display font-bold text-base">{title}</h3>
+      <button onClick={() => goTo(step)} className="text-xs font-semibold text-tf-blue hover:underline">
+        {fr ? "Modifier" : "Edit"}
+      </button>
+    </div>
+  );
+
+  const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
+    <div className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50 last:border-b-0 text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-right">{value || "—"}</span>
+    </div>
+  );
+
+  return (
+    <div className="space-y-5">
+      <p className="text-sm text-muted-foreground">
+        {fr
+          ? "Vérifiez attentivement chaque section avant publication. Cliquez sur « Modifier » pour corriger un bloc."
+          : "Carefully review each section before publishing. Click \"Edit\" to fix any block."}
+      </p>
+
+      {/* Preview card */}
+      <div className="bg-muted/40 rounded-2xl overflow-hidden border border-border">
+        {cover ? (
+          <img src={cover} alt="" className="w-full h-48 object-cover" />
+        ) : (
+          <div className="w-full h-48 flex items-center justify-center text-muted-foreground text-sm">{fr ? "Aucune photo de couverture" : "No cover photo"}</div>
+        )}
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display font-bold text-lg leading-tight">{data.titleFr || data.titleEn || (fr ? "Sans titre" : "Untitled")}</h2>
+              <div className="text-xs text-muted-foreground mt-1 inline-flex items-center gap-1">
+                <MapPin size={12} /> {[data.city, data.neighborhood, countryLabel].filter(Boolean).join(" · ")}
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="text-xl font-display font-bold" style={{ color: "var(--tf-blue)" }}>
+                ${Number(data.priceUsd || 0).toLocaleString()}
+              </div>
+              {local && fx && <div className="text-[11px] text-muted-foreground">≈ {local} {fx.code}</div>}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {typeLabel && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-tf-blue/10 text-tf-blue font-semibold">{fr ? typeLabel.fr : typeLabel.en}</span>}
+            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-foreground/70 font-semibold">{data.txType === "sale" ? (fr ? "À vendre" : "For sale") : (fr ? "À louer" : "For rent")}</span>
+            {data.negotiable && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-tf-amber/15 text-tf-amber font-semibold">{fr ? "Négociable" : "Negotiable"}</span>}
+          </div>
+        </div>
+      </div>
+
+      {/* Property */}
+      <div className="bg-card border border-border rounded-2xl p-4">
+        <SectionHeader title={fr ? "Bien & localisation" : "Property & location"} step={1} />
+        <Row label={fr ? "Titre (FR)" : "Title (FR)"} value={data.titleFr} />
+        <Row label={fr ? "Titre (EN)" : "Title (EN)"} value={data.titleEn} />
+        <Row label={fr ? "Type" : "Type"} value={typeLabel ? (fr ? typeLabel.fr : typeLabel.en) : data.type} />
+        <Row label={fr ? "Transaction" : "Transaction"} value={data.txType === "sale" ? (fr ? "Vente" : "Sale") : (fr ? "Location" : "Rent")} />
+        <Row label={fr ? "Surface" : "Surface"} value={data.surface ? `${data.surface} ${data.surfaceUnit === "m2" ? "m²" : "sqft"}` : ""} />
+        <Row label={fr ? "Chambres" : "Bedrooms"} value={data.bedrooms} />
+        <Row label={fr ? "Salles de bain" : "Bathrooms"} value={data.bathrooms} />
+        <Row label={fr ? "Pays" : "Country"} value={countryLabel} />
+        <Row label={fr ? "Ville" : "City"} value={data.city} />
+        <Row label={fr ? "Quartier" : "Neighborhood"} value={data.neighborhood} />
+        <Row label="GPS" value={data.lat && data.lng ? `${data.lat}, ${data.lng}` : ""} />
+        {(data.descFr || data.descEn) && (
+          <div className="mt-3 pt-3 border-t border-border/50">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Description</div>
+            <p className="text-sm whitespace-pre-wrap line-clamp-6">{data.descFr || data.descEn}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Photos & docs */}
+      <div className="bg-card border border-border rounded-2xl p-4">
+        <SectionHeader title={fr ? "Photos & documents" : "Photos & documents"} step={2} />
+        <Row label={fr ? "Photos" : "Photos"} value={`${photoCount} ${fr ? "photo(s)" : "photo(s)"}`} />
+        <Row label={fr ? "Visite 360°" : "360° tour"} value={data.tour360 ? "✓" : ""} />
+        <Row label={fr ? "Vidéo" : "Video"} value={data.videoUrl ? "✓" : ""} />
+        <Row label={fr ? "Documents" : "Documents"} value={`${docCount} ${fr ? "document(s)" : "document(s)"}`} />
+        {photoCount > 0 && (
+          <div className="grid grid-cols-4 gap-2 mt-3">
+            {data.images.filter(Boolean).slice(0, 8).map((url, i) => (
+              <img key={i} src={url} alt="" className="w-full aspect-square object-cover rounded-md" onError={(e) => (e.currentTarget.style.opacity = "0.3")} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Price & boost */}
+      <div className="bg-card border border-border rounded-2xl p-4">
+        <SectionHeader title={fr ? "Prix & publication" : "Price & publish"} step={3} />
+        <Row label={fr ? "Prix USD" : "Price USD"} value={`$${Number(data.priceUsd || 0).toLocaleString()}`} />
+        {local && fx && <Row label={fr ? "Équivalent local" : "Local equivalent"} value={`${local} ${fx.code}`} />}
+        <Row label={fr ? "Négociable" : "Negotiable"} value={data.negotiable ? (fr ? "Oui" : "Yes") : (fr ? "Non" : "No")} />
+        <Row label="Boost" value={data.boost} />
+      </div>
+
+      <div className="rounded-xl p-3 text-sm" style={{ background: "color-mix(in oklab, var(--tf-amber) 12%, transparent)", color: "var(--tf-navy-deep)" }}>
+        {fr
+          ? "En cliquant « Confirmer & publier », votre annonce passe en modération (24h) avant publication."
+          : "By clicking \"Confirm & publish\", your listing enters moderation (24h) before going live."}
+      </div>
+    </div>
+  );
+}
