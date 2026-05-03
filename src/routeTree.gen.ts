@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SafetyRouteImport } from './routes/safety'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
@@ -29,6 +30,11 @@ import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 const SafetyRoute = SafetyRouteImport.update({
   id: '/safety',
   path: '/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRoute = MessagesRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
+  '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings/new': typeof ListingsNewRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
+  '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings/new': typeof ListingsNewRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
+  '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/listings_/new': typeof ListingsNewRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/profile'
     | '/safety'
     | '/agency/dashboard'
     | '/listings/new'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/profile'
     | '/safety'
     | '/agency/dashboard'
     | '/listings/new'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/listings'
     | '/messages'
+    | '/profile'
     | '/safety'
     | '/agency/dashboard'
     | '/listings_/new'
@@ -230,6 +242,7 @@ export interface RootRouteChildren {
   DemoLoginRoute: typeof DemoLoginRoute
   ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
+  ProfileRoute: typeof ProfileRoute
   SafetyRoute: typeof SafetyRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
   ListingsNewRoute: typeof ListingsNewRoute
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/safety'
       fullPath: '/safety'
       preLoaderRoute: typeof SafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages': {
@@ -366,6 +386,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoLoginRoute: DemoLoginRoute,
   ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
+  ProfileRoute: ProfileRoute,
   SafetyRoute: SafetyRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
   ListingsNewRoute: ListingsNewRoute,

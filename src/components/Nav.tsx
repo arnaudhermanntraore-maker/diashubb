@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X } from "lucide-react";
+import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
@@ -70,10 +70,27 @@ export function Nav() {
           </button>
           <span className="w-px h-6 bg-border mx-1" />
           {user ? (
-            <button onClick={() => { signOut(); navigate({ to: "/" }); }} className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue">
-              <LogOut size={16} />
-              <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Sortir" : "Log out"}</span>
-            </button>
+            <>
+              <Link to="/profile" className="flex items-center gap-1.5 px-2 py-1 rounded-full hover:bg-muted transition-colors" title={user.email ?? ""}>
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold"
+                  style={{ background: "var(--tf-blue)" }}
+                >
+                  {((user.user_metadata?.full_name as string) || user.email || "?").trim().charAt(0).toUpperCase()}
+                </span>
+                <span className="hidden md:flex flex-col leading-none">
+                  <span className="text-[10px] font-semibold text-foreground truncate max-w-[120px]">
+                    {(user.user_metadata?.full_name as string) || user.email}
+                  </span>
+                  <span className="text-[8px] uppercase tracking-wider text-tf-green font-bold">● {fr ? "Connecté" : "Signed in"}</span>
+                </span>
+                <UserIcon size={14} className="md:hidden text-foreground/70" />
+              </Link>
+              <button onClick={() => { signOut(); navigate({ to: "/" }); }} className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue" aria-label={fr ? "Déconnexion" : "Sign out"}>
+                <LogOut size={16} />
+                <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Sortir" : "Log out"}</span>
+              </button>
+            </>
           ) : (
             <>
               <Link to="/auth" className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue">
