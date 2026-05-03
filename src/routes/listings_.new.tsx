@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronLeft, ChevronRight, Home, MapPin, Image as ImageIcon, FileText, DollarSign, Trash2, Plus, Minus, Star } from "lucide-react";
 import { SingleFileUploader, MultiPhotoUploader } from "@/components/FileUploader";
+import { Pano360Viewer } from "@/components/Pano360Viewer";
 
 export const Route = createFileRoute("/listings_/new")({
   beforeLoad: async () => {
@@ -466,7 +467,12 @@ function Step3({ data, u, errors, fr }: StepProps) {
           icon="image"
           label={fr ? "Téléverser une image équirectangulaire" : "Upload an equirectangular image"}
         />
-        <p className="text-xs text-muted-foreground mt-1">{fr ? "Une visite 360° augmente les visites de +40%" : "A 360° tour increases views by +40%"}</p>
+        {data.tour360 && (
+          <div className="mt-3">
+            <Pano360Viewer imageUrl={data.tour360} height={300} />
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground mt-2">{fr ? "Une visite 360° augmente les visites de +40%" : "A 360° tour increases views by +40%"}</p>
       </Field>
 
       <Field label={fr ? "Vidéo (optionnel)" : "Video (optional)"}>
