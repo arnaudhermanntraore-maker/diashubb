@@ -29,7 +29,11 @@ import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSecurityRouteImport } from './routes/admin.security'
+import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminFlagsRouteImport } from './routes/admin.flags'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estimate'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
@@ -134,9 +138,29 @@ const AgencyDashboardRoute = AgencyDashboardRouteImport.update({
   path: '/agency/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecurityRoute = AdminSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminListingsRoute = AdminListingsRouteImport.update({
+  id: '/listings',
+  path: '/listings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFlagsRoute = AdminFlagsRouteImport.update({
   id: '/flags',
   path: '/flags',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
@@ -172,7 +196,11 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -198,7 +226,11 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -225,7 +257,11 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings_/new': typeof ListingsNewRoute
@@ -253,7 +289,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/analytics'
     | '/admin/flags'
+    | '/admin/listings'
+    | '/admin/security'
+    | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -279,7 +319,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/analytics'
     | '/admin/flags'
+    | '/admin/listings'
+    | '/admin/security'
+    | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -305,7 +349,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/analytics'
     | '/admin/flags'
+    | '/admin/listings'
+    | '/admin/security'
+    | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings_/new'
@@ -483,11 +531,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgencyDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/security': {
+      id: '/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AdminSecurityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/listings': {
+      id: '/admin/listings'
+      path: '/listings'
+      fullPath: '/admin/listings'
+      preLoaderRoute: typeof AdminListingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/flags': {
       id: '/admin/flags'
       path: '/flags'
       fullPath: '/admin/flags'
       preLoaderRoute: typeof AdminFlagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/api/public/stripe-webhook': {
@@ -515,11 +591,19 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminFlagsRoute: typeof AdminFlagsRoute
+  AdminListingsRoute: typeof AdminListingsRoute
+  AdminSecurityRoute: typeof AdminSecurityRoute
+  AdminUsersRoute: typeof AdminUsersRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminFlagsRoute: AdminFlagsRoute,
+  AdminListingsRoute: AdminListingsRoute,
+  AdminSecurityRoute: AdminSecurityRoute,
+  AdminUsersRoute: AdminUsersRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

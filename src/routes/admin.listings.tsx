@@ -20,7 +20,7 @@ interface ListingRow {
   cover_url: string | null;
 }
 
-const STATUSES = ["all", "draft", "active", "sold", "rejected"] as const;
+const STATUSES = ["all", "draft", "active", "sold", "archived"] as const;
 
 export const Route = createFileRoute("/admin/listings")({
   beforeLoad: async () => {
@@ -117,7 +117,7 @@ function ListingsPage() {
                   </div>
                   <div className="text-xs text-muted-foreground">{r.city ?? "—"}, {r.country} · {r.type} · ${Number(r.price_usd).toLocaleString()}</div>
                   <div className="text-[11px] text-muted-foreground mt-0.5">
-                    <span className={`inline-block px-1.5 py-0.5 rounded ${r.status === "active" ? "bg-success/20 text-success" : r.status === "rejected" ? "bg-destructive/20 text-destructive" : "bg-muted"}`}>{r.status}</span>
+                    <span className={`inline-block px-1.5 py-0.5 rounded ${r.status === "active" ? "bg-success/20 text-success" : r.status === "archived" ? "bg-destructive/20 text-destructive" : "bg-muted"}`}>{r.status}</span>
                     {" · AI: "}{r.ai_score ?? "—"} · {new Date(r.created_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -126,8 +126,8 @@ function ListingsPage() {
                   {r.status !== "active" && (
                     <button onClick={() => setStatus(r.id, "active")} className="text-xs px-3 py-1.5 rounded-full bg-success/20 text-success inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Approuver</button>
                   )}
-                  {r.status !== "rejected" && (
-                    <button onClick={() => setStatus(r.id, "rejected")} className="text-xs px-3 py-1.5 rounded-full bg-destructive/20 text-destructive inline-flex items-center gap-1"><XCircle className="w-3 h-3" /> Rejeter</button>
+                  {r.status !== "archived" && (
+                    <button onClick={() => setStatus(r.id, "archived")} className="text-xs px-3 py-1.5 rounded-full bg-destructive/20 text-destructive inline-flex items-center gap-1"><XCircle className="w-3 h-3" /> Archiver</button>
                   )}
                   <button onClick={() => toggleVerified(r)} className="text-xs px-3 py-1.5 rounded-full bg-muted inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> {r.tf_verified ? "Dé-vérifier" : "Vérifier"}</button>
                   <button onClick={() => remove(r.id)} className="text-xs px-3 py-1.5 rounded-full bg-muted text-destructive inline-flex items-center gap-1"><Trash2 className="w-3 h-3" /></button>
