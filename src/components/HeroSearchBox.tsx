@@ -9,6 +9,18 @@ const TF_AMBER = "#EF9F27";
 const TF_PURPLE = "#534AB7";
 
 type TabId = "buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate";
+type ListingType = "land" | "house" | "apartment" | "commercial" | "farm";
+const ALLOWED_LISTING_TYPES: ReadonlySet<ListingType> = new Set(["land", "house", "apartment", "commercial", "farm"]);
+const asListingType = (v: string): ListingType | undefined =>
+  ALLOWED_LISTING_TYPES.has(v as ListingType) ? (v as ListingType) : undefined;
+const asPositiveInt = (v: string): number | undefined => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : undefined;
+};
+const asCleanText = (v: string, max = 80): string | undefined => {
+  const t = v.replace(/\s+/g, " ").trim().slice(0, max);
+  return t || undefined;
+};
 
 const AFRICA_COUNTRIES: { code: string; flag: string; name_en: string; name_fr: string }[] = [
   { code: "", flag: "🌍", name_en: "All Africa", name_fr: "Toute l'Afrique" },
