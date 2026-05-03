@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck, Sparkles, MapPin, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 export interface Property {
   id: string;
@@ -67,7 +68,7 @@ export function PropertyCard({ p }: { p: Property }) {
         <h3 className="font-display font-semibold text-base line-clamp-1 text-tf-navy">{p.title}</h3>
         <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-1"><MapPin size={12} />{p.city ? `${p.city}, ` : ""}{p.country}</p>
         <div className="mt-3 flex items-baseline justify-between">
-          <span className="text-xl font-bold font-display" style={{ color: accent }}>${Number(p.price_usd).toLocaleString()}</span>
+          <PriceDisplay priceUsd={Number(p.price_usd)} country={p.country} size="lg" style={{ color: accent }} />
           <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-semibold">{p.type}</span>
         </div>
       </div>
