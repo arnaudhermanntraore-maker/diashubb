@@ -139,7 +139,7 @@ function NewListing() {
   if (loading) return <div className="p-10 text-center text-muted-foreground">…</div>;
 
   if (!canPublish) {
-    return <BecomeAgentGate fr={fr} userId={user?.id} />;
+    return <PublishEligibilityGate fr={fr} userId={user?.id} userEmail={user?.email ?? null} emailConfirmed={!!user?.email_confirmed_at} roles={roles} />;
   }
 
   if (done) {
