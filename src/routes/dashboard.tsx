@@ -1,9 +1,13 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Coins, Building2, Heart, Receipt } from "lucide-react";
+import { Coins, Building2, Heart, Receipt, Rocket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { BoostButton } from "@/components/BoostModal";
+import { useServerFn } from "@tanstack/react-start";
+import { cancelBoost } from "@/server/boosts.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
