@@ -50,6 +50,12 @@ export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10,
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map) return;
+    map.flyTo({ center, zoom, duration: 800 });
+  }, [center[0], center[1], zoom]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map || !markers.length) return;
     const pins: mapboxgl.Marker[] = [];
     const bounds = new mapboxgl.LngLatBounds();
