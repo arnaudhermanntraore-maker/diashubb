@@ -251,22 +251,21 @@ function NewListing() {
 function validateStep(step: number, d: FormData): Record<string, string> {
   const e: Record<string, string> = {};
   if (step === 1) {
+    // Bien & localisation (anciens 1 + 2)
     if (!d.titleFr.trim() && !d.titleEn.trim()) e.title = "Titre requis";
     if (!d.surface || Number(d.surface) <= 0) e.surface = "Surface requise";
-  }
-  if (step === 2) {
     if (d.continent === "usa") {
       if (!d.state) e.state = "État requis";
     } else if (!d.country) e.country = "Pays requis";
     if (!d.city.trim()) e.city = "Ville requise";
   }
-  if (step === 3) {
+  if (step === 2) {
+    // Photos & documents (anciens 3 + 4)
     if (d.images.filter(Boolean).length < 3) e.images = "Minimum 3 photos";
-  }
-  if (step === 4) {
     if (d.continent === "africa" && !d.titleDeedUrl) e.titleDeed = "Titre foncier requis";
   }
-  if (step === 5) {
+  if (step === 3) {
+    // Prix & publication (ancien 5)
     if (!d.priceUsd || Number(d.priceUsd) <= 0) e.price = "Prix requis";
   }
   return e;
