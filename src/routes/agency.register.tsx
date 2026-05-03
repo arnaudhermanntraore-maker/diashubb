@@ -198,12 +198,19 @@ function AgencyRegister() {
         </Section>
 
         <Section title={fr ? "Localisation" : "Location"}>
-          <Field label={fr ? "Pays *" : "Country *"} error={errors.country}>
+          <Field label={fr ? "Pays *" : "Country *"} error={errors.country} htmlFor="agency-country">
             <select
+              id="agency-country"
+              name="country"
               value={form.country}
               onChange={(e) => setField("country", e.target.value as FormState["country"])}
               className={inputCls}
               required
+              autoComplete="country"
+              aria-label={fr ? "Pays de l'agence" : "Agency country"}
+              aria-required="true"
+              aria-invalid={!!errors.country}
+              aria-describedby={errors.country ? "agency-country-error" : undefined}
             >
               <option value="">{fr ? "Sélectionner un pays" : "Select a country"}</option>
               {countryOptions.map((c) => (
