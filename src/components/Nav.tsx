@@ -5,12 +5,12 @@ import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
 import { useEffect, useState } from "react";
 
-const NavIcon = ({ to, icon: Icon, label, search }: { to: string; icon: typeof Home; label: string; search?: Record<string, string> }) => (
+const NavIcon = ({ to, icon: Icon, label, search, exact }: { to: string; icon: typeof Home; label: string; search?: Record<string, string>; exact?: boolean }) => (
   <Link
     to={to}
     search={search as never}
-    className="group flex flex-col items-center justify-center gap-0.5 px-2.5 h-full text-foreground/70 hover:text-tf-blue transition-colors"
-    activeProps={{ className: "text-tf-blue" }}
+    className="group flex flex-col items-center justify-center gap-0.5 px-2.5 h-full text-foreground/70 hover:text-tf-blue transition-colors data-[status=active]:text-tf-blue"
+    activeOptions={{ exact: exact ?? false, includeSearch: false }}
   >
     <Icon size={18} strokeWidth={2} />
     <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{label}</span>
@@ -50,13 +50,13 @@ export function Nav() {
         </Link>
 
         <nav className="flex items-center h-full">
-          <NavIcon to="/" icon={Home} label={fr ? "Accueil" : "Home"} />
-          <NavIcon to="/listings" icon={LayoutGrid} label={fr ? "Acheter" : "Buy"} />
-          <NavIcon to="/listings" icon={Circle} label={fr ? "Louer" : "Rent"} />
-          <NavIcon to="/listings" icon={Globe2} label={fr ? "Afrique" : "Africa"} />
-          <NavIcon to="/agents" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
+          <NavIcon to="/" icon={Home} label={fr ? "Accueil" : "Home"} exact />
+          <NavIcon to="/listings" icon={LayoutGrid} label={fr ? "Acheter" : "Buy"} search={{ type: "buy" }} />
+          <NavIcon to="/listings" icon={Circle} label={fr ? "Louer" : "Rent"} search={{ type: "rent" }} />
+          <NavIcon to="/listings" icon={Globe2} label={fr ? "Afrique" : "Africa"} search={{ region: "africa" }} />
+          <NavIcon to="/contractors" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
           <NavIcon to="/agents" icon={Building2} label={fr ? "Agents" : "Agents"} />
-          <NavIcon to="/agents" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
+          <NavIcon to="/brokers" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
         </nav>
 
         <div className="flex items-center gap-1 shrink-0">

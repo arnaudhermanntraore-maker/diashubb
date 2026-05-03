@@ -13,6 +13,8 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContractorsRouteImport } from './routes/contractors'
+import { Route as BrokersRouteImport } from './routes/brokers'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -40,6 +42,16 @@ const DemoLoginRoute = DemoLoginRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorsRoute = ContractorsRouteImport.update({
+  id: '/contractors',
+  path: '/contractors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrokersRoute = BrokersRouteImport.update({
+  id: '/brokers',
+  path: '/brokers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -88,6 +100,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/brokers': typeof BrokersRoute
+  '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/brokers': typeof BrokersRoute
+  '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
@@ -117,6 +133,8 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/brokers': typeof BrokersRoute
+  '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/listings': typeof ListingsRouteWithChildren
@@ -133,6 +151,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agents'
     | '/auth'
+    | '/brokers'
+    | '/contractors'
     | '/dashboard'
     | '/demo-login'
     | '/listings'
@@ -147,6 +167,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agents'
     | '/auth'
+    | '/brokers'
+    | '/contractors'
     | '/dashboard'
     | '/demo-login'
     | '/listings'
@@ -161,6 +183,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agents'
     | '/auth'
+    | '/brokers'
+    | '/contractors'
     | '/dashboard'
     | '/demo-login'
     | '/listings'
@@ -176,6 +200,8 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
+  BrokersRoute: typeof BrokersRoute
+  ContractorsRoute: typeof ContractorsRoute
   DashboardRoute: typeof DashboardRoute
   DemoLoginRoute: typeof DemoLoginRoute
   ListingsRoute: typeof ListingsRouteWithChildren
@@ -213,6 +239,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractors': {
+      id: '/contractors'
+      path: '/contractors'
+      fullPath: '/contractors'
+      preLoaderRoute: typeof ContractorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brokers': {
+      id: '/brokers'
+      path: '/brokers'
+      fullPath: '/brokers'
+      preLoaderRoute: typeof BrokersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -291,6 +331,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
+  BrokersRoute: BrokersRoute,
+  ContractorsRoute: ContractorsRoute,
   DashboardRoute: DashboardRoute,
   DemoLoginRoute: DemoLoginRoute,
   ListingsRoute: ListingsRouteWithChildren,
