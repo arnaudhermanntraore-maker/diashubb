@@ -56,7 +56,7 @@ export function Nav() {
           <NavIcon to="/listings" icon={Circle} label={fr ? "Louer" : "Rent"} search={{ type: "rent" }} />
           <NavIcon to="/listings" icon={Globe2} label={fr ? "Afrique" : "Africa"} search={{ region: "africa" }} />
           <NavIcon to="/contractors" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
-          <NavIcon to="/agents" icon={Building2} label={fr ? "Agents" : "Agents"} />
+          <NavIcon to="/agents" icon={Building2} label={fr ? "Agences" : "Agencies"} />
           <NavIcon to="/brokers" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
         </nav>
 
