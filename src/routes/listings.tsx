@@ -7,7 +7,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard, type Property } from "@/components/PropertyCard";
 import { MapView } from "@/components/MapView";
 
+type ListingsSearch = {
+  q?: string;
+  maxPrice?: number;
+  type?: string;
+  region?: "usa" | "africa";
+  tab?: string;
+};
+
+const AFRICA_COUNTRIES = new Set(["CI", "SN", "GH", "MA", "NG", "KE", "CM", "BJ", "TG", "ML", "BF", "RW", "ZA", "ET", "TN", "DZ", "EG", "UG"]);
+
 export const Route = createFileRoute("/listings")({
+  validateSearch: (s: Record<string, unknown>): ListingsSearch => ({
+    q: typeof s.q === "string" ? s.q : undefined,
+    maxPrice: s.maxPrice != null && !isNaN(Number(s.maxPrice)) ? Number(s.maxPrice) : undefined,
+    type: typeof s.type === "string" ? s.type : undefined,
+    region: s.region === "usa" || s.region === "africa" ? s.region : undefined,
+    tab: typeof s.tab === "string" ? s.tab : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Browse properties — TerraFrique" },
