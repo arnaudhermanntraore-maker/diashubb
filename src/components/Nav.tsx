@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
 import { useEffect, useState } from "react";
+import { AuthWall } from "@/components/AuthWall";
 
 const NavIcon = ({ to, icon: Icon, label, search, exact }: { to: string; icon: typeof Home; label: string; search?: Record<string, string>; exact?: boolean }) => (
   <Link
