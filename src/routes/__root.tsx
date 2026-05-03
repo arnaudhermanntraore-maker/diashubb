@@ -3,6 +3,7 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Nav, FloatingAddListing, SecurityBanner } from "@/components/Nav";
 import { Chatbot } from "@/components/Chatbot";
+import { Toaster } from "@/components/ui/sonner";
 import "@/lib/i18n";
 
 function NotFoundComponent() {
@@ -40,6 +41,7 @@ export const Route = createRootRoute({
       <main className="min-h-[calc(100vh-8rem)]"><Outlet /></main>
       <FloatingAddListing />
       <Chatbot />
+      <Toaster />
       <footer className="border-t border-border mt-16 py-8 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} TerraFrique Global · Bi-continental real estate
       </footer>
