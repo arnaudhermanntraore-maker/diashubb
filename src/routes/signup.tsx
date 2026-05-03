@@ -426,7 +426,7 @@ function SignupPage() {
                 {seconds > 0 ? (
                   <span className="text-muted-foreground">{T("Code expires in ", "Le code expire dans ")}<b style={{ color: "#185FA5" }}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</b></span>
                 ) : (
-                  <span style={{ color: "#E24B4A" }}>{T("Code expired. ", "Code expiré. ")}<button onClick={() => { setSeconds(300); setOtpAttempts(3); const c = String(Math.floor(100000 + Math.random() * 900000)); setDemoCode(c); toast.success(T(`New code: ${c}`, `Nouveau code : ${c}`)); }} className="text-tf-blue underline">{T("Resend code", "Renvoyer le code")}</button></span>
+                  <span style={{ color: "#E24B4A" }}>{T("Code expired. ", "Code expiré. ")}<button onClick={() => { sendPhoneOtp(); }} className="text-tf-blue underline">{T("Resend code", "Renvoyer le code")}</button></span>
                 )}
               </div>
 
