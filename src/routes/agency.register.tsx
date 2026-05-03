@@ -301,12 +301,12 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function Field({ label, error, htmlFor, children }: { label: string; error?: string; htmlFor?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-medium text-foreground/80">{label}</label>
+      <label htmlFor={htmlFor} className="text-xs font-medium text-foreground/80">{label}</label>
       {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p id={htmlFor ? `${htmlFor}-error` : undefined} className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
