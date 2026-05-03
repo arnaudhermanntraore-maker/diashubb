@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
 import { useEffect, useState } from "react";
+import { AuthWall } from "@/components/AuthWall";
 
 const NavIcon = ({ to, icon: Icon, label, search, exact }: { to: string; icon: typeof Home; label: string; search?: Record<string, string>; exact?: boolean }) => (
   <Link
@@ -94,14 +95,20 @@ export function Nav() {
 export function FloatingAddListing() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [wallOpen, setWallOpen] = useState(false);
   return (
-    <Link
-      to={user ? "/listings/new" : "/auth"}
-      className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2 text-white rounded-full px-5 py-3 font-semibold text-sm hover:scale-105 transition-transform"
-      style={{ background: "var(--tf-green)", boxShadow: "0 4px 16px rgba(29,158,117,0.35)" }}
-    >
-      <Plus size={18} /> {t("addListing")}
-    </Link>
+    <>
+      <button
+        type="button"
+        onClick={() => { if (user) navigate({ to: "/listings/new" }); else setWallOpen(true); }}
+        className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2 text-white rounded-full px-5 py-3 font-semibold text-sm hover:scale-105 transition-transform"
+        style={{ background: "var(--tf-green)", boxShadow: "0 4px 16px rgba(29,158,117,0.35)" }}
+      >
+        <Plus size={18} /> {t("addListing")}
+      </button>
+      <AuthWall open={wallOpen} onOpenChange={setWallOpen} titleKey="publish" />
+    </>
   );
 }
 
