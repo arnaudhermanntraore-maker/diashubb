@@ -194,21 +194,21 @@ function SignupPage() {
       <section className="flex-1 overflow-y-auto" style={{ padding: "20px 24px" }}>
         {/* Progress */}
         <div className="flex items-center" style={{ marginBottom: 20, maxWidth: 520 }}>
-          {[1, 2, 3, 4].map((n, idx) => {
+          {[1, 2, 3].map((n, idx) => {
             const done = step > n || step === 5;
             const active = step === n;
             const bg = done ? "#1D9E75" : active ? "#185FA5" : "#F3F4F6";
             const color = done || active ? "white" : "#9CA3AF";
-            const label = [T("Profile", "Profil"), T("Your info", "Infos"), T("Password", "Mot de passe"), T("Verify", "Vérif.")][idx];
+            const label = [T("Profile", "Profil"), T("Your info", "Infos"), T("Password", "Mot de passe")][idx];
             return (
-              <div key={n} className="flex items-center" style={{ flex: idx < 3 ? 1 : "none" }}>
+              <div key={n} className="flex items-center" style={{ flex: idx < 2 ? 1 : "none" }}>
                 <div className="flex flex-col items-center">
                   <div style={{ width: 30, height: 30, borderRadius: "50%", background: bg, color, border: !done && !active ? "0.5px solid #E5E7EB" : "none" }} className="flex items-center justify-center text-xs font-medium">
                     {done ? <PathCheck stroke="white" size={14} /> : n}
                   </div>
                   <div style={{ fontSize: 9, marginTop: 4, color: done || active ? "#185FA5" : "#9CA3AF", fontWeight: done || active ? 700 : 400 }}>{label}</div>
                 </div>
-                {idx < 3 && <div style={{ flex: 1, height: 1, background: done ? "#1D9E75" : "#E5E7EB", margin: "0 6px", marginBottom: 14, transition: "background 0.3s" }} />}
+                {idx < 2 && <div style={{ flex: 1, height: 1, background: done ? "#1D9E75" : "#E5E7EB", margin: "0 6px", marginBottom: 14, transition: "background 0.3s" }} />}
               </div>
             );
           })}
