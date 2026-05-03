@@ -355,54 +355,7 @@ function SignupPage() {
             </>
           )}
 
-          {step === 4 && (
-            <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 4 of 4 · Almost there!", "Étape 4 sur 4 · Presque terminé !")}</div>
-              <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Verify your phone", "Vérifiez votre téléphone")}</h1>
-              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>
-                {T("We sent a 6-digit code to ", "Nous avons envoyé un code à 6 chiffres au ")}
-                <span className="font-bold" style={{ color: "#185FA5" }}>{country.dial} {info.phone}</span>
-              </p>
-              
 
-              <div className="flex justify-center gap-2 my-4">
-                {otp.map((d, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { otpRefs.current[i] = el; }}
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={d}
-                    onPaste={(e) => {
-                      const txt = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-                      if (txt.length === 6) { e.preventDefault(); setOtp(txt.split("")); otpRefs.current[5]?.focus(); }
-                    }}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, "");
-                      const next = [...otp]; next[i] = v.slice(-1); setOtp(next);
-                      if (v && i < 5) otpRefs.current[i + 1]?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
-                    }}
-                    style={{ width: 44, height: 52, borderRadius: 8, fontSize: 22, fontWeight: 500, textAlign: "center", border: d ? "2px solid #1D9E75" : "0.5px solid #E5E7EB", background: d ? "#E1F5EE" : "white", color: d ? "#085041" : "#111827" }}
-                  />
-                ))}
-              </div>
-
-              <div className="text-center text-xs">
-                {seconds > 0 ? (
-                  <span className="text-muted-foreground">{T("Code expires in ", "Le code expire dans ")}<b style={{ color: "#185FA5" }}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</b></span>
-                ) : (
-                  <span style={{ color: "#E24B4A" }}>{T("Code expired. ", "Code expiré. ")}<button onClick={() => { sendPhoneOtp(); }} className="text-tf-blue underline">{T("Resend code", "Renvoyer le code")}</button></span>
-                )}
-              </div>
-
-              <button disabled={otp.some((d) => !d) || busy} onClick={verifyOtp} style={{ width: "100%", background: otp.some((d) => !d) ? "#E5E7EB" : "#1D9E75", color: otp.some((d) => !d) ? "#9CA3AF" : "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500, marginTop: 16 }}>
-                {busy ? T("Verifying…", "Vérification…") : T("Verify & activate account →", "Vérifier & activer mon compte →")}
-              </button>
-            </>
-          )}
 
           {step === 5 && (
             <div className="text-center pt-4">
