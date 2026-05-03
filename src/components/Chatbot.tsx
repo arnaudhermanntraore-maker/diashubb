@@ -52,13 +52,13 @@ export function Chatbot() {
         <div className="fixed bottom-44 right-6 z-30 w-[340px] h-[500px] bg-card border border-border rounded-2xl shadow-elegant flex flex-col overflow-hidden">
           <div className="text-white px-4 py-3 flex items-center justify-between" style={{ background: "var(--tf-navy)" }}>
             <div className="flex items-center gap-2">
-              <span className="relative flex w-2.5 h-2.5">
-                <span className="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping" />
-                <span className="relative w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse-dot" />
-              </span>
+              <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white/10 ring-2 ring-white/30">
+                <img src={terraMascot} alt="Terra" width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-[var(--tf-navy)]" />
+              </div>
               <div>
-                <div className="font-display font-bold text-sm">TerraFrique AI</div>
-                <div className="text-[10px] opacity-80">Powered by Claude</div>
+                <div className="font-display font-bold text-sm">Terra · TerraFrique AI</div>
+                <div className="text-[10px] opacity-80">{i18n.language === "fr" ? "En ligne · Powered by Claude" : "Online · Powered by Claude"}</div>
               </div>
             </div>
             <button onClick={() => setOpen(false)} aria-label="Close"><X size={20} /></button>
