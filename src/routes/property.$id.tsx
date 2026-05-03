@@ -90,7 +90,7 @@ function PropertyDetail() {
         </div>
         <aside className="md:col-span-1 space-y-3">
           <div className="bg-card border border-border rounded-2xl p-5 shadow-soft">
-            <div className="text-3xl font-display font-bold text-primary">${Number(p.price_usd).toLocaleString()}</div>
+            <div className="text-3xl font-display font-bold text-primary"><PriceDisplay priceUsd={Number(p.price_usd)} country={p.country} size="lg" /></div>
             <div className="mt-3 flex flex-wrap gap-2">
               {p.tf_verified && <span className="inline-flex items-center gap-1 bg-success/15 text-success text-xs px-2 py-1 rounded-full font-medium"><ShieldCheck size={12} />{t("property.verified")}</span>}
               {p.ai_score != null && <span className="inline-flex items-center gap-1 bg-accent/20 text-accent-foreground text-xs px-2 py-1 rounded-full font-medium"><Sparkles size={12} />{t("property.aiScore")} {p.ai_score}</span>}
