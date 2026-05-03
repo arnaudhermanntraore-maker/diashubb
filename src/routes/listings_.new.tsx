@@ -139,16 +139,7 @@ function NewListing() {
   if (loading) return <div className="p-10 text-center text-muted-foreground">…</div>;
 
   if (!canPublish) {
-    return (
-      <div className="container mx-auto px-4 py-16 max-w-lg text-center">
-        <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style={{ background: "color-mix(in oklab, var(--tf-amber) 15%, transparent)" }}>
-          <Home style={{ color: "var(--tf-amber)" }} />
-        </div>
-        <h1 className="font-display text-2xl font-bold">{fr ? "Devenez agent pour publier" : "Become an agent to publish"}</h1>
-        <p className="mt-2 text-muted-foreground">{fr ? "Seuls les comptes agents certifiés peuvent publier des biens sur TerraFrique." : "Only certified agents can publish listings on TerraFrique."}</p>
-        <Link to="/dashboard" className="mt-6 inline-block px-6 py-2.5 rounded-full text-white" style={{ background: "var(--tf-blue)" }}>{fr ? "Demander le statut agent" : "Request agent status"}</Link>
-      </div>
-    );
+    return <BecomeAgentGate fr={fr} userId={user?.id} />;
   }
 
   if (done) {
