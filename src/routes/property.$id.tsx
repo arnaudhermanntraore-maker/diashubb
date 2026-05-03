@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { createDepositCheckout } from "@/server/payments.functions";
 import { MapView } from "@/components/MapView";
+import { BoostButton } from "@/components/BoostModal";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
