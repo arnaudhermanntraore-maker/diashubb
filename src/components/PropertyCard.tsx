@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, Sparkles, MapPin, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PriceDisplay } from "@/components/PriceDisplay";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export interface Property {
   id: string;
@@ -43,6 +44,7 @@ export function PropertyCard({ p }: { p: Property }) {
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
         )}
+        <div className="absolute top-3 right-3 z-10"><FavoriteButton propertyId={p.id} /></div>
         {p.tf_verified && (
           <div className="absolute top-3 left-3 inline-flex items-center gap-1 text-white text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "var(--tf-green)" }}>
             <ShieldCheck size={12} /> {t("property.verified")}

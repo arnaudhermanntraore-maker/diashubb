@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X, User as UserIcon } from "lucide-react";
+import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X, User as UserIcon, Heart, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
@@ -58,6 +58,8 @@ export function Nav() {
           <NavIcon to="/contractors" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
           <NavIcon to="/agents" icon={Building2} label={fr ? "Agences" : "Agencies"} />
           <NavIcon to="/brokers" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
+          {user && <NavIcon to="/favorites" icon={Heart} label={fr ? "Favoris" : "Saved"} />}
+          {user && <NavIcon to="/alerts" icon={Bell} label={fr ? "Alertes" : "Alerts"} />}
         </nav>
 
         <div className="flex items-center gap-1 shrink-0">
