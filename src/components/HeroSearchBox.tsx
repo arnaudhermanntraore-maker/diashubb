@@ -9,6 +9,18 @@ const TF_AMBER = "#EF9F27";
 const TF_PURPLE = "#534AB7";
 
 type TabId = "buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate";
+type ListingType = "land" | "house" | "apartment" | "commercial" | "farm";
+const ALLOWED_LISTING_TYPES: ReadonlySet<ListingType> = new Set(["land", "house", "apartment", "commercial", "farm"]);
+const asListingType = (v: string): ListingType | undefined =>
+  ALLOWED_LISTING_TYPES.has(v as ListingType) ? (v as ListingType) : undefined;
+const asPositiveInt = (v: string): number | undefined => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : undefined;
+};
+const asCleanText = (v: string, max = 80): string | undefined => {
+  const t = v.replace(/\s+/g, " ").trim().slice(0, max);
+  return t || undefined;
+};
 
 const AFRICA_COUNTRIES: { code: string; flag: string; name_en: string; name_fr: string }[] = [
   { code: "", flag: "🌍", name_en: "All Africa", name_fr: "Toute l'Afrique" },
@@ -90,41 +102,52 @@ export function HeroSearchBox() {
 
   const handleSearch = () => {
     if (tab === "buy_us") {
+      const q = asCleanText(buyLocation);
+      const maxPrice = asPositiveInt(buyPrice);
+      const type = asListingType(buyType);
       navigate({
         to: "/listings",
         search: {
-          ...(buyLocation ? { q: buyLocation } : {}),
-          ...(buyPrice ? { maxPrice: Number(buyPrice) } : {}),
-          ...(buyType ? { type: buyType } : {}),
+          ...(q ? { q } : {}),
+          ...(maxPrice ? { maxPrice } : {}),
+          ...(type ? { type } : {}),
           region: "usa" as const,
         },
       });
     } else if (tab === "rent_us") {
+      const q = asCleanText(rentLocation);
+      const maxPrice = asPositiveInt(rentPrice);
+      const type = asListingType(rentType);
       navigate({
         to: "/listings",
         search: {
-          ...(rentLocation ? { q: rentLocation } : {}),
-          ...(rentPrice ? { maxPrice: Number(rentPrice) } : {}),
-          ...(rentType ? { type: rentType } : {}),
+          ...(q ? { q } : {}),
+          ...(maxPrice ? { maxPrice } : {}),
+          ...(type ? { type } : {}),
           region: "usa" as const,
         },
       });
     } else if (tab === "invest_af") {
+      const q = asCleanText(afCountry, 40);
+      const maxPrice = asPositiveInt(afBudget);
+      const type = asListingType(afType);
       navigate({
         to: "/listings",
         search: {
-          ...(afBudget ? { maxPrice: Number(afBudget) } : {}),
-          ...(afType ? { type: afType } : {}),
-          ...(afCountry ? { q: afCountry } : {}),
+          ...(maxPrice ? { maxPrice } : {}),
+          ...(type ? { type } : {}),
+          ...(q ? { q } : {}),
           region: "africa" as const,
         },
       });
     } else if (tab === "contractor") {
+      const tradeClean = asCleanText(trade, 40);
+      const cityClean = asCleanText(ctrCity, 60);
       navigate({
         to: "/contractors",
         search: {
-          ...(trade ? { trade } : {}),
-          ...(ctrCity ? { city: ctrCity } : {}),
+          ...(tradeClean ? { trade: tradeClean } : {}),
+          ...(cityClean ? { city: cityClean } : {}),
         } as never,
       });
     }
