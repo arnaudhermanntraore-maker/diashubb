@@ -259,32 +259,104 @@ export type Database = {
         }
         Relationships: []
       }
+      disputes: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          opened_by: string
+          reason: string
+          resolution: string | null
+          status: string
+          transaction_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          opened_by: string
+          reason: string
+          resolution?: string | null
+          status?: string
+          transaction_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          opened_by?: string
+          reason?: string
+          resolution?: string | null
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       feature_flags: {
         Row: {
+          category: string | null
           description: string | null
+          description_en: string | null
+          description_fr: string | null
           enabled: boolean
           id: string
           key: string
+          label_en: string | null
+          label_fr: string | null
           target_countries: string[] | null
           target_roles: Database["public"]["Enums"]["app_role"][] | null
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          category?: string | null
           description?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           enabled?: boolean
           id?: string
           key: string
+          label_en?: string | null
+          label_fr?: string | null
           target_countries?: string[] | null
           target_roles?: Database["public"]["Enums"]["app_role"][] | null
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          category?: string | null
           description?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           enabled?: boolean
           id?: string
           key?: string
+          label_en?: string | null
+          label_fr?: string | null
           target_countries?: string[] | null
           target_roles?: Database["public"]["Enums"]["app_role"][] | null
           updated_at?: string

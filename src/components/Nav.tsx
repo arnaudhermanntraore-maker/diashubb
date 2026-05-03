@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X, User as UserIcon } from "lucide-react";
+import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X, User as UserIcon, Heart, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
@@ -25,10 +25,11 @@ const Flag = ({ lang }: { lang: "fr" | "en" }) => lang === "fr" ? (
 );
 
 export function Nav() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, roles } = useAuth();
   const navigate = useNavigate();
   const [lang, setLang] = useState<"fr" | "en">((i18n.language as "fr" | "en") || "fr");
   const fr = lang === "fr";
+  const isSuper = roles.includes("super_admin");
 
   const toggleLang = () => {
     const next = lang === "fr" ? "en" : "fr";
@@ -58,6 +59,8 @@ export function Nav() {
           <NavIcon to="/contractors" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
           <NavIcon to="/agents" icon={Building2} label={fr ? "Agences" : "Agencies"} />
           <NavIcon to="/brokers" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
+          {user && <NavIcon to="/favorites" icon={Heart} label={fr ? "Favoris" : "Saved"} />}
+          {user && <NavIcon to="/alerts" icon={Bell} label={fr ? "Alertes" : "Alerts"} />}
         </nav>
 
         <div className="flex items-center gap-1 shrink-0">
@@ -78,6 +81,7 @@ export function Nav() {
                 >
                   {((user.user_metadata?.full_name as string) || user.email || "?").trim().charAt(0).toUpperCase()}
                 </span>
+                {isSuper && <span className="text-[8px] font-bold text-white px-1 rounded" style={{ background: "var(--tf-amber)" }} title="Super Admin">SA</span>}
                 <span className="hidden md:flex flex-col leading-none">
                   <span className="text-[10px] font-semibold text-foreground truncate max-w-[120px]">
                     {(user.user_metadata?.full_name as string) || user.email}

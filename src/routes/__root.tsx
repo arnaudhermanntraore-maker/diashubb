@@ -2,8 +2,12 @@ import { createRootRoute, Outlet, HeadContent, Scripts, Link } from "@tanstack/r
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/useAuth";
+import { FlagsProvider, useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { Nav, FloatingAddListing, SecurityBanner } from "@/components/Nav";
 import { Chatbot } from "@/components/Chatbot";
+
+function GatedChatbot() { return useFeatureFlag("ai_chatbot") ? <Chatbot /> : null; }
+function GatedSecurityBanner() { return useFeatureFlag("security_banner") ? <SecurityBanner /> : null; }
 import { Toaster } from "@/components/ui/sonner";
 import { isDatabaseEmpty, seedDemoData } from "@/server/seed.functions";
 import "@/lib/i18n";
@@ -50,13 +54,14 @@ export const Route = createRootRoute({
   ),
   component: () => (
     <AuthProvider>
-      <DemoSeeder />
-      <SecurityBanner />
-      <Nav />
-      <main className="min-h-[calc(100vh-8rem)]"><Outlet /></main>
-      <FloatingAddListing />
-      <Chatbot />
-      <Toaster />
+      <FlagsProvider>
+        <DemoSeeder />
+        <GatedSecurityBanner />
+        <Nav />
+        <main className="min-h-[calc(100vh-8rem)]"><Outlet /></main>
+        <FloatingAddListing />
+        <GatedChatbot />
+        <Toaster />
       <footer className="border-t border-border py-6 bg-white">
         <div className="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -72,6 +77,7 @@ export const Route = createRootRoute({
           </div>
         </div>
       </footer>
+      </FlagsProvider>
     </AuthProvider>
   ),
   notFoundComponent: NotFoundComponent,
