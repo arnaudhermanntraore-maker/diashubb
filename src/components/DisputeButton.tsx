@@ -31,7 +31,7 @@ export function DisputeButton({ transactionId }: { transactionId: string }) {
     setBusy(false);
     if (error) toast.error(error.message);
     else {
-      await supabase.from("transactions").update({ status: "disputed" }).eq("id", transactionId);
+      await supabase.from("transactions").update({ status: "pending" }).eq("id", transactionId);
       toast.success(fr ? "Litige ouvert" : "Dispute opened");
       setOpen(false); setReason(""); setDesc("");
     }

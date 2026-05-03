@@ -14,11 +14,14 @@ import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
+import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContractorsRouteImport } from './routes/contractors'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as BrokersRouteImport } from './routes/brokers'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -26,6 +29,7 @@ import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
+import { Route as AdminFlagsRouteImport } from './routes/admin.flags'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estimate'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
@@ -55,6 +59,11 @@ const ListingsRoute = ListingsRouteImport.update({
   path: '/listings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoLoginRoute = DemoLoginRouteImport.update({
   id: '/demo-login',
   path: '/demo-login',
@@ -70,6 +79,11 @@ const ContractorsRoute = ContractorsRouteImport.update({
   path: '/contractors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BrokersRoute = BrokersRouteImport.update({
   id: '/brokers',
   path: '/brokers',
@@ -78,6 +92,11 @@ const BrokersRoute = BrokersRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlertsRoute = AlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentsRoute = AgentsRouteImport.update({
@@ -115,6 +134,11 @@ const AgencyDashboardRoute = AgencyDashboardRouteImport.update({
   path: '/agency/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFlagsRoute = AdminFlagsRouteImport.update({
+  id: '/flags',
+  path: '/flags',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
   path: '/api/public/stripe-webhook',
@@ -133,18 +157,22 @@ const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
+  '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
   '/brokers': typeof BrokersRoute
+  '/compare': typeof CompareRoute
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/flags': typeof AdminFlagsRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -155,18 +183,22 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
+  '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
   '/brokers': typeof BrokersRoute
+  '/compare': typeof CompareRoute
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/flags': typeof AdminFlagsRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings/new': typeof ListingsNewRoute
@@ -178,18 +210,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
+  '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
   '/brokers': typeof BrokersRoute
+  '/compare': typeof CompareRoute
   '/contractors': typeof ContractorsRoute
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
+  '/favorites': typeof FavoritesRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/admin/flags': typeof AdminFlagsRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/listings_/new': typeof ListingsNewRoute
@@ -204,16 +240,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agents'
+    | '/alerts'
     | '/auth'
     | '/brokers'
+    | '/compare'
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/favorites'
     | '/listings'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/flags'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -226,16 +266,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agents'
+    | '/alerts'
     | '/auth'
     | '/brokers'
+    | '/compare'
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/favorites'
     | '/listings'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/flags'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings/new'
@@ -248,16 +292,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agents'
+    | '/alerts'
     | '/auth'
     | '/brokers'
+    | '/compare'
     | '/contractors'
     | '/dashboard'
     | '/demo-login'
+    | '/favorites'
     | '/listings'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/admin/flags'
     | '/agency/dashboard'
     | '/agency/register'
     | '/listings_/new'
@@ -269,13 +317,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AgentsRoute: typeof AgentsRoute
+  AlertsRoute: typeof AlertsRoute
   AuthRoute: typeof AuthRoute
   BrokersRoute: typeof BrokersRoute
+  CompareRoute: typeof CompareRoute
   ContractorsRoute: typeof ContractorsRoute
   DashboardRoute: typeof DashboardRoute
   DemoLoginRoute: typeof DemoLoginRoute
+  FavoritesRoute: typeof FavoritesRoute
   ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
   ProfileRoute: typeof ProfileRoute
@@ -327,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo-login': {
       id: '/demo-login'
       path: '/demo-login'
@@ -348,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContractorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/brokers': {
       id: '/brokers'
       path: '/brokers'
@@ -360,6 +425,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alerts': {
+      id: '/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AlertsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agents': {
@@ -411,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgencyDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/flags': {
+      id: '/admin/flags'
+      path: '/flags'
+      fullPath: '/admin/flags'
+      preLoaderRoute: typeof AdminFlagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
       path: '/api/public/stripe-webhook'
@@ -435,15 +514,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminFlagsRoute: typeof AdminFlagsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminFlagsRoute: AdminFlagsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AgentsRoute: AgentsRoute,
+  AlertsRoute: AlertsRoute,
   AuthRoute: AuthRoute,
   BrokersRoute: BrokersRoute,
+  CompareRoute: CompareRoute,
   ContractorsRoute: ContractorsRoute,
   DashboardRoute: DashboardRoute,
   DemoLoginRoute: DemoLoginRoute,
+  FavoritesRoute: FavoritesRoute,
   ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
   ProfileRoute: ProfileRoute,
