@@ -164,6 +164,7 @@ function NewListing() {
     { n: 1, icon: Home, t: fr ? "Bien & localisation" : "Property & location" },
     { n: 2, icon: ImageIcon, t: fr ? "Photos & documents" : "Photos & documents" },
     { n: 3, icon: DollarSign, t: fr ? "Prix & publication" : "Price & publish" },
+    { n: 4, icon: Check, t: fr ? "Vérification" : "Review" },
   ];
 
   return (
@@ -198,7 +199,7 @@ function NewListing() {
       {/* Right panel */}
       <section className="flex-1 p-5 md:p-10 overflow-y-auto">
         <div className="max-w-2xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{fr ? `Étape ${step} sur 3` : `Step ${step} of 3`}</div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{fr ? `Étape ${step} sur 4` : `Step ${step} of 4`}</div>
           <h1 className="font-display text-2xl font-bold">{STEPS[step - 1].t}</h1>
 
           <div className="mt-6 bg-card border border-border rounded-2xl p-5 md:p-6 space-y-5">
@@ -221,15 +222,16 @@ function NewListing() {
               </>
             )}
             {step === 3 && <Step5 data={data} u={u} errors={allErrors} fr={fr} />}
+            {step === 4 && <ReviewStep data={data} fr={fr} goTo={setStep} />}
           </div>
 
           <div className="flex justify-between mt-6 gap-3">
             <button onClick={back} disabled={step === 1} className="px-5 py-2.5 rounded-full border border-border disabled:opacity-40 inline-flex items-center gap-1">
               <ChevronLeft size={16} /> {fr ? "Retour" : "Back"}
             </button>
-            {step < 3 ? (
+            {step < 4 ? (
               <button onClick={next} className="px-6 py-2.5 rounded-full text-white font-semibold inline-flex items-center gap-1" style={{ background: "var(--tf-blue)" }}>
-                {fr ? "Continuer" : "Continue"} <ChevronRight size={16} />
+                {step === 3 ? (fr ? "Vérifier" : "Review") : (fr ? "Continuer" : "Continue")} <ChevronRight size={16} />
               </button>
             ) : (
               <button
@@ -238,7 +240,7 @@ function NewListing() {
                 className="px-6 py-2.5 rounded-full text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ background: canSubmit ? "var(--tf-green)" : "#9ca3af" }}
               >
-                {busy ? (fr ? "Publication…" : "Publishing…") : (fr ? "Publier mon annonce" : "Publish my listing")}
+                {busy ? (fr ? "Publication…" : "Publishing…") : (fr ? "Confirmer & publier" : "Confirm & publish")}
               </button>
             )}
           </div>
