@@ -114,6 +114,22 @@ function SignupPage() {
     return null;
   };
 
+  const e164Phone = () => {
+    const digits = info.phone.replace(/\D/g, "");
+    return `${country.dial}${digits}`.replace(/\s+/g, "");
+  };
+
+  const sendPhoneOtp = async () => {
+    const phone = e164Phone();
+    const { error } = await supabase.auth.updateUser({ phone });
+    if (error) { toast.error(error.message); return false; }
+    toast.success(T(`Code sent to ${phone}`, `Code envoyé au ${phone}`));
+    setSeconds(300);
+    setOtpAttempts(3);
+    setOtp(["", "", "", "", "", ""]);
+    return true;
+  };
+
   const submitAccount = async () => {
     setShowSummary(true);
     const errs: string[] = [];
@@ -132,7 +148,7 @@ function SignupPage() {
           full_name: `${info.firstName} ${info.lastName}`.trim(),
           first_name: info.firstName,
           last_name: info.lastName,
-          phone: `${country.dial} ${info.phone}`,
+          phone: e164Phone(),
           country_code: info.country,
           city: info.city,
           lang_pref: country.lang,
@@ -141,24 +157,21 @@ function SignupPage() {
         },
       },
     });
+    if (error) { setBusy(false); toast.error(error.message); return; }
+    // Send real SMS OTP via Supabase phone auth (Twilio)
+    const ok = await sendPhoneOtp();
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    // Demo OTP — any code works, but show a 6-digit hint for testing
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    setDemoCode(code);
-    toast.success(T(`Demo code: ${code}`, `Code démo : ${code}`));
-    setSeconds(300);
-    setStep(4);
+    if (ok) setStep(4);
   };
 
   const verifyOtp = async () => {
     const code = otp.join("");
     if (code.length !== 6) return;
     setBusy(true);
-    // Demo verify — accept any 6-digit code
-    await new Promise((r) => setTimeout(r, 600));
+    const phone = e164Phone();
+    const { error } = await supabase.auth.verifyOtp({ phone, token: code, type: "phone_change" });
     setBusy(false);
-    if (code !== demoCode && demoCode) {
+    if (error) {
       const left = otpAttempts - 1;
       setOtpAttempts(left);
       setOtp(["", "", "", "", "", ""]);
