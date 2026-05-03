@@ -97,16 +97,61 @@ function Dashboard() {
         </div>
       </div>
 
+      {/* Active boosts */}
+      {activeBoosts.length > 0 && (
+        <>
+          <h2 className="text-xl font-display font-bold mt-10 mb-4 inline-flex items-center gap-2">
+            <Rocket size={20} className="text-tf-amber" /> Mes boosts actifs
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {activeBoosts.map((b) => {
+              const end = b.ends_at ? new Date(b.ends_at) : null;
+              const start = b.starts_at ? new Date(b.starts_at) : null;
+              const totalMs = end && start ? end.getTime() - start.getTime() : 1;
+              const remainingMs = end ? Math.max(0, end.getTime() - Date.now()) : 0;
+              const pct = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+              const daysLeft = Math.ceil(remainingMs / 86400000);
+              const barColor = pct > 50 ? "var(--tf-green)" : pct > 20 ? "var(--tf-amber)" : "#ef4444";
+              return (
+                <div key={b.id} className="bg-card border-2 border-tf-amber/40 rounded-2xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-semibold truncate">{titleFor(b.item_id)}</div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-tf-amber text-white font-bold uppercase">{b.plan}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: barColor }} />
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">{daysLeft} jour{daysLeft > 1 ? "s" : ""} restant{daysLeft > 1 ? "s" : ""}</div>
+                  <div className="grid grid-cols-3 gap-2 mt-3 text-center">
+                    <div className="bg-muted rounded-lg p-2"><div className="text-[10px] text-muted-foreground">Vues</div><div className="font-bold">{b.stats?.views ?? 0}</div></div>
+                    <div className="bg-muted rounded-lg p-2"><div className="text-[10px] text-muted-foreground">Saves</div><div className="font-bold">{b.stats?.saves ?? 0}</div></div>
+                    <div className="bg-muted rounded-lg p-2"><div className="text-[10px] text-muted-foreground">Contacts</div><div className="font-bold">{b.stats?.contacts ?? 0}</div></div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <BoostButton itemType="property" itemId={b.item_id} itemTitle={titleFor(b.item_id)} itemThumb={thumbFor(b.item_id)} className="flex-1 justify-center" />
+                    <button onClick={() => stopBoost(b.id)} className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border hover:bg-muted">Arrêter</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       <h2 className="text-xl font-display font-bold mt-10 mb-4">{t("dashboard.listings")}</h2>
       {myListings.length === 0 ? (
         <p className="text-muted-foreground text-sm">No listings yet. <Link to="/listings/new" className="text-primary font-medium">Add your first.</Link></p>
       ) : (
         <div className="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
           {myListings.map((l) => (
-            <Link key={l.id} to="/property/$id" params={{ id: l.id }} className="flex items-center justify-between p-4 hover:bg-muted">
-              <div><div className="font-medium">{l.title}</div><div className="text-xs text-muted-foreground">{l.country} · {l.status}</div></div>
-              <div className="text-primary font-display font-semibold">${Number(l.price_usd).toLocaleString()}</div>
-            </Link>
+            <div key={l.id} className="flex items-center justify-between p-4 hover:bg-muted gap-3">
+              <Link to="/property/$id" params={{ id: l.id }} className="flex-1 min-w-0">
+                <div className="font-medium truncate">{l.title}</div>
+                <div className="text-xs text-muted-foreground">{l.country} · {l.status}</div>
+              </Link>
+              <div className="text-primary font-display font-semibold whitespace-nowrap">${Number(l.price_usd).toLocaleString()}</div>
+              <BoostButton itemType="property" itemId={l.id} itemTitle={l.title} itemPrice={l.price_usd} itemThumb={l.cover_url} />
+            </div>
           ))}
         </div>
       )}
