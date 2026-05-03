@@ -27,7 +27,7 @@ function Admin() {
   const [audit, setAudit] = useState<AuditRow[]>([]);
   const [txs, setTxs] = useState<TxRow[]>([]);
   const [counts, setCounts] = useState({ users: 0, props: 0, txs: 0 });
-  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit">("overview");
+  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit" | "rates">("overview");
   const [newFlag, setNewFlag] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const release = useServerFn(releaseEscrow);
