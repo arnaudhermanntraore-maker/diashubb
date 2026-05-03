@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   fr: {
     translation: {
-      nav: { home: "Accueil", listings: "Annonces", agents: "Agents", dashboard: "Espace", messages: "Messages", admin: "Admin", login: "Connexion", logout: "Déconnexion", signup: "Inscription" },
+      nav: { home: "Accueil", listings: "Annonces", agents: "Agences", dashboard: "Espace", messages: "Messages", admin: "Admin", login: "Connexion", logout: "Déconnexion", signup: "Inscription" },
       hero: {
         kicker: "Plateforme bi-continentale",
         title: "L'immobilier africain, vérifié et sans frontières",
@@ -39,7 +39,7 @@ const resources = {
   },
   en: {
     translation: {
-      nav: { home: "Home", listings: "Listings", agents: "Agents", dashboard: "Dashboard", messages: "Messages", admin: "Admin", login: "Sign in", logout: "Sign out", signup: "Sign up" },
+      nav: { home: "Home", listings: "Listings", agents: "Agencies", dashboard: "Dashboard", messages: "Messages", admin: "Admin", login: "Sign in", logout: "Sign out", signup: "Sign up" },
       hero: {
         kicker: "Bi-continental platform",
         title: "African real estate, verified and borderless",
