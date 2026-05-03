@@ -1,10 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ShieldCheck, Sparkles, MapPin, MessageSquare, Compass } from "lucide-react";
+import { ShieldCheck, Sparkles, MapPin, MessageSquare, Compass, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { createDepositCheckout } from "@/server/payments.functions";
+import { MapView } from "@/components/MapView";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
@@ -15,6 +18,7 @@ interface FullProperty {
   country: string; city: string | null; price_usd: number;
   type: string; cover_url: string | null; tour_360_url: string | null;
   ai_score: number | null; tf_verified: boolean; agent_id: string;
+  lat: number | null; lng: number | null;
 }
 
 function PropertyDetail() {
@@ -24,6 +28,8 @@ function PropertyDetail() {
   const navigate = useNavigate();
   const [p, setP] = useState<FullProperty | null>(null);
   const [loading, setLoading] = useState(true);
+  const [paying, setPaying] = useState(false);
+  const startCheckout = useServerFn(createDepositCheckout);
 
   useEffect(() => {
     supabase.from("properties").select("*").eq("id", id).maybeSingle().then(({ data }) => {
@@ -38,6 +44,23 @@ function PropertyDetail() {
     const content = btoa(unescape(encodeURIComponent(`Hi, I'm interested in "${p.title}".`)));
     const { error } = await supabase.from("messages").insert({ sender_id: user.id, receiver_id: p.agent_id, property_id: p.id, content_encrypted: content });
     if (error) toast.error(error.message); else { toast.success("Message sent"); navigate({ to: "/messages" }); }
+  };
+
+  const payDeposit = async () => {
+    if (!user) { toast(t("auth.signIn") + " required"); navigate({ to: "/auth" }); return; }
+    if (!p) return;
+    setPaying(true);
+    try {
+      const deposit = Math.max(50, Math.round(Number(p.price_usd) * 0.05)); // 5% deposit
+      const origin = window.location.origin;
+      const r = await startCheckout({ data: {
+        propertyId: p.id, amountUsd: deposit,
+        successUrl: `${origin}/dashboard?deposit=ok`,
+        cancelUrl: `${origin}/property/${p.id}?deposit=cancel`,
+      }});
+      if (r.url) window.location.href = r.url;
+    } catch (e) { toast.error((e as Error).message); }
+    finally { setPaying(false); }
   };
 
   if (loading) return <div className="container mx-auto px-4 py-10 max-w-5xl"><div className="h-96 bg-muted rounded-2xl animate-pulse" /></div>;
