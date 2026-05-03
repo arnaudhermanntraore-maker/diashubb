@@ -219,7 +219,7 @@ function SignupPage() {
 
           {step === 1 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 1 of 4", "Étape 1 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 1 of 3", "Étape 1 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("What's your profile?", "Quel est votre profil ?")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("Choose the role that best fits your main activity. You can add more later.", "Choisissez votre rôle principal. Vous pourrez en ajouter d'autres ensuite.")}</p>
               <div className="grid grid-cols-2" style={{ gap: 7, marginBottom: 14 }}>
@@ -249,7 +249,7 @@ function SignupPage() {
 
           {step === 2 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 2 of 4", "Étape 2 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 2 of 3", "Étape 2 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Tell us about yourself", "Parlez-nous de vous")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>{T("Your location is detected automatically.", "Votre localisation est détectée automatiquement.")}</p>
 
@@ -296,7 +296,7 @@ function SignupPage() {
 
           {step === 3 && (
             <>
-              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 3 of 4", "Étape 3 sur 4")}</div>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 3 of 3", "Étape 3 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Create your password", "Créez votre mot de passe")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("At least 8 characters. Mix letters, numbers and symbols.", "Minimum 8 caractères. Mélangez lettres, chiffres et symboles.")}</p>
 
