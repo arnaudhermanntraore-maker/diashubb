@@ -10,6 +10,7 @@ import { createDepositCheckout } from "@/server/payments.functions";
 import { MapView } from "@/components/MapView";
 import { BoostButton } from "@/components/BoostModal";
 import { PriceDisplay } from "@/components/PriceDisplay";
+import { CertificateButton } from "@/components/CertificateButton";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
