@@ -119,6 +119,30 @@ function Admin() {
         </div>
       )}
 
+      {tab === "escrow" && (
+        <div className="mt-6 bg-card border border-border rounded-2xl divide-y divide-border">
+          {txs.length === 0 && <div className="p-6 text-center text-muted-foreground text-sm">No transactions.</div>}
+          {txs.map((tx) => {
+            const canRelease = tx.status === "escrowed";
+            const canRefund = ["escrowed", "pending"].includes(tx.status);
+            const color = tx.status === "released" ? "text-success" : tx.status === "refunded" ? "text-muted-foreground" : tx.status === "escrowed" ? "text-accent-foreground" : "text-foreground";
+            return (
+              <div key={tx.id} className="flex items-center justify-between gap-3 p-4 flex-wrap">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="font-display font-semibold">${Number(tx.amount_usd).toLocaleString()} <span className={`text-xs uppercase ml-2 ${color}`}>{tx.status}</span></div>
+                  <div className="text-xs text-muted-foreground font-mono mt-0.5">{tx.method} · buyer {tx.buyer_id.slice(0,8)} → seller {tx.seller_id.slice(0,8)}</div>
+                  <div className="text-[11px] text-muted-foreground">{new Date(tx.created_at).toLocaleString()}</div>
+                </div>
+                <div className="flex gap-2">
+                  <button disabled={!canRelease || busy === tx.id} onClick={() => handleRelease(tx.id)} className="bg-success text-success-foreground rounded-full px-4 py-1.5 text-xs font-medium disabled:opacity-40">Release</button>
+                  <button disabled={!canRefund || busy === tx.id} onClick={() => handleRefund(tx.id)} className="bg-muted rounded-full px-4 py-1.5 text-xs font-medium disabled:opacity-40">Refund</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {tab === "audit" && (
         <div className="mt-6 bg-card border border-border rounded-2xl divide-y divide-border max-h-[600px] overflow-y-auto">
           {audit.length === 0 && <div className="p-6 text-center text-muted-foreground text-sm">No audit entries.</div>}
