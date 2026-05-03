@@ -3,10 +3,19 @@ import { PartnerDirectory, type PartnerCard } from "@/components/PartnerDirector
 
 type ContractorsSearch = { trade?: string; city?: string };
 
+const normalizeFreeText = (v: unknown, max: number): string | undefined => {
+  if (typeof v !== "string") return undefined;
+  const cleaned = v.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim();
+  if (!cleaned) return undefined;
+  // allow letters (incl. accents), numbers, spaces, basic punctuation
+  if (!/^[\p{L}\p{N}\s'\-.,&()]+$/u.test(cleaned)) return undefined;
+  return cleaned.slice(0, max);
+};
+
 export const Route = createFileRoute("/contractors")({
   validateSearch: (s: Record<string, unknown>): ContractorsSearch => ({
-    trade: typeof s.trade === "string" ? s.trade : undefined,
-    city: typeof s.city === "string" ? s.city : undefined,
+    trade: normalizeFreeText(s.trade, 40),
+    city: normalizeFreeText(s.city, 60),
   }),
   head: () => ({
     meta: [

@@ -7,10 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard, type Property } from "@/components/PropertyCard";
 import { MapView } from "@/components/MapView";
 
+type PropertyType = "all" | "land" | "house" | "apartment" | "commercial" | "farm";
+
 type ListingsSearch = {
   q?: string;
   maxPrice?: number;
-  type?: string;
+  type?: PropertyType;
   region?: "usa" | "africa";
   tab?: string;
   agent?: string;
@@ -18,15 +20,46 @@ type ListingsSearch = {
 
 const AFRICA_COUNTRIES = new Set(["CI", "SN", "GH", "MA", "NG", "KE", "CM", "BJ", "TG", "ML", "BF", "RW", "ZA", "ET", "TN", "DZ", "EG", "UG"]);
 
+const ALLOWED_TYPES: ReadonlySet<PropertyType> = new Set(["all", "land", "house", "apartment", "commercial", "farm"]);
+const MAX_Q_LEN = 80;
+const MAX_PRICE_CAP = 1_000_000_000;
+
+const normalizeQ = (v: unknown): string | undefined => {
+  if (typeof v !== "string") return undefined;
+  // strip control chars, collapse whitespace, trim, cap length
+  const cleaned = v.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim();
+  if (!cleaned) return undefined;
+  return cleaned.slice(0, MAX_Q_LEN);
+};
+
+const normalizePrice = (v: unknown): number | undefined => {
+  if (v == null || v === "") return undefined;
+  const n = typeof v === "number" ? v : Number(v);
+  if (!Number.isFinite(n) || n <= 0) return undefined;
+  return Math.min(Math.floor(n), MAX_PRICE_CAP);
+};
+
+const normalizeAgent = (v: unknown): string | undefined => {
+  if (typeof v !== "string") return undefined;
+  const t = v.trim();
+  // accept UUID or short alnum slug only
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(t)) return undefined;
+  return t;
+};
+
 export const Route = createFileRoute("/listings")({
-  validateSearch: (s: Record<string, unknown>): ListingsSearch => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-    maxPrice: s.maxPrice != null && !isNaN(Number(s.maxPrice)) ? Number(s.maxPrice) : undefined,
-    type: typeof s.type === "string" ? s.type : undefined,
-    region: s.region === "usa" || s.region === "africa" ? s.region : undefined,
-    tab: typeof s.tab === "string" ? s.tab : undefined,
-    agent: typeof s.agent === "string" ? s.agent : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): ListingsSearch => {
+    const type = typeof s.type === "string" && ALLOWED_TYPES.has(s.type as PropertyType) ? (s.type as PropertyType) : undefined;
+    const tab = typeof s.tab === "string" ? s.tab.trim().slice(0, 32) || undefined : undefined;
+    return {
+      q: normalizeQ(s.q),
+      maxPrice: normalizePrice(s.maxPrice),
+      type,
+      region: s.region === "usa" || s.region === "africa" ? s.region : undefined,
+      tab,
+      agent: normalizeAgent(s.agent),
+    };
+  },
   head: () => ({
     meta: [
       { title: "Browse properties — TerraFrique" },
