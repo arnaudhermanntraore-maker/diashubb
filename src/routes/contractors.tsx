@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PartnerDirectory, type PartnerCard } from "@/components/PartnerDirectory";
 
+type ContractorsSearch = { trade?: string; city?: string };
+
 export const Route = createFileRoute("/contractors")({
+  validateSearch: (s: Record<string, unknown>): ContractorsSearch => ({
+    trade: typeof s.trade === "string" ? s.trade : undefined,
+    city: typeof s.city === "string" ? s.city : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Artisans & entrepreneurs certifiés — TerraFrique" },

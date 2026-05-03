@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowRight, ShieldCheck, Coins, Gift, DollarSign, Search, Eye, Star, FileCheck2, BellRing,
   Building2, Globe2, HardHat, BadgeCheck, Users, Plus, Home as HomeIcon, MapPin,
 } from "lucide-react";
+import { HeroSearchBox } from "@/components/HeroSearchBox";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,34 +33,6 @@ const TF_CORAL = "#E76F51";
 function Home() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
-  const [tab, setTab] = useState<"buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate">("buy_us");
-  const [searchQ, setSearchQ] = useState("");
-  const [searchPrice, setSearchPrice] = useState("");
-  const [searchType, setSearchType] = useState("");
-
-  const tabToFilters = (tabId: string) => {
-    if (tabId === "invest_af") return { region: "africa" as const };
-    if (tabId === "buy_us" || tabId === "rent_us") return { region: "usa" as const };
-    return {};
-  };
-  const searchParams = {
-    ...(searchQ ? { q: searchQ } : {}),
-    ...(searchPrice ? { maxPrice: Number(searchPrice) } : {}),
-    ...(searchType ? { type: searchType } : {}),
-    ...tabToFilters(tab),
-    tab,
-  };
-
-  const tabs = [
-    { id: "buy_us",     label: fr ? "Acheter US"      : "Buy in US",        color: TF_BLUE },
-    { id: "rent_us",    label: fr ? "Louer US"        : "Rent in US",       color: TF_BLUE },
-    { id: "invest_af",  label: fr ? "Investir Afrique": "Invest in Africa", color: TF_GREEN },
-    { id: "contractor", label: fr ? "Artisans"        : "Find contractor",  color: TF_BLUE },
-    { id: "estimate",   label: fr ? "Estimer"         : "Estimate value",   color: TF_BLUE },
-  ] as const;
-
-  const activeTab = tabs.find((x) => x.id === tab)!;
-
   return (
     <div>
       {/* HERO */}
@@ -160,53 +132,7 @@ function Home() {
       </section>
 
       {/* SEARCH BOX */}
-      <section className="bg-muted/40 border-b border-border">
-        <div className="container mx-auto px-4 py-10 max-w-6xl">
-          <div className="flex flex-wrap gap-2 mb-4">
-            {tabs.map((tb) => {
-              const active = tab === tb.id;
-              return (
-                <button
-                  key={tb.id}
-                  onClick={() => setTab(tb.id)}
-                  className="text-xs font-semibold px-4 py-2 rounded-full transition-colors border"
-                  style={active
-                    ? { background: tb.color, color: "#fff", borderColor: tb.color }
-                    : { background: "#fff", color: "var(--foreground)", borderColor: "var(--border)" }}
-                >
-                  {tb.label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="bg-white border border-border rounded-2xl p-3 grid grid-cols-1 md:grid-cols-12 gap-2 shadow-soft">
-            <input
-              value={searchQ}
-              onChange={(e) => setSearchQ(e.target.value)}
-              className="md:col-span-4 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none"
-              placeholder={fr ? "Ville ou code postal" : "City or ZIP code"}
-            />
-            <select value={searchPrice} onChange={(e) => setSearchPrice(e.target.value)} className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option value="">{fr ? "Fourchette de prix" : "Price range"}</option>
-              <option value="100000">$0 – $100k</option>
-              <option value="300000">$100k – $300k</option>
-              <option value="1000000">$300k – $1M</option>
-              <option value="100000000">$1M+</option>
-            </select>
-            <select value={searchType} onChange={(e) => setSearchType(e.target.value)} className="md:col-span-3 px-3 py-2.5 bg-muted rounded-xl text-sm outline-none">
-              <option value="">{fr ? "Type de bien" : "Property type"}</option>
-              <option value="house">{fr ? "Maison" : "House"}</option>
-              <option value="land">{fr ? "Terrain" : "Land"}</option>
-              <option value="apartment">{fr ? "Appartement" : "Apartment"}</option>
-              <option value="commercial">Commercial</option>
-            </select>
-            <Link to="/listings" search={searchParams} className="md:col-span-2 inline-flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm py-2.5 transition-colors" style={{ background: activeTab.color }}>
-              <Search size={16} /> {fr ? "Rechercher" : "Search"}
-            </Link>
-          </div>
-
-        </div>
-      </section>
+      <HeroSearchBox />
 
       {/* HOW IT WORKS */}
       <section id="how" className="bg-muted/30 border-b border-border">
