@@ -97,7 +97,7 @@ export function Nav() {
                 <LogIn size={16} />
                 <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Connexion" : "Log in"}</span>
               </Link>
-              <Link to="/auth" className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-md text-white" style={{ background: "var(--tf-blue)" }}>
+              <Link to="/signup" className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-md text-white" style={{ background: "var(--tf-blue)" }}>
                 <UserPlus size={16} />
                 <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Inscription" : "Sign up"}</span>
               </Link>
