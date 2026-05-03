@@ -9,38 +9,200 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as ListingsRouteImport } from './routes/listings'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AgentsRouteImport } from './routes/agents'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PropertyIdRouteImport } from './routes/property.$id'
+import { Route as ListingsNewRouteImport } from './routes/listings.new'
+import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListingsRoute = ListingsRouteImport.update({
+  id: '/listings',
+  path: '/listings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropertyIdRoute = PropertyIdRouteImport.update({
+  id: '/property/$id',
+  path: '/property/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListingsNewRoute = ListingsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => ListingsRoute,
+} as any)
+const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
+  id: '/api/public/chat',
+  path: '/api/public/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/agents': typeof AgentsRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/listings': typeof ListingsRouteWithChildren
+  '/messages': typeof MessagesRoute
+  '/listings/new': typeof ListingsNewRoute
+  '/property/$id': typeof PropertyIdRoute
+  '/api/public/chat': typeof ApiPublicChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/agents': typeof AgentsRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/listings': typeof ListingsRouteWithChildren
+  '/messages': typeof MessagesRoute
+  '/listings/new': typeof ListingsNewRoute
+  '/property/$id': typeof PropertyIdRoute
+  '/api/public/chat': typeof ApiPublicChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/agents': typeof AgentsRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/listings': typeof ListingsRouteWithChildren
+  '/messages': typeof MessagesRoute
+  '/listings/new': typeof ListingsNewRoute
+  '/property/$id': typeof PropertyIdRoute
+  '/api/public/chat': typeof ApiPublicChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/agents'
+    | '/auth'
+    | '/dashboard'
+    | '/listings'
+    | '/messages'
+    | '/listings/new'
+    | '/property/$id'
+    | '/api/public/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/agents'
+    | '/auth'
+    | '/dashboard'
+    | '/listings'
+    | '/messages'
+    | '/listings/new'
+    | '/property/$id'
+    | '/api/public/chat'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/agents'
+    | '/auth'
+    | '/dashboard'
+    | '/listings'
+    | '/messages'
+    | '/listings/new'
+    | '/property/$id'
+    | '/api/public/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AgentsRoute: typeof AgentsRoute
+  AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
+  ListingsRoute: typeof ListingsRouteWithChildren
+  MessagesRoute: typeof MessagesRoute
+  PropertyIdRoute: typeof PropertyIdRoute
+  ApiPublicChatRoute: typeof ApiPublicChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listings': {
+      id: '/listings'
+      path: '/listings'
+      fullPath: '/listings'
+      preLoaderRoute: typeof ListingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,21 +210,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/property/$id': {
+      id: '/property/$id'
+      path: '/property/$id'
+      fullPath: '/property/$id'
+      preLoaderRoute: typeof PropertyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listings/new': {
+      id: '/listings/new'
+      path: '/new'
+      fullPath: '/listings/new'
+      preLoaderRoute: typeof ListingsNewRouteImport
+      parentRoute: typeof ListingsRoute
+    }
+    '/api/public/chat': {
+      id: '/api/public/chat'
+      path: '/api/public/chat'
+      fullPath: '/api/public/chat'
+      preLoaderRoute: typeof ApiPublicChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface ListingsRouteChildren {
+  ListingsNewRoute: typeof ListingsNewRoute
+}
+
+const ListingsRouteChildren: ListingsRouteChildren = {
+  ListingsNewRoute: ListingsNewRoute,
+}
+
+const ListingsRouteWithChildren = ListingsRoute._addFileChildren(
+  ListingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AgentsRoute: AgentsRoute,
+  AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
+  ListingsRoute: ListingsRouteWithChildren,
+  MessagesRoute: MessagesRoute,
+  PropertyIdRoute: PropertyIdRoute,
+  ApiPublicChatRoute: ApiPublicChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
