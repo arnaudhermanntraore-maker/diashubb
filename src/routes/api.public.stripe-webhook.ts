@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/public/stripe-webhook")({
         const key = process.env.STRIPE_SECRET_KEY;
         const whSecret = process.env.STRIPE_WEBHOOK_SECRET;
         if (!key) return new Response("not configured", { status: 500 });
-        const stripe = new Stripe(key, { apiVersion: "2024-12-18.acacia" as Stripe.LatestApiVersion });
+        const stripe = new Stripe(key, { apiVersion: "2024-12-18.acacia" as never });
 
         const body = await request.text();
         let event: Stripe.Event;
