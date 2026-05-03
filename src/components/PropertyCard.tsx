@@ -12,6 +12,8 @@ export interface Property {
   cover_url?: string | null;
   ai_score?: number | null;
   tf_verified: boolean;
+  lat?: number | null;
+  lng?: number | null;
 }
 
 export function PropertyCard({ p }: { p: Property }) {
