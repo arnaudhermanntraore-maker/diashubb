@@ -85,6 +85,15 @@ function AgencyRegister() {
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
+  const countryOptions = (() => {
+    const dn = typeof Intl !== "undefined" && "DisplayNames" in Intl
+      ? new Intl.DisplayNames([fr ? "fr" : "en"], { type: "region" })
+      : null;
+    return ISO_COUNTRY_CODES
+      .map((code) => ({ code, name: (dn?.of(code) ?? code) as string }))
+      .sort((a, b) => a.name.localeCompare(b.name, fr ? "fr" : "en"));
+  })();
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
