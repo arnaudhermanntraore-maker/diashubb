@@ -29,6 +29,7 @@ function Listings() {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [type, setType] = useState<typeof TYPES[number]>("all");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [mapRegion, setMapRegion] = useState<"usa" | "africa">("usa");
 
   useEffect(() => {
     setLoading(true);
@@ -72,9 +73,15 @@ function Listings() {
       </div>
 
       <div className="mb-8">
+        <div className="flex items-center justify-end gap-2 mb-3">
+          <button onClick={() => setMapRegion("usa")} className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${mapRegion === "usa" ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}>🇺🇸 USA</button>
+          <button onClick={() => setMapRegion("africa")} className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${mapRegion === "africa" ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}>🌍 Africa</button>
+        </div>
         <MapView
           height="380px"
-          markers={filtered.filter((p) => p.lat != null && p.lng != null).map((p) => ({ id: p.id, lat: p.lat as number, lng: p.lng as number, title: p.title, price_usd: Number(p.price_usd) }))}
+          center={mapRegion === "usa" ? [-84.3880, 33.7490] : [10, 5]}
+          zoom={mapRegion === "usa" ? 4 : 3}
+          markers={filtered.filter((p) => p.lat != null && p.lng != null).map((p) => ({ id: p.id, lat: p.lat as number, lng: p.lng as number, title: p.title, price_usd: Number(p.price_usd), region: (p.country === "US" ? "usa" : "africa") as "usa" | "africa" }))}
           onMarkerClick={(id) => nav({ to: "/property/$id", params: { id } })}
         />
       </div>

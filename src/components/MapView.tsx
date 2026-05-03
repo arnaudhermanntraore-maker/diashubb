@@ -9,6 +9,7 @@ export interface MapMarker {
   lng: number;
   title?: string;
   price_usd?: number;
+  region?: "usa" | "africa";
 }
 
 interface Props {
@@ -17,9 +18,10 @@ interface Props {
   zoom?: number;
   height?: string;
   onMarkerClick?: (id: string) => void;
+  fitBoundsOnLoad?: boolean;
 }
 
-export function MapView({ markers = [], center = [10, 10], zoom = 2, height = "420px", onMarkerClick }: Props) {
+export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10, height = "420px", onMarkerClick, fitBoundsOnLoad = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -48,13 +50,21 @@ export function MapView({ markers = [], center = [10, 10], zoom = 2, height = "4
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map) return;
+    map.flyTo({ center, zoom, duration: 800 });
+  }, [center[0], center[1], zoom]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map || !markers.length) return;
     const pins: mapboxgl.Marker[] = [];
     const bounds = new mapboxgl.LngLatBounds();
     markers.forEach((m) => {
       if (typeof m.lat !== "number" || typeof m.lng !== "number") return;
       const el = document.createElement("button");
-      el.className = "rounded-full bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-1 shadow-lg border-2 border-background cursor-pointer hover:scale-110 transition-transform";
+      const color = m.region === "africa" ? "#16a34a" : "#2563eb";
+      el.style.backgroundColor = color;
+      el.className = "text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg border-2 border-background cursor-pointer hover:scale-110 transition-transform";
       el.textContent = m.price_usd ? `$${Math.round(m.price_usd / 1000)}k` : "•";
       if (onMarkerClick) el.addEventListener("click", () => onMarkerClick(m.id));
       const pin = new mapboxgl.Marker({ element: el }).setLngLat([m.lng, m.lat]).addTo(map);
@@ -62,8 +72,8 @@ export function MapView({ markers = [], center = [10, 10], zoom = 2, height = "4
       pins.push(pin);
       bounds.extend([m.lng, m.lat]);
     });
-    if (pins.length > 1) map.fitBounds(bounds, { padding: 60, maxZoom: 10, duration: 0 });
-    else if (pins.length === 1) map.flyTo({ center: [markers[0].lng, markers[0].lat], zoom: 11, duration: 0 });
+    if (fitBoundsOnLoad && pins.length > 1) map.fitBounds(bounds, { padding: 60, maxZoom: 10, duration: 0 });
+    else if (fitBoundsOnLoad && pins.length === 1) map.flyTo({ center: [markers[0].lng, markers[0].lat], zoom: 11, duration: 0 });
     return () => pins.forEach((p) => p.remove());
   }, [markers, onMarkerClick]);
 
