@@ -41,9 +41,6 @@ function SignupPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [checks, setChecks] = useState({ terms: false, fair: false, news: true });
   const [busy, setBusy] = useState(false);
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const [otpAttempts, setOtpAttempts] = useState(3);
-  const [seconds, setSeconds] = useState(300);
   
   const [geoText, setGeoText] = useState<string | null>(null);
   const [geoErr, setGeoErr] = useState(false);
