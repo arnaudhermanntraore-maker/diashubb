@@ -80,6 +80,11 @@ function PropertyDetail() {
           <h1 className="mt-6 text-3xl font-display font-bold">{p.title}</h1>
           <p className="text-sm text-muted-foreground inline-flex items-center gap-1 mt-1"><MapPin size={14} />{p.city ? `${p.city}, ` : ""}{p.country}</p>
           <p className="mt-6 text-foreground/85 leading-relaxed whitespace-pre-line">{p.description || "No description provided."}</p>
+          {p.lat != null && p.lng != null && (
+            <div className="mt-6">
+              <MapView height="320px" markers={[{ id: p.id, lat: p.lat, lng: p.lng, title: p.title, price_usd: Number(p.price_usd) }]} />
+            </div>
+          )}
         </div>
         <aside className="md:col-span-1 space-y-3">
           <div className="bg-card border border-border rounded-2xl p-5 shadow-soft">
@@ -92,6 +97,10 @@ function PropertyDetail() {
             <button onClick={contact} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-full py-3 font-medium hover:bg-primary/90 transition-colors">
               <MessageSquare size={16} /> {t("property.contact")}
             </button>
+            <button onClick={payDeposit} disabled={paying} className="mt-2 w-full inline-flex items-center justify-center gap-2 bg-success text-success-foreground rounded-full py-3 font-medium hover:opacity-90 transition disabled:opacity-50">
+              <Lock size={16} /> {paying ? "…" : `Pay 5% deposit ($${Math.max(50, Math.round(Number(p.price_usd) * 0.05)).toLocaleString()})`}
+            </button>
+            <p className="text-[11px] text-muted-foreground mt-2 text-center">Held in escrow · released by TerraFrique on title transfer</p>
           </div>
         </aside>
       </div>
