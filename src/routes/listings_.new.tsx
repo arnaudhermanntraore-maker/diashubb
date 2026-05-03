@@ -139,7 +139,7 @@ function NewListing() {
   if (loading) return <div className="p-10 text-center text-muted-foreground">…</div>;
 
   if (!canPublish) {
-    return <BecomeAgentGate fr={fr} userId={user?.id} />;
+    return <PublishEligibilityGate fr={fr} userId={user?.id} userEmail={user?.email ?? null} emailConfirmed={!!user?.email_confirmed_at} roles={roles} />;
   }
 
   if (done) {
@@ -566,41 +566,209 @@ function Step5({ data, u, errors, fr }: StepProps) {
   );
 }
 
-function BecomeAgentGate({ fr, userId }: { fr: boolean; userId?: string }) {
-  const [busy, setBusy] = useState(false);
-  const become = async () => {
+function PublishEligibilityGate({
+  fr, userId, userEmail, emailConfirmed, roles,
+}: { fr: boolean; userId?: string; userEmail: string | null; emailConfirmed: boolean; roles: string[] }) {
+  const [profile, setProfile] = useState<{ full_name: string | null; country: string | null; verified: boolean } | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [busyAgent, setBusyAgent] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [country, setCountry] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  useEffect(() => {
+    if (!userId) { setLoadingProfile(false); return; }
+    (async () => {
+      const { data } = await supabase.from("profiles").select("full_name, country, verified").eq("id", userId).maybeSingle();
+      if (data) {
+        setProfile(data);
+        setFullName(data.full_name ?? "");
+        setCountry(data.country ?? "");
+      }
+      setLoadingProfile(false);
+    })();
+  }, [userId]);
+
+  const isAgent = roles.includes("agent") || roles.includes("admin") || roles.includes("super_admin");
+  const hasName = !!profile?.full_name && profile.full_name.trim().length > 1;
+  const hasCountry = !!profile?.country && profile.country.trim().length > 0;
+
+  const becomeAgent = async () => {
     if (!userId) return;
-    setBusy(true);
+    setBusyAgent(true);
     const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: "agent" });
-    setBusy(false);
-    if (error && !error.message.includes("duplicate")) {
-      toast.error(error.message);
-      return;
+    setBusyAgent(false);
+    if (error && !error.message.toLowerCase().includes("duplicate")) {
+      toast.error(error.message); return;
     }
     toast.success(fr ? "Statut agent activé ✓" : "Agent status granted ✓");
     if (typeof window !== "undefined") window.location.reload();
   };
+
+  const saveProfile = async () => {
+    if (!userId) return;
+    setSavingProfile(true);
+    const { error } = await supabase.from("profiles").update({ full_name: fullName, country }).eq("id", userId);
+    setSavingProfile(false);
+    if (error) { toast.error(error.message); return; }
+    setProfile((p) => p ? { ...p, full_name: fullName, country } : { full_name: fullName, country, verified: false });
+    setEditingProfile(false);
+    toast.success(fr ? "Profil mis à jour ✓" : "Profile updated ✓");
+  };
+
+  if (loadingProfile) {
+    return <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">{fr ? "Vérification de votre éligibilité…" : "Checking your eligibility…"}</div>;
+  }
+
+  const requirements = [
+    {
+      key: "email",
+      ok: emailConfirmed,
+      label: fr ? "Adresse e-mail vérifiée" : "Verified email address",
+      reason: fr
+        ? "Nous devons confirmer votre adresse pour vous contacter au sujet de vos annonces."
+        : "We need to confirm your address to contact you about your listings.",
+    },
+    {
+      key: "name",
+      ok: hasName,
+      label: fr ? "Nom complet renseigné" : "Full name provided",
+      reason: fr
+        ? "Les acheteurs doivent voir un nom réel sur chaque annonce."
+        : "Buyers need to see a real name on every listing.",
+    },
+    {
+      key: "country",
+      ok: hasCountry,
+      label: fr ? "Pays de résidence renseigné" : "Country of residence provided",
+      reason: fr
+        ? "Le pays est utilisé pour la fiscalité et la juridiction de la transaction."
+        : "Country is used for tax and transaction jurisdiction.",
+    },
+    {
+      key: "agent",
+      ok: isAgent,
+      label: fr ? "Statut agent activé" : "Agent status active",
+      reason: fr
+        ? "Seuls les comptes agents peuvent publier (responsabilité légale et commission)."
+        : "Only agent accounts can publish (legal liability and commission).",
+    },
+  ];
+
+  const blockers = requirements.filter((r) => !r.ok);
+
   return (
-    <div className="container mx-auto px-4 py-16 max-w-lg text-center">
-      <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style={{ background: "color-mix(in oklab, var(--tf-amber) 15%, transparent)" }}>
-        <Home style={{ color: "var(--tf-amber)" }} />
+    <div className="container mx-auto px-4 py-10 max-w-2xl">
+      <div className="text-center mb-6">
+        <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "color-mix(in oklab, var(--tf-amber) 15%, transparent)" }}>
+          <Home style={{ color: "var(--tf-amber)" }} />
+        </div>
+        <h1 className="font-display text-2xl font-bold">
+          {fr ? "Encore quelques étapes avant de publier" : "A few steps before you can publish"}
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {fr
+            ? `${blockers.length} condition${blockers.length > 1 ? "s" : ""} restante${blockers.length > 1 ? "s" : ""} pour activer la publication d'annonces.`
+            : `${blockers.length} requirement${blockers.length > 1 ? "s" : ""} left to enable listing publication.`}
+        </p>
       </div>
-      <h1 className="font-display text-2xl font-bold">{fr ? "Devenez agent pour publier" : "Become an agent to publish"}</h1>
-      <p className="mt-2 text-muted-foreground">
-        {fr
-          ? "Seuls les comptes agents peuvent publier des biens. Activez gratuitement votre statut agent pour continuer."
-          : "Only agent accounts can publish listings. Activate your agent status for free to continue."}
-      </p>
-      <button
-        onClick={become}
-        disabled={busy || !userId}
-        className="mt-6 inline-block px-6 py-2.5 rounded-full text-white disabled:opacity-50"
-        style={{ background: "var(--tf-blue)" }}
-      >
-        {busy ? "…" : fr ? "Activer mon statut agent" : "Activate agent status"}
-      </button>
-      <div className="mt-3">
-        <Link to="/dashboard" className="text-sm text-muted-foreground underline">{fr ? "Retour au tableau de bord" : "Back to dashboard"}</Link>
+
+      <ul className="space-y-3">
+        {requirements.map((r) => (
+          <li key={r.key} className="bg-card border border-border rounded-2xl p-4">
+            <div className="flex items-start gap-3">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                style={{ background: r.ok ? "color-mix(in oklab, var(--tf-green) 15%, transparent)" : "color-mix(in oklab, var(--tf-amber) 15%, transparent)" }}
+              >
+                {r.ok ? <Check size={16} style={{ color: "var(--tf-green)" }} /> : <span className="text-[11px] font-bold" style={{ color: "var(--tf-amber)" }}>!</span>}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm">{r.label}</div>
+                {!r.ok && <div className="text-xs text-muted-foreground mt-0.5">{r.reason}</div>}
+
+                {r.key === "email" && !r.ok && (
+                  <div className="mt-3 flex flex-wrap gap-2 items-center">
+                    <span className="text-xs text-muted-foreground">{userEmail}</span>
+                    <button
+                      onClick={async () => {
+                        if (!userEmail) return;
+                        const { error } = await supabase.auth.resend({ type: "signup", email: userEmail });
+                        if (error) toast.error(error.message);
+                        else toast.success(fr ? "E-mail de vérification renvoyé" : "Verification email resent");
+                      }}
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+                      style={{ background: "var(--tf-blue)" }}
+                    >
+                      {fr ? "Renvoyer l'e-mail" : "Resend email"}
+                    </button>
+                  </div>
+                )}
+
+                {(r.key === "name" || r.key === "country") && !r.ok && (
+                  <div className="mt-3">
+                    {!editingProfile ? (
+                      <button
+                        onClick={() => setEditingProfile(true)}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+                        style={{ background: "var(--tf-blue)" }}
+                      >
+                        {fr ? "Compléter mon profil" : "Complete my profile"}
+                      </button>
+                    ) : null}
+                  </div>
+                )}
+
+                {r.key === "agent" && !r.ok && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={becomeAgent}
+                      disabled={busyAgent}
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full text-white disabled:opacity-50"
+                      style={{ background: "var(--tf-blue)" }}
+                    >
+                      {busyAgent ? "…" : fr ? "Activer mon statut agent" : "Activate agent status"}
+                    </button>
+                    <span className="text-[11px] text-muted-foreground self-center">
+                      {fr ? "Gratuit · activation immédiate" : "Free · instant activation"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {editingProfile && (
+        <div className="mt-4 bg-card border border-border rounded-2xl p-4">
+          <div className="font-semibold text-sm mb-3">{fr ? "Compléter le profil" : "Complete profile"}</div>
+          <div className="space-y-2">
+            <label className="block">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{fr ? "Nom complet" : "Full name"}</div>
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-border rounded-lg px-3 py-2 text-sm" placeholder={fr ? "Ex. Awa Diop" : "e.g. Awa Diop"} />
+            </label>
+            <label className="block">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{fr ? "Pays" : "Country"}</div>
+              <input value={country} onChange={(e) => setCountry(e.target.value)} className="w-full border border-border rounded-lg px-3 py-2 text-sm" placeholder={fr ? "Ex. Côte d'Ivoire" : "e.g. Ivory Coast"} />
+            </label>
+          </div>
+          <div className="mt-3 flex gap-2">
+            <button onClick={saveProfile} disabled={savingProfile} className="text-xs font-semibold px-3 py-1.5 rounded-full text-white disabled:opacity-50" style={{ background: "var(--tf-blue)" }}>
+              {savingProfile ? "…" : fr ? "Enregistrer" : "Save"}
+            </button>
+            <button onClick={() => setEditingProfile(false)} className="text-xs font-semibold px-3 py-1.5 rounded-full border border-border">
+              {fr ? "Annuler" : "Cancel"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6 text-center">
+        <Link to="/safety" className="text-xs text-muted-foreground underline">
+          {fr ? "Pourquoi ces vérifications ?" : "Why these checks?"}
+        </Link>
       </div>
     </div>
   );
