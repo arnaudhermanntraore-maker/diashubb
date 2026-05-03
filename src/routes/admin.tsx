@@ -67,20 +67,7 @@ function Admin() {
     finally { setBusy(null); }
   };
 
-  useEffect(() => {
-    if (!isAdmin) return;
-    (async () => {
-      const [{ data: f }, { data: a }, { count: u }, { count: p }, { count: tx }] = await Promise.all([
-        supabase.from("feature_flags").select("*").order("key"),
-        supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(50),
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("properties").select("id", { count: "exact", head: true }),
-        supabase.from("transactions").select("id", { count: "exact", head: true }),
-      ]);
-      setFlags((f ?? []) as FFlag[]); setAudit((a ?? []) as AuditRow[]);
-      setCounts({ users: u ?? 0, props: p ?? 0, txs: tx ?? 0 });
-    })();
-  }, [isAdmin]);
+
 
   const toggle = async (f: FFlag) => {
     const { error } = await supabase.from("feature_flags").update({ enabled: !f.enabled }).eq("id", f.id);
@@ -99,7 +86,7 @@ function Admin() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
       <div className="mt-6 flex gap-2 border-b border-border">
-        {(["overview", "flags", "audit"] as const).map((k) => (
+        {(["overview", "flags", "escrow", "audit"] as const).map((k) => (
           <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k}</button>
         ))}
       </div>
