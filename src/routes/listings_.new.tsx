@@ -565,3 +565,43 @@ function Step5({ data, u, errors, fr }: StepProps) {
     </>
   );
 }
+
+function BecomeAgentGate({ fr, userId }: { fr: boolean; userId?: string }) {
+  const [busy, setBusy] = useState(false);
+  const become = async () => {
+    if (!userId) return;
+    setBusy(true);
+    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: "agent" });
+    setBusy(false);
+    if (error && !error.message.includes("duplicate")) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(fr ? "Statut agent activé ✓" : "Agent status granted ✓");
+    if (typeof window !== "undefined") window.location.reload();
+  };
+  return (
+    <div className="container mx-auto px-4 py-16 max-w-lg text-center">
+      <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style={{ background: "color-mix(in oklab, var(--tf-amber) 15%, transparent)" }}>
+        <Home style={{ color: "var(--tf-amber)" }} />
+      </div>
+      <h1 className="font-display text-2xl font-bold">{fr ? "Devenez agent pour publier" : "Become an agent to publish"}</h1>
+      <p className="mt-2 text-muted-foreground">
+        {fr
+          ? "Seuls les comptes agents peuvent publier des biens. Activez gratuitement votre statut agent pour continuer."
+          : "Only agent accounts can publish listings. Activate your agent status for free to continue."}
+      </p>
+      <button
+        onClick={become}
+        disabled={busy || !userId}
+        className="mt-6 inline-block px-6 py-2.5 rounded-full text-white disabled:opacity-50"
+        style={{ background: "var(--tf-blue)" }}
+      >
+        {busy ? "…" : fr ? "Activer mon statut agent" : "Activate agent status"}
+      </button>
+      <div className="mt-3">
+        <Link to="/dashboard" className="text-sm text-muted-foreground underline">{fr ? "Retour au tableau de bord" : "Back to dashboard"}</Link>
+      </div>
+    </div>
+  );
+}
