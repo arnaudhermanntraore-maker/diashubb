@@ -22,7 +22,8 @@ export function PriceDisplay({ priceUsd, country, className = "", style, size = 
 
   useEffect(() => {
     loadCurrencyRates().then(() => setTick((n) => n + 1));
-    return subscribeCurrencyRates(() => setTick((n) => n + 1));
+    const unsub = subscribeCurrencyRates(() => setTick((n) => n + 1));
+    return () => { unsub; };
   }, []);
 
   const local = getLocalCurrency(country);
