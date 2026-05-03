@@ -21,6 +21,7 @@ export type Database = {
           country: string
           created_at: string
           description: string | null
+          documents: Json
           email: string
           id: string
           legal_name: string | null
@@ -42,6 +43,7 @@ export type Database = {
           country: string
           created_at?: string
           description?: string | null
+          documents?: Json
           email: string
           id?: string
           legal_name?: string | null
@@ -63,6 +65,7 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string | null
+          documents?: Json
           email?: string
           id?: string
           legal_name?: string | null

@@ -1,9 +1,13 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Building2, Heart } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  Plus, Building2, Heart, ShieldCheck, Clock, XCircle,
+  FileText, Upload, CheckCircle2, AlertTriangle, Globe2, Phone, Mail, MapPin, Pencil,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/agency/dashboard")({
   beforeLoad: async () => {
@@ -14,10 +18,43 @@ export const Route = createFileRoute("/agency/dashboard")({
   component: AgencyDashboard,
 });
 
+type DocStatus = "missing" | "uploaded" | "approved" | "rejected";
+type AgencyDoc = { key: string; url?: string; status: DocStatus; note?: string };
+
+type Agency = {
+  id: string;
+  name: string;
+  legal_name: string | null;
+  registration_number: string | null;
+  country: string;
+  city: string | null;
+  address: string | null;
+  phone: string;
+  email: string;
+  website: string | null;
+  description: string | null;
+  logo_url: string | null;
+  status: "pending" | "verified" | "rejected";
+  rejection_reason: string | null;
+  documents: AgencyDoc[];
+  created_at: string;
+  verified_at: string | null;
+};
+
+const REQUIRED_DOCS = [
+  { key: "registration", fr: "Certificat d'enregistrement / RCCM", en: "Registration certificate / RCCM" },
+  { key: "tax_id", fr: "Numéro fiscal / EIN", en: "Tax ID / EIN" },
+  { key: "id_owner", fr: "Pièce d'identité du dirigeant", en: "Owner ID document" },
+  { key: "address_proof", fr: "Justificatif d'adresse (< 3 mois)", en: "Proof of address (< 3 months)" },
+];
+
 function AgencyDashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const fr = i18n.language?.startsWith("fr") ?? true;
   const { user } = useAuth();
   const [stats, setStats] = useState({ active: 0, pending: 0, draft: 0, sold: 0 });
+  const [agency, setAgency] = useState<Agency | null>(null);
+  const [loadingAgency, setLoadingAgency] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -33,6 +70,50 @@ function AgencyDashboard() {
       setStats(s);
     })();
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      setLoadingAgency(true);
+      const { data } = await supabase
+        .from("agencies")
+        .select("*")
+        .eq("owner_id", user.id)
+        .maybeSingle();
+      setAgency((data as Agency | null) ?? null);
+      setLoadingAgency(false);
+    })();
+  }, [user]);
+
+  const docMap = useMemo(() => {
+    const map = new Map<string, AgencyDoc>();
+    (agency?.documents ?? []).forEach((d) => map.set(d.key, d));
+    return map;
+  }, [agency]);
+
+  const completed = REQUIRED_DOCS.filter((d) => {
+    const doc = docMap.get(d.key);
+    return doc?.status === "uploaded" || doc?.status === "approved";
+  }).length;
+  const progressPct = Math.round((completed / REQUIRED_DOCS.length) * 100);
+
+  const updateDoc = async (key: string, patch: Partial<AgencyDoc>) => {
+    if (!agency) return;
+    const next = REQUIRED_DOCS.map((r) => {
+      const existing = docMap.get(r.key) ?? { key: r.key, status: "missing" as DocStatus };
+      return r.key === key ? { ...existing, ...patch } : existing;
+    });
+    const { error } = await supabase
+      .from("agencies")
+      .update({ documents: next })
+      .eq("id", agency.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setAgency({ ...agency, documents: next });
+    toast.success(fr ? "Mis à jour" : "Updated");
+  };
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-6xl">
@@ -50,7 +131,52 @@ function AgencyDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+      {/* Verification + Profile preview */}
+      {loadingAgency ? (
+        <div className="mt-6 h-32 rounded-2xl bg-muted animate-pulse" />
+      ) : !agency ? (
+        <NoAgencyCard fr={fr} />
+      ) : (
+        <div className="mt-6 grid lg:grid-cols-3 gap-4">
+          <VerificationCard agency={agency} fr={fr} progressPct={progressPct} />
+          <ProfilePreviewCard agency={agency} fr={fr} />
+        </div>
+      )}
+
+      {/* Documents tracker */}
+      {agency && (
+        <section className="mt-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-display font-bold">
+              {fr ? "Documents de vérification" : "Verification documents"}
+            </h2>
+            <span className="text-xs text-muted-foreground">
+              {completed}/{REQUIRED_DOCS.length} {fr ? "fournis" : "submitted"}
+            </span>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {REQUIRED_DOCS.map((d) => {
+              const doc = docMap.get(d.key) ?? { key: d.key, status: "missing" as DocStatus };
+              return (
+                <DocRow
+                  key={d.key}
+                  label={fr ? d.fr : d.en}
+                  doc={doc}
+                  fr={fr}
+                  onChangeUrl={(url) => updateDoc(d.key, { url, status: "uploaded" })}
+                  onRemove={() => updateDoc(d.key, { url: undefined, status: "missing" })}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Listing stats */}
+      <h2 className="text-lg font-display font-bold mt-10 mb-3">
+        {fr ? "Mes annonces" : "My listings"}
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: t("agency.stats.active"), value: stats.active, color: "var(--tf-green)" },
           { label: t("agency.stats.pending"), value: stats.pending, color: "var(--tf-amber)" },
@@ -82,6 +208,199 @@ function AgencyDashboard() {
           <div className="text-xs text-muted-foreground mt-1">{t("agency.actions.messagesSub")}</div>
         </Link>
       </div>
+    </div>
+  );
+}
+
+/* -------------------- Sub-components -------------------- */
+
+function NoAgencyCard({ fr }: { fr: boolean }) {
+  return (
+    <div className="mt-6 bg-card border border-border rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl grid place-items-center bg-amber-100">
+          <AlertTriangle className="text-amber-600" size={20} />
+        </div>
+        <div>
+          <h2 className="font-display font-bold">
+            {fr ? "Aucune agence enregistrée" : "No agency registered"}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {fr
+              ? "Inscrivez votre agence pour publier des annonces certifiées."
+              : "Register your agency to publish certified listings."}
+          </p>
+        </div>
+      </div>
+      <Link
+        to="/agency/register"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold"
+        style={{ background: "var(--tf-blue)" }}
+      >
+        {fr ? "Inscrire mon agence" : "Register my agency"}
+      </Link>
+    </div>
+  );
+}
+
+function VerificationCard({ agency, fr, progressPct }: { agency: Agency; fr: boolean; progressPct: number }) {
+  const status = agency.status;
+  const cfg = {
+    verified: { Icon: ShieldCheck, color: "var(--tf-green)", bg: "rgba(34,197,94,.10)", label: fr ? "Vérifiée" : "Verified" },
+    pending: { Icon: Clock, color: "var(--tf-amber)", bg: "rgba(245,158,11,.12)", label: fr ? "En cours de vérification" : "Under review" },
+    rejected: { Icon: XCircle, color: "#ef4444", bg: "rgba(239,68,68,.10)", label: fr ? "Refusée" : "Rejected" },
+  }[status];
+  const Icon = cfg.Icon;
+
+  return (
+    <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5">
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 rounded-xl grid place-items-center" style={{ background: cfg.bg }}>
+          <Icon style={{ color: cfg.color }} size={22} />
+        </div>
+        <div className="flex-1">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">
+            {fr ? "Statut de vérification" : "Verification status"}
+          </div>
+          <div className="font-display font-bold text-lg" style={{ color: cfg.color }}>{cfg.label}</div>
+        </div>
+        <span className="text-xs text-muted-foreground">
+          {fr ? "Soumis le" : "Submitted"} {new Date(agency.created_at).toLocaleDateString()}
+        </span>
+      </div>
+
+      {status === "rejected" && agency.rejection_reason && (
+        <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-800">
+          <strong>{fr ? "Motif :" : "Reason:"}</strong> {agency.rejection_reason}
+        </div>
+      )}
+
+      <div className="mt-4">
+        <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+          <span>{fr ? "Documents fournis" : "Documents provided"}</span>
+          <span>{progressPct}%</span>
+        </div>
+        <div className="h-2 rounded-full bg-muted overflow-hidden">
+          <div className="h-full rounded-full transition-all" style={{ width: `${progressPct}%`, background: "var(--tf-blue)" }} />
+        </div>
+      </div>
+
+      {status === "pending" && (
+        <p className="text-xs text-muted-foreground mt-3">
+          {fr
+            ? "Notre équipe contrôle votre dossier sous 24–72h ouvrées."
+            : "Our team reviews submissions within 24–72 business hours."}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ProfilePreviewCard({ agency, fr }: { agency: Agency; fr: boolean }) {
+  return (
+    <div className="bg-card border border-border rounded-2xl p-5">
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-xs uppercase tracking-wider text-muted-foreground">
+          {fr ? "Aperçu fiche agence" : "Agency profile preview"}
+        </div>
+        <Link to="/agency/register" className="text-xs inline-flex items-center gap-1 text-tf-blue hover:underline">
+          <Pencil size={12} /> {fr ? "Modifier" : "Edit"}
+        </Link>
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div className="w-12 h-12 rounded-xl grid place-items-center text-white font-bold" style={{ background: "var(--tf-blue)" }}>
+          {agency.name.slice(0, 2).toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <div className="font-display font-bold truncate">{agency.name}</div>
+          {agency.legal_name && <div className="text-xs text-muted-foreground truncate">{agency.legal_name}</div>}
+        </div>
+      </div>
+
+      <ul className="mt-4 space-y-1.5 text-xs text-muted-foreground">
+        <li className="flex items-center gap-2"><MapPin size={12} /> {[agency.city, agency.country].filter(Boolean).join(", ")}</li>
+        <li className="flex items-center gap-2"><Phone size={12} /> {agency.phone}</li>
+        <li className="flex items-center gap-2"><Mail size={12} /> {agency.email}</li>
+        {agency.website && (
+          <li className="flex items-center gap-2 truncate">
+            <Globe2 size={12} />
+            <a href={agency.website} target="_blank" rel="noreferrer" className="hover:underline truncate">{agency.website}</a>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+function DocRow({
+  label, doc, fr, onChangeUrl, onRemove,
+}: {
+  label: string;
+  doc: AgencyDoc;
+  fr: boolean;
+  onChangeUrl: (url: string) => void;
+  onRemove: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [url, setUrl] = useState(doc.url ?? "");
+
+  const cfg = {
+    missing: { Icon: Upload, color: "var(--muted-foreground)", label: fr ? "Manquant" : "Missing" },
+    uploaded: { Icon: FileText, color: "var(--tf-amber)", label: fr ? "En attente" : "Pending review" },
+    approved: { Icon: CheckCircle2, color: "var(--tf-green)", label: fr ? "Approuvé" : "Approved" },
+    rejected: { Icon: XCircle, color: "#ef4444", label: fr ? "Refusé" : "Rejected" },
+  }[doc.status];
+  const Icon = cfg.Icon;
+
+  const save = () => {
+    try { new URL(url); } catch { toast.error(fr ? "URL invalide" : "Invalid URL"); return; }
+    onChangeUrl(url);
+    setEditing(false);
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-2xl p-4">
+      <div className="flex items-start gap-3">
+        <Icon size={18} style={{ color: cfg.color }} className="mt-0.5 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-sm">{label}</div>
+          <div className="text-xs mt-0.5" style={{ color: cfg.color }}>{cfg.label}</div>
+          {doc.url && !editing && (
+            <a href={doc.url} target="_blank" rel="noreferrer" className="text-xs text-tf-blue hover:underline truncate block mt-1">
+              {doc.url}
+            </a>
+          )}
+          {doc.note && <p className="text-xs text-muted-foreground mt-1 italic">{doc.note}</p>}
+        </div>
+      </div>
+
+      {editing ? (
+        <div className="mt-3 flex gap-2">
+          <input
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://..."
+            className="flex-1 text-xs px-3 py-2 bg-muted rounded-lg outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button onClick={save} className="text-xs px-3 py-2 rounded-lg text-white font-semibold" style={{ background: "var(--tf-blue)" }}>
+            {fr ? "OK" : "Save"}
+          </button>
+          <button onClick={() => setEditing(false)} className="text-xs px-3 py-2 rounded-lg bg-muted">
+            {fr ? "Annuler" : "Cancel"}
+          </button>
+        </div>
+      ) : (
+        <div className="mt-3 flex gap-2">
+          <button onClick={() => { setUrl(doc.url ?? ""); setEditing(true); }} className="text-xs px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/70 inline-flex items-center gap-1.5">
+            <Upload size={12} /> {doc.url ? (fr ? "Remplacer le lien" : "Replace link") : (fr ? "Ajouter un lien" : "Add link")}
+          </button>
+          {doc.url && (
+            <button onClick={onRemove} className="text-xs px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/70 text-red-600">
+              {fr ? "Retirer" : "Remove"}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
