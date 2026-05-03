@@ -25,10 +25,11 @@ const Flag = ({ lang }: { lang: "fr" | "en" }) => lang === "fr" ? (
 );
 
 export function Nav() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, roles } = useAuth();
   const navigate = useNavigate();
   const [lang, setLang] = useState<"fr" | "en">((i18n.language as "fr" | "en") || "fr");
   const fr = lang === "fr";
+  const isSuper = roles.includes("super_admin");
 
   const toggleLang = () => {
     const next = lang === "fr" ? "en" : "fr";
@@ -80,6 +81,7 @@ export function Nav() {
                 >
                   {((user.user_metadata?.full_name as string) || user.email || "?").trim().charAt(0).toUpperCase()}
                 </span>
+                {isSuper && <span className="text-[8px] font-bold text-white px-1 rounded" style={{ background: "var(--tf-amber)" }} title="Super Admin">SA</span>}
                 <span className="hidden md:flex flex-col leading-none">
                   <span className="text-[10px] font-semibold text-foreground truncate max-w-[120px]">
                     {(user.user_metadata?.full_name as string) || user.email}

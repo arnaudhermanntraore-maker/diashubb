@@ -86,6 +86,7 @@ function Admin() {
   return (
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
+      <a href="/admin/flags" className="inline-block mt-3 text-sm text-primary hover:underline">→ Feature Flags (page dédiée)</a>
       <div className="mt-6 flex gap-2 border-b border-border">
         {(["overview", "flags", "escrow", "audit", "rates"] as const).map((k) => (
           <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k === "rates" ? "Taux FX" : k}</button>
