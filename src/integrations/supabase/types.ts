@@ -14,16 +14,375 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          active: boolean
+          created_at: string
+          criteria_json: Json
+          id: string
+          last_matched_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          criteria_json?: Json
+          id?: string
+          last_matched_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          criteria_json?: Json
+          id?: string
+          last_matched_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip: string | null
+          metadata: Json
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      commissions: {
+        Row: {
+          amount_usd: number
+          broker_id: string
+          created_at: string
+          id: string
+          paid_at: string | null
+          property_id: string | null
+          rate: number
+        }
+        Insert: {
+          amount_usd: number
+          broker_id: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          property_id?: string | null
+          rate: number
+        }
+        Update: {
+          amount_usd?: number
+          broker_id?: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          property_id?: string | null
+          rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feature_flags: {
+        Row: {
+          description: string | null
+          enabled: boolean
+          id: string
+          key: string
+          target_countries: string[] | null
+          target_roles: Database["public"]["Enums"]["app_role"][] | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key: string
+          target_countries?: string[] | null
+          target_roles?: Database["public"]["Enums"]["app_role"][] | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key?: string
+          target_countries?: string[] | null
+          target_roles?: Database["public"]["Enums"]["app_role"][] | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content_encrypted: string
+          created_at: string
+          flag_reason: string | null
+          flagged: boolean
+          id: string
+          property_id: string | null
+          read_at: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content_encrypted: string
+          created_at?: string
+          flag_reason?: string | null
+          flagged?: boolean
+          id?: string
+          property_id?: string | null
+          read_at?: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content_encrypted?: string
+          created_at?: string
+          flag_reason?: string | null
+          flagged?: boolean
+          id?: string
+          property_id?: string | null
+          read_at?: string | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          country: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          lang_pref: string
+          terracoins: number
+          verified: boolean
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          lang_pref?: string
+          terracoins?: number
+          verified?: boolean
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          lang_pref?: string
+          terracoins?: number
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      properties: {
+        Row: {
+          agent_id: string
+          ai_score: number | null
+          boosted_until: string | null
+          city: string | null
+          country: string
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          documents: Json
+          id: string
+          images: Json
+          lat: number | null
+          lng: number | null
+          price_usd: number
+          status: Database["public"]["Enums"]["property_status"]
+          tf_verified: boolean
+          title: string
+          tour_360_url: string | null
+          type: Database["public"]["Enums"]["property_type"]
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          ai_score?: number | null
+          boosted_until?: string | null
+          city?: string | null
+          country: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          documents?: Json
+          id?: string
+          images?: Json
+          lat?: number | null
+          lng?: number | null
+          price_usd?: number
+          status?: Database["public"]["Enums"]["property_status"]
+          tf_verified?: boolean
+          title: string
+          tour_360_url?: string | null
+          type?: Database["public"]["Enums"]["property_type"]
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          ai_score?: number | null
+          boosted_until?: string | null
+          city?: string | null
+          country?: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          documents?: Json
+          id?: string
+          images?: Json
+          lat?: number | null
+          lng?: number | null
+          price_usd?: number
+          status?: Database["public"]["Enums"]["property_status"]
+          tf_verified?: boolean
+          title?: string
+          tour_360_url?: string | null
+          type?: Database["public"]["Enums"]["property_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount_usd: number
+          buyer_id: string
+          created_at: string
+          escrow_released: boolean
+          external_ref: string | null
+          id: string
+          method: Database["public"]["Enums"]["tx_method"]
+          property_id: string | null
+          seller_id: string
+          status: Database["public"]["Enums"]["tx_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount_usd: number
+          buyer_id: string
+          created_at?: string
+          escrow_released?: boolean
+          external_ref?: string | null
+          id?: string
+          method: Database["public"]["Enums"]["tx_method"]
+          property_id?: string | null
+          seller_id: string
+          status?: Database["public"]["Enums"]["tx_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount_usd?: number
+          buyer_id?: string
+          created_at?: string
+          escrow_released?: boolean
+          external_ref?: string | null
+          id?: string
+          method?: Database["public"]["Enums"]["tx_method"]
+          property_id?: string | null
+          seller_id?: string
+          status?: Database["public"]["Enums"]["tx_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_admin"
+        | "admin"
+        | "agent"
+        | "buyer"
+        | "contractor"
+        | "broker"
+        | "surveyor"
+      property_status: "draft" | "active" | "pending" | "sold" | "archived"
+      property_type: "land" | "house" | "apartment" | "commercial" | "farm"
+      tx_method: "stripe" | "cinetpay" | "wire" | "crypto"
+      tx_status: "pending" | "escrowed" | "released" | "refunded" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +509,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_admin",
+        "admin",
+        "agent",
+        "buyer",
+        "contractor",
+        "broker",
+        "surveyor",
+      ],
+      property_status: ["draft", "active", "pending", "sold", "archived"],
+      property_type: ["land", "house", "apartment", "commercial", "farm"],
+      tx_method: ["stripe", "cinetpay", "wire", "crypto"],
+      tx_status: ["pending", "escrowed", "released", "refunded", "failed"],
+    },
   },
 } as const
