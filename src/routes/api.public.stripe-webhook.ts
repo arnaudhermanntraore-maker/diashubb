@@ -26,14 +26,37 @@ export const Route = createFileRoute("/api/public/stripe-webhook")({
         try {
           if (event.type === "checkout.session.completed") {
             const session = event.data.object as Stripe.Checkout.Session;
-            const piId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
-            if (piId) {
-              const pi = await stripe.paymentIntents.retrieve(piId);
-              const newStatus = pi.status === "requires_capture" ? "escrowed" : pi.status === "succeeded" ? "released" : "pending";
-              await supabaseAdmin.from("transactions").update({
-                status: newStatus,
-                updated_at: new Date().toISOString(),
-              }).eq("external_ref", session.id);
+            const kind = session.metadata?.kind;
+
+            if (kind === "boost") {
+              const boostId = session.metadata?.boost_id;
+              if (boostId) {
+                const { data: boost } = await supabaseAdmin.from("boosts").select("*").eq("id", boostId).single();
+                if (boost && boost.status === "pending") {
+                  const planDays: Record<string, number> = { day: 1, week: 7, month: 30, quarter: 90 };
+                  const days = planDays[boost.plan] ?? 7;
+                  const startsAt = new Date();
+                  const endsAt = new Date(startsAt.getTime() + days * 86400000);
+                  await supabaseAdmin.from("boosts").update({
+                    status: "active",
+                    starts_at: startsAt.toISOString(),
+                    ends_at: endsAt.toISOString(),
+                  }).eq("id", boost.id);
+                  if (boost.item_type === "property") {
+                    await supabaseAdmin.from("properties").update({ boosted_until: endsAt.toISOString() }).eq("id", boost.item_id);
+                  }
+                }
+              }
+            } else {
+              const piId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
+              if (piId) {
+                const pi = await stripe.paymentIntents.retrieve(piId);
+                const newStatus = pi.status === "requires_capture" ? "escrowed" : pi.status === "succeeded" ? "released" : "pending";
+                await supabaseAdmin.from("transactions").update({
+                  status: newStatus,
+                  updated_at: new Date().toISOString(),
+                }).eq("external_ref", session.id);
+              }
             }
           }
         } catch (e) { console.error("[webhook]", e); }
