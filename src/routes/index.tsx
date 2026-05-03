@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowRight, ShieldCheck, Coins, Gift, DollarSign, Search, Eye, Star, FileCheck2, BellRing,
   Building2, Globe2, HardHat, BadgeCheck, Users, Plus, Home as HomeIcon, MapPin,
 } from "lucide-react";
+import { HeroSearchBox } from "@/components/HeroSearchBox";
 
 export const Route = createFileRoute("/")({
   head: () => ({
