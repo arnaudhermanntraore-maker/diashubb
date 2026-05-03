@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronLeft, ChevronRight, Home, MapPin, Image as ImageIcon, FileText, DollarSign, Trash2, Plus, Minus, Star } from "lucide-react";
+import { SingleFileUploader, MultiPhotoUploader } from "@/components/FileUploader";
 
 export const Route = createFileRoute("/listings_/new")({
   beforeLoad: async () => {
