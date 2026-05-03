@@ -50,7 +50,7 @@ export const Route = createRootRoute({
   ),
   component: () => (
     <AuthProvider>
-      <SecurityBanner />
+      <DemoSeeder />
       <Nav />
       <main className="min-h-[calc(100vh-8rem)]"><Outlet /></main>
       <FloatingAddListing />
