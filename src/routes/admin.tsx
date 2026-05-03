@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { releaseEscrow, refundEscrow } from "@/server/payments.functions";
+import { CurrencyRatesTab } from "@/components/admin/CurrencyRatesTab";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -26,7 +27,7 @@ function Admin() {
   const [audit, setAudit] = useState<AuditRow[]>([]);
   const [txs, setTxs] = useState<TxRow[]>([]);
   const [counts, setCounts] = useState({ users: 0, props: 0, txs: 0 });
-  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit">("overview");
+  const [tab, setTab] = useState<"overview" | "flags" | "escrow" | "audit" | "rates">("overview");
   const [newFlag, setNewFlag] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const release = useServerFn(releaseEscrow);
@@ -86,8 +87,8 @@ function Admin() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
       <div className="mt-6 flex gap-2 border-b border-border">
-        {(["overview", "flags", "escrow", "audit"] as const).map((k) => (
-          <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k}</button>
+        {(["overview", "flags", "escrow", "audit", "rates"] as const).map((k) => (
+          <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k === "rates" ? "Taux FX" : k}</button>
         ))}
       </div>
 
@@ -155,6 +156,8 @@ function Admin() {
           ))}
         </div>
       )}
+
+      {tab === "rates" && <CurrencyRatesTab />}
     </div>
   );
 }
