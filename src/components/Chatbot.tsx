@@ -48,7 +48,7 @@ export function Chatbot() {
         </button>
       )}
       {open && (
-        <div className="fixed bottom-24 right-6 z-30 w-[340px] h-[500px] bg-card border border-border rounded-2xl shadow-elegant flex flex-col overflow-hidden">
+        <div className="fixed bottom-44 right-6 z-30 w-[340px] h-[500px] bg-card border border-border rounded-2xl shadow-elegant flex flex-col overflow-hidden">
           <div className="text-white px-4 py-3 flex items-center justify-between" style={{ background: "var(--tf-navy)" }}>
             <div className="flex items-center gap-2">
               <span className="relative flex w-2.5 h-2.5">
