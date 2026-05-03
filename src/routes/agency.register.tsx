@@ -197,12 +197,8 @@ function AgencyRegister() {
               required
             >
               <option value="">{fr ? "Sélectionner un pays" : "Select a country"}</option>
-              {COUNTRY_GROUPS.map((g) => (
-                <optgroup key={g.label} label={g.label}>
-                  {g.options.map((o) => (
-                    <option key={o.code} value={o.code}>{o.name}</option>
-                  ))}
-                </optgroup>
+              {countryOptions.map((c) => (
+                <option key={c.code} value={c.code}>{c.name}</option>
               ))}
             </select>
           </Field>
