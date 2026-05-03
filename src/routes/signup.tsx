@@ -69,13 +69,6 @@ function SignupPage() {
     }, () => setGeoErr(true), { timeout: 6000 });
   }, [step, geoText, geoErr]);
 
-  // OTP countdown
-  useEffect(() => {
-    if (step !== 4) return;
-    if (seconds <= 0) return;
-    const t = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [step, seconds]);
 
   const country = COUNTRIES.find((c) => c.code === info.country) || COUNTRIES[0];
 
