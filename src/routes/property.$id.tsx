@@ -109,6 +109,9 @@ function PropertyDetail() {
                 <p className="text-[11px] text-muted-foreground mt-2 text-center">Boostez cette annonce pour plus de visibilité</p>
               </div>
             )}
+            <div className="mt-3 pt-3 border-t border-border">
+              <CertificateButton propertyId={p.id} />
+            </div>
           </div>
         </aside>
       </div>
