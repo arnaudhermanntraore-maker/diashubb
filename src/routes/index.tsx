@@ -256,7 +256,7 @@ function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link to="/auth" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm" style={{ color: TF_NAVY }}>
+            <Link to="/signup" className="inline-flex items-center gap-2 bg-white px-5 py-3 rounded-full font-semibold text-sm" style={{ color: TF_NAVY }}>
               {fr ? "Créer un compte gratuit" : "Create free account"} <ArrowRight size={16} />
             </Link>
             <Link to="/listings" className="inline-flex items-center gap-2 text-white px-5 py-3 rounded-full font-semibold text-sm" style={{ background: TF_GREEN }}>
