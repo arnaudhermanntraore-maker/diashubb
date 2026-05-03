@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
-import { getLocalCurrency, formatUSD, formatLocal } from "@/lib/currency";
+import {
+  getLocalCurrency,
+  formatUSD,
+  formatLocal,
+  loadCurrencyRates,
+  subscribeCurrencyRates,
+} from "@/lib/currency";
 
 interface Props {
   priceUsd: number;
@@ -11,14 +17,16 @@ interface Props {
 }
 
 export function PriceDisplay({ priceUsd, country, className = "", style, size = "lg" }: Props) {
-  const local = getLocalCurrency(country);
+  const [, setTick] = useState(0);
   const [showUsd, setShowUsd] = useState(false);
 
-  const sizes = {
-    sm: "text-base",
-    md: "text-lg",
-    lg: "text-xl",
-  };
+  useEffect(() => {
+    loadCurrencyRates().then(() => setTick((n) => n + 1));
+    return subscribeCurrencyRates(() => setTick((n) => n + 1));
+  }, []);
+
+  const local = getLocalCurrency(country);
+  const sizes = { sm: "text-base", md: "text-lg", lg: "text-xl" };
 
   if (!local) {
     return <span className={`font-bold font-display ${sizes[size]} ${className}`} style={style}>{formatUSD(priceUsd)}</span>;
