@@ -119,17 +119,6 @@ function SignupPage() {
     return `${country.dial}${digits}`.replace(/\s+/g, "");
   };
 
-  const sendPhoneOtp = async () => {
-    const phone = e164Phone();
-    const { error } = await supabase.auth.updateUser({ phone });
-    if (error) { toast.error(error.message); return false; }
-    toast.success(T(`Code sent to ${phone}`, `Code envoyé au ${phone}`));
-    setSeconds(300);
-    setOtpAttempts(3);
-    setOtp(["", "", "", "", "", ""]);
-    return true;
-  };
-
   const submitAccount = async () => {
     setShowSummary(true);
     const errs: string[] = [];
@@ -157,38 +146,17 @@ function SignupPage() {
         },
       },
     });
-    if (error) { setBusy(false); toast.error(error.message); return; }
-    // Send real SMS OTP via Supabase phone auth (Twilio)
-    const ok = await sendPhoneOtp();
     setBusy(false);
-    if (ok) setStep(4);
-  };
-
-  const verifyOtp = async () => {
-    const code = otp.join("");
-    if (code.length !== 6) return;
-    setBusy(true);
-    const phone = e164Phone();
-    const { error } = await supabase.auth.verifyOtp({ phone, token: code, type: "phone_change" });
-    setBusy(false);
-    if (error) {
-      const left = otpAttempts - 1;
-      setOtpAttempts(left);
-      setOtp(["", "", "", "", "", ""]);
-      otpRefs.current[0]?.focus();
-      if (left <= 0) toast.error(T("Too many attempts. Please request a new code.", "Trop de tentatives. Demandez un nouveau code."));
-      else toast.error(T(`Incorrect code. ${left} attempts remaining.`, `Code incorrect. ${left} tentatives restantes.`));
-      return;
-    }
-    // Award TerraCoins on profile
+    if (error) { toast.error(error.message); return; }
+    // Award TerraCoins if session is active (auto-confirm enabled)
     try {
       const { data: u } = await supabase.auth.getUser();
       if (u?.user) await supabase.from("profiles").update({ terracoins: 100, country: info.country, lang_pref: country.lang }).eq("id", u.user.id);
     } catch {}
+    toast.success(T("Check your email to confirm your account", "Vérifiez votre email pour confirmer votre compte"));
     setStep(5);
   };
 
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // ============ STEPS ============
   return (
