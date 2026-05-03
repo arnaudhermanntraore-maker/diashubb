@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   fr: {
     translation: {
-      nav: { home: "Accueil", listings: "Annonces", agents: "Agents", dashboard: "Espace", messages: "Messages", admin: "Admin", login: "Connexion", logout: "Déconnexion", signup: "Inscription" },
+      nav: { home: "Accueil", listings: "Annonces", agents: "Agences", dashboard: "Espace", messages: "Messages", admin: "Admin", login: "Connexion", logout: "Déconnexion", signup: "Inscription" },
       hero: {
         kicker: "Plateforme bi-continentale",
         title: "L'immobilier africain, vérifié et sans frontières",
