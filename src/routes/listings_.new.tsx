@@ -512,6 +512,7 @@ function Step4({ data, u, errors, fr }: StepProps) {
   );
 }
 
+function Step5({ data, u, errors, fr }: StepProps) {
   const fx = FX[data.country];
   const local = fx && data.priceUsd ? Math.round(Number(data.priceUsd) * fx.rate).toLocaleString() : null;
   const BOOSTS: { v: FormData["boost"]; price: string; label: string; sub: string; emoji?: string }[] = [
