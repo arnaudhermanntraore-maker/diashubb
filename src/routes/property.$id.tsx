@@ -10,6 +10,7 @@ import { createDepositCheckout } from "@/server/payments.functions";
 import { MapView } from "@/components/MapView";
 import { BoostButton } from "@/components/BoostModal";
 import { PriceDisplay } from "@/components/PriceDisplay";
+import { CertificateButton } from "@/components/CertificateButton";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetail,
@@ -109,6 +110,9 @@ function PropertyDetail() {
                 <p className="text-[11px] text-muted-foreground mt-2 text-center">Boostez cette annonce pour plus de visibilité</p>
               </div>
             )}
+            <div className="mt-3 pt-3 border-t border-border">
+              <CertificateButton propertyId={p.id} />
+            </div>
           </div>
         </aside>
       </div>
