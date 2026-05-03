@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Home, Search, Users, LayoutDashboard, MessageSquare, Shield, LogIn, LogOut, Plus, ShieldAlert, X } from "lucide-react";
+import { Home, LayoutGrid, Circle, Globe2, Wrench, Building2, Star, LogIn, UserPlus, LogOut, Plus, ShieldAlert, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/lib/i18n";
 import { useEffect, useState } from "react";
 
-const NavIcon = ({ to, icon: Icon, label }: { to: string; icon: typeof Home; label: string }) => (
+const NavIcon = ({ to, icon: Icon, label, search }: { to: string; icon: typeof Home; label: string; search?: Record<string, string> }) => (
   <Link
     to={to}
+    search={search as never}
     className="group flex flex-col items-center justify-center gap-0.5 px-2.5 h-full text-foreground/70 hover:text-tf-blue transition-colors"
     activeProps={{ className: "text-tf-blue" }}
   >
@@ -23,10 +24,10 @@ const Flag = ({ lang }: { lang: "fr" | "en" }) => lang === "fr" ? (
 );
 
 export function Nav() {
-  const { t } = useTranslation();
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [lang, setLang] = useState<"fr" | "en">((i18n.language as "fr" | "en") || "fr");
+  const fr = lang === "fr";
 
   const toggleLang = () => {
     const next = lang === "fr" ? "en" : "fr";
@@ -39,20 +40,26 @@ export function Nav() {
     <header className="sticky top-0 z-40 w-full bg-white border-b border-border" style={{ height: 50 }}>
       <div className="container mx-auto px-3 h-full flex items-center justify-between gap-2">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold font-display text-sm" style={{ background: "var(--tf-navy)" }}>TF</div>
-          <span className="font-display font-bold text-sm hidden sm:block text-tf-navy">TerraFrique</span>
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: "var(--tf-blue)" }}>
+            <Home size={16} strokeWidth={2.5} />
+          </div>
+          <div className="hidden sm:flex flex-col leading-none">
+            <span className="font-display font-bold text-sm text-tf-navy">TerraFrique</span>
+            <span className="text-[9px] uppercase tracking-widest text-muted-foreground -mt-0.5">Global</span>
+          </div>
         </Link>
 
         <nav className="flex items-center h-full">
-          <NavIcon to="/" icon={Home} label={t("nav.home")} />
-          <NavIcon to="/listings" icon={Search} label={t("nav.listings")} />
-          <NavIcon to="/agents" icon={Users} label={t("nav.agents")} />
-          {user && <NavIcon to="/dashboard" icon={LayoutDashboard} label={t("nav.dashboard")} />}
-          {user && <NavIcon to="/messages" icon={MessageSquare} label={t("nav.messages")} />}
-          {isAdmin && <NavIcon to="/admin" icon={Shield} label={t("nav.admin")} />}
+          <NavIcon to="/" icon={Home} label={fr ? "Accueil" : "Home"} />
+          <NavIcon to="/listings" icon={LayoutGrid} label={fr ? "Acheter" : "Buy"} />
+          <NavIcon to="/listings" icon={Circle} label={fr ? "Louer" : "Rent"} />
+          <NavIcon to="/listings" icon={Globe2} label={fr ? "Afrique" : "Africa"} />
+          <NavIcon to="/agents" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
+          <NavIcon to="/agents" icon={Building2} label={fr ? "Agents" : "Agents"} />
+          <NavIcon to="/agents" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
         </nav>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={toggleLang}
             aria-label="Toggle language"
@@ -60,16 +67,23 @@ export function Nav() {
           >
             <Flag lang={lang} />
           </button>
+          <span className="w-px h-6 bg-border mx-1" />
           {user ? (
             <button onClick={() => { signOut(); navigate({ to: "/" }); }} className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue">
-              <LogOut size={18} />
-              <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{t("nav.logout")}</span>
+              <LogOut size={16} />
+              <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Sortir" : "Log out"}</span>
             </button>
           ) : (
-            <Link to="/auth" className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue">
-              <LogIn size={18} />
-              <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{t("nav.login")}</span>
-            </Link>
+            <>
+              <Link to="/auth" className="flex flex-col items-center gap-0.5 px-2 text-foreground/70 hover:text-tf-blue">
+                <LogIn size={16} />
+                <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Connexion" : "Log in"}</span>
+              </Link>
+              <Link to="/auth" className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-md text-white" style={{ background: "var(--tf-blue)" }}>
+                <UserPlus size={16} />
+                <span className="text-[9px] font-semibold uppercase tracking-wider leading-none">{fr ? "Inscription" : "Sign up"}</span>
+              </Link>
+            </>
           )}
         </div>
       </div>
@@ -83,8 +97,8 @@ export function FloatingAddListing() {
   return (
     <Link
       to={user ? "/listings/new" : "/auth"}
-      className="fixed bottom-6 right-6 z-30 inline-flex items-center gap-2 text-white rounded-full px-5 py-3 shadow-elegant hover:scale-105 transition-transform font-semibold text-sm"
-      style={{ background: "var(--tf-green)" }}
+      className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2 text-white rounded-full px-5 py-3 font-semibold text-sm hover:scale-105 transition-transform"
+      style={{ background: "var(--tf-green)", boxShadow: "0 4px 16px rgba(29,158,117,0.35)" }}
     >
       <Plus size={18} /> {t("addListing")}
     </Link>
@@ -92,7 +106,8 @@ export function FloatingAddListing() {
 }
 
 export function SecurityBanner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const fr = i18n.language === "fr";
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined" && sessionStorage.getItem("tf_sec_dismissed")) setHidden(true);
@@ -101,7 +116,9 @@ export function SecurityBanner() {
   return (
     <div className="text-white text-xs py-2 px-4 flex items-center justify-center gap-2 relative" style={{ background: "var(--tf-red)" }}>
       <ShieldAlert size={14} className="shrink-0" />
-      <span className="text-center">{t("banner")}</span>
+      <span className="text-center">
+        {t("banner")} <a href="#" className="font-semibold underline ml-1" style={{ color: "var(--tf-amber)" }}>{fr ? "Voir les arnaques courantes →" : "See common scams →"}</a>
+      </span>
       <button
         aria-label="Dismiss"
         onClick={() => { setHidden(true); if (typeof window !== "undefined") sessionStorage.setItem("tf_sec_dismissed", "1"); }}

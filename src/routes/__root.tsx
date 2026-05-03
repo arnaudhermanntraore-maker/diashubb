@@ -57,8 +57,20 @@ export const Route = createRootRoute({
       <FloatingAddListing />
       <Chatbot />
       <Toaster />
-      <footer className="border-t border-border mt-16 py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} TerraFrique Global · Bi-continental real estate
+      <footer className="border-t border-border py-6 bg-white">
+        <div className="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ background: "var(--tf-navy)" }}>TF</div>
+            <span>TerraFrique Global · USA & Africa real estate</span>
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <a href="#" className="hover:text-tf-blue">Terms</a>
+            <a href="#" className="hover:text-tf-blue">Privacy</a>
+            <a href="#" className="hover:text-tf-blue">Fair Housing</a>
+            <a href="#" className="hover:text-tf-blue">Contact</a>
+            <a href="#" className="hover:text-tf-blue">Blog</a>
+          </div>
+        </div>
       </footer>
     </AuthProvider>
   ),
