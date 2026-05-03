@@ -230,10 +230,10 @@ export function PartnerDirectory({ title, subtitle, searchPlaceholder, cards, ct
                 <li key={b} className="flex items-start gap-2"><ShieldCheck size={16} className="text-tf-green mt-0.5 shrink-0" /> {b}</li>
               ))}
             </ul>
-            <Link to="/auth" className="mt-5 block text-center text-white font-semibold py-2.5 rounded-lg" style={{ background: "var(--tf-blue)" }}>
+            <Link to="/signup" className="mt-5 block text-center text-white font-semibold py-2.5 rounded-lg" style={{ background: "var(--tf-blue)" }}>
               Créer un compte gratuit →
             </Link>
-            <Link to="/auth" className="mt-2 block text-center text-sm text-tf-blue font-semibold">
+            <Link to="/signup" className="mt-2 block text-center text-sm text-tf-blue font-semibold">
               J'ai déjà un compte
             </Link>
           </div>

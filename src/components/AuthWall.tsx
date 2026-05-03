@@ -46,7 +46,7 @@ export function AuthWall({ open, onOpenChange, titleKey = "publish" }: Props) {
         </ul>
         <div className="flex flex-col gap-2 mt-2">
           <Link
-            to="/auth"
+            to="/signup"
             onClick={() => onOpenChange(false)}
             className="w-full text-center text-white font-semibold rounded-full py-3"
             style={{ background: "var(--tf-blue)" }}
@@ -54,7 +54,7 @@ export function AuthWall({ open, onOpenChange, titleKey = "publish" }: Props) {
             {fr ? "Créer mon compte →" : "Create account →"}
           </Link>
           <Link
-            to="/auth"
+            to="/signup"
             onClick={() => onOpenChange(false)}
             className="w-full text-center font-medium rounded-full py-3 border border-border hover:bg-muted"
           >
