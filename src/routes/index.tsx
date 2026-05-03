@@ -33,34 +33,6 @@ const TF_CORAL = "#E76F51";
 function Home() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
-  const [tab, setTab] = useState<"buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate">("buy_us");
-  const [searchQ, setSearchQ] = useState("");
-  const [searchPrice, setSearchPrice] = useState("");
-  const [searchType, setSearchType] = useState("");
-
-  const tabToFilters = (tabId: string) => {
-    if (tabId === "invest_af") return { region: "africa" as const };
-    if (tabId === "buy_us" || tabId === "rent_us") return { region: "usa" as const };
-    return {};
-  };
-  const searchParams = {
-    ...(searchQ ? { q: searchQ } : {}),
-    ...(searchPrice ? { maxPrice: Number(searchPrice) } : {}),
-    ...(searchType ? { type: searchType } : {}),
-    ...tabToFilters(tab),
-    tab,
-  };
-
-  const tabs = [
-    { id: "buy_us",     label: fr ? "Acheter US"      : "Buy in US",        color: TF_BLUE },
-    { id: "rent_us",    label: fr ? "Louer US"        : "Rent in US",       color: TF_BLUE },
-    { id: "invest_af",  label: fr ? "Investir Afrique": "Invest in Africa", color: TF_GREEN },
-    { id: "contractor", label: fr ? "Artisans"        : "Find contractor",  color: TF_BLUE },
-    { id: "estimate",   label: fr ? "Estimer"         : "Estimate value",   color: TF_BLUE },
-  ] as const;
-
-  const activeTab = tabs.find((x) => x.id === tab)!;
-
   return (
     <div>
       {/* HERO */}
