@@ -87,8 +87,8 @@ function Admin() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
       <div className="mt-6 flex gap-2 border-b border-border">
-        {(["overview", "flags", "escrow", "audit"] as const).map((k) => (
-          <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k}</button>
+        {(["overview", "flags", "escrow", "audit", "rates"] as const).map((k) => (
+          <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium ${tab === k ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>{k === "rates" ? "Taux FX" : k}</button>
         ))}
       </div>
 
