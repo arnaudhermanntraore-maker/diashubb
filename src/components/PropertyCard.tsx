@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Sparkles, MapPin } from "lucide-react";
+import { ShieldCheck, Sparkles, MapPin, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export interface Property {
@@ -14,35 +14,50 @@ export interface Property {
   tf_verified: boolean;
   lat?: number | null;
   lng?: number | null;
+  boosted_until?: string | null;
 }
 
 export function PropertyCard({ p }: { p: Property }) {
   const { t } = useTranslation();
+  const isUSA = p.country === "US";
+  const accent = isUSA ? "var(--tf-blue)" : "var(--tf-green)";
+  const boosted = p.boosted_until && new Date(p.boosted_until) > new Date();
+
   return (
-    <Link to="/property/$id" params={{ id: p.id }} className="group block bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-elegant transition-all border border-border">
+    <Link
+      to="/property/$id"
+      params={{ id: p.id }}
+      className="group block bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-elegant transition-all border border-border"
+      style={{ borderLeft: `4px solid ${accent}` }}
+    >
       <div className="relative aspect-[4/3] bg-muted overflow-hidden">
         {p.cover_url ? (
           <img src={p.cover_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full bg-gradient-earth flex items-center justify-center text-muted-foreground text-sm">No image</div>
+          <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
         )}
         {p.tf_verified && (
-          <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-success text-success-foreground text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full">
+          <div className="absolute top-3 left-3 inline-flex items-center gap-1 text-white text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "var(--tf-green)" }}>
             <ShieldCheck size={12} /> {t("property.verified")}
           </div>
         )}
         {p.ai_score != null && p.ai_score > 0 && (
-          <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-background/95 text-foreground text-xs font-semibold px-2 py-1 rounded-full">
-            <Sparkles size={12} className="text-accent" /> {p.ai_score}
+          <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-white text-tf-navy text-xs font-bold px-2 py-1 rounded-full shadow-soft">
+            <Sparkles size={12} className="text-tf-amber" /> {p.ai_score}
+          </div>
+        )}
+        {boosted && (
+          <div className="absolute bottom-0 left-0 right-0 text-white text-[10px] font-bold uppercase tracking-wider py-1 text-center inline-flex items-center justify-center gap-1" style={{ background: "var(--tf-amber)" }}>
+            <Flame size={12} /> Boosted
           </div>
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-display font-semibold text-base line-clamp-1">{p.title}</h3>
+        <h3 className="font-display font-semibold text-base line-clamp-1 text-tf-navy">{p.title}</h3>
         <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-1"><MapPin size={12} />{p.city ? `${p.city}, ` : ""}{p.country}</p>
         <div className="mt-3 flex items-baseline justify-between">
-          <span className="text-xl font-bold text-primary font-display">${Number(p.price_usd).toLocaleString()}</span>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{p.type}</span>
+          <span className="text-xl font-bold font-display" style={{ color: accent }}>${Number(p.price_usd).toLocaleString()}</span>
+          <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-semibold">{p.type}</span>
         </div>
       </div>
     </Link>
