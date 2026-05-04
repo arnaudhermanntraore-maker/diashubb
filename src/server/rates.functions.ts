@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export interface RateRow {
   currency_code: string;
@@ -26,3 +28,72 @@ export const getRates = createServerFn({ method: "GET" }).handler(async (): Prom
     return { rates: [], updatedAt: null };
   }
 });
+
+// ---- Admin RBAC helpers ----------------------------------------------------
+
+async function assertSuperAdmin(userId: string): Promise<void> {
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["super_admin"]);
+  if (error) {
+    console.error("assertSuperAdmin error", error);
+    throw new Response("Forbidden", { status: 403 });
+  }
+  if (!data || data.length === 0) {
+    throw new Response("Forbidden: super_admin required", { status: 403 });
+  }
+}
+
+const rateSchema = z.object({
+  currency_code: z.string().regex(/^[A-Z]{3}$/, "ISO 4217 (3 uppercase letters)"),
+  rate_from_usd: z.number().positive().lt(1_000_000),
+  trend_24h: z.number().min(-1).max(1),
+});
+
+// Upsert a rate (insert if missing, update by currency_code)
+export const upsertRate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => rateSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertSuperAdmin(context.userId);
+    const { error, data: row } = await supabaseAdmin
+      .from("rate_config")
+      .upsert(
+        {
+          currency_code: data.currency_code,
+          rate_from_usd: data.rate_from_usd,
+          trend_24h: data.trend_24h,
+          source: "manual",
+          updated_by: context.userId,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "currency_code" }
+      )
+      .select()
+      .single();
+    if (error) {
+      console.error("upsertRate error", error);
+      throw new Response(error.message, { status: 400 });
+    }
+    return { ok: true as const, row };
+  });
+
+export const deleteRate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ currency_code: z.string().regex(/^[A-Z]{3}$/) }).parse(input)
+  )
+  .handler(async ({ data, context }) => {
+    await assertSuperAdmin(context.userId);
+    const { error } = await supabaseAdmin
+      .from("rate_config")
+      .delete()
+      .eq("currency_code", data.currency_code);
+    if (error) {
+      console.error("deleteRate error", error);
+      throw new Response(error.message, { status: 400 });
+    }
+    return { ok: true as const };
+  });
