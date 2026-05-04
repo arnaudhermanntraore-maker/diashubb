@@ -6,6 +6,9 @@ import { FeatureDisabled } from "@/components/FeatureDisabled";
 import { ForeclosureCard } from "@/components/ForeclosureCard";
 import type { Foreclosure } from "@/lib/foreclosures";
 import { Globe2, TrendingUp, Sparkles, Coins, ArrowRight, Gavel } from "lucide-react";
+import { CurrencyConverter } from "@/components/CurrencyConverter";
+import { LiveRateCards } from "@/components/LiveRateCards";
+import { CURRENCIES } from "@/lib/currencies";
 
 interface Prop {
   id: string;
@@ -94,21 +97,10 @@ function DiasporaPage() {
         <Pillar icon={TrendingUp} title="Boost diaspora" text="Annonces priorisées pour acheteurs internationaux." />
       </section>
 
-      {/* FX rates */}
-      {rates.length > 0 && (
-        <section className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-xl font-display font-semibold mb-3">Taux de change (1 USD)</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-            {rates.map((r) => (
-              <div key={r.code} className="bg-card border border-border rounded-xl p-3">
-                <div className="text-xs text-muted-foreground">{r.country}</div>
-                <div className="font-display font-semibold mt-0.5">{Number(r.rate).toLocaleString()} {r.symbol}</div>
-                <div className="text-[10px] text-muted-foreground font-mono">{r.code}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Currency converter */}
+      <section className="container mx-auto px-4 max-w-6xl">
+        <ConverterBlock />
+      </section>
 
       {/* Verified listings */}
       <section className="container mx-auto px-4 py-12 max-w-6xl">
@@ -174,6 +166,16 @@ function DiasporaPage() {
           </div>
         </section>
       )}
+    </div>
+  );
+}
+
+function ConverterBlock() {
+  const [sel, setSel] = useState<{ currency: string; country: string }>({ currency: "XOF", country: "CI" });
+  return (
+    <div className="space-y-4 py-6">
+      <LiveRateCards selected={sel} onSelect={(currency, country) => setSel({ currency, country })} />
+      <CurrencyConverter initialCurrency={sel.currency} initialCountry={sel.country} key={`${sel.currency}-${sel.country}`} />
     </div>
   );
 }
