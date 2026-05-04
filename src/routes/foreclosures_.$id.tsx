@@ -19,11 +19,17 @@ function ForeclosureDetail() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
   const enabled = useFeatureFlag("foreclosures");
+  const { user } = useAuth();
   const [f, setF] = useState<Foreclosure | null>(null);
   const [loading, setLoading] = useState(true);
   const [downPct, setDownPct] = useState(3.5);
   const [rate, setRate] = useState(7.2);
   const [term, setTerm] = useState(30);
+  const [activePhoto, setActivePhoto] = useState(0);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactMsg, setContactMsg] = useState("");
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
