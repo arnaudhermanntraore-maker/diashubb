@@ -6,7 +6,9 @@ import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
 import { ForeclosureCard } from "@/components/ForeclosureCard";
 import { FORECLOSURE_TYPES, US_STATES, type Foreclosure } from "@/lib/foreclosures";
-import { Gavel, BookOpen } from "lucide-react";
+import { Gavel, BookOpen, Search } from "lucide-react";
+
+const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/foreclosures")({
   head: () => ({
@@ -30,7 +32,11 @@ function ForeclosuresPage() {
   const [state, setState] = useState("");
   const [type, setType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
+  const [minPrice, setMinPrice] = useState("");
   const [financing, setFinancing] = useState("");
+  const [status, setStatus] = useState("active");
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortKey>("discount");
 
   useEffect(() => {
@@ -38,17 +44,26 @@ function ForeclosuresPage() {
     (async () => {
       setLoading(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data } = await (supabase as any).from("foreclosures").select("*").eq("status", "active").limit(200);
+      let q = (supabase as any).from("foreclosures").select("*").limit(500);
+      if (status !== "all") q = q.eq("status", status);
+      const { data } = await q;
       setItems((data ?? []) as Foreclosure[]);
       setLoading(false);
     })();
-  }, [enabled]);
+  }, [enabled, status]);
+
+  useEffect(() => { setPage(1); }, [state, type, maxPrice, minPrice, financing, query, sort, status]);
 
   const filtered = useMemo(() => {
     let r = items;
     if (state) r = r.filter((x) => x.state === state);
     if (type !== "all") r = r.filter((x) => x.foreclosure_type === type);
     if (maxPrice) r = r.filter((x) => (x.listing_price ?? 0) <= Number(maxPrice));
+    if (minPrice) r = r.filter((x) => (x.listing_price ?? 0) >= Number(minPrice));
+    if (query) {
+      const qq = query.toLowerCase();
+      r = r.filter((x) => `${x.address} ${x.city} ${x.state} ${x.zip_code ?? ""}`.toLowerCase().includes(qq));
+    }
     if (financing === "FHA") r = r.filter((x) => x.fha_eligible);
     if (financing === "VA") r = r.filter((x) => x.va_eligible);
     if (financing === "Cash") r = r.filter((x) => x.financing_available?.includes("Cash only"));
@@ -63,7 +78,10 @@ function ForeclosuresPage() {
       }
     });
     return sorted;
-  }, [items, state, type, maxPrice, financing, sort]);
+  }, [items, state, type, maxPrice, minPrice, query, financing, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (!enabled) return <FeatureDisabled featureKey="foreclosures" />;
 
@@ -99,6 +117,16 @@ function ForeclosuresPage() {
       {/* Filter bar */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-3 max-w-6xl flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={fr ? "Rechercher (adresse, ville, ZIP)…" : "Search (address, city, ZIP)…"}
+              className="w-full text-sm pl-8 pr-3 py-2 bg-gray-100 rounded-lg outline-none"
+            />
+          </div>
+
           <select value={state} onChange={(e) => setState(e.target.value)} className="text-sm px-3 py-2 bg-gray-100 rounded-lg outline-none">
             <option value="">{fr ? "Tous les États" : "All states"}</option>
             {US_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -113,6 +141,13 @@ function ForeclosuresPage() {
             ))}
           </div>
 
+          <select value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="text-sm px-3 py-2 bg-gray-100 rounded-lg outline-none">
+            <option value="">{fr ? "Prix min" : "Min price"}</option>
+            <option value="50000">&gt; $50k</option>
+            <option value="100000">&gt; $100k</option>
+            <option value="200000">&gt; $200k</option>
+          </select>
+
           <select value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="text-sm px-3 py-2 bg-gray-100 rounded-lg outline-none">
             <option value="">{fr ? "Prix max" : "Max price"}</option>
             <option value="100000">&lt; $100k</option>
@@ -126,6 +161,14 @@ function ForeclosuresPage() {
             <option value="FHA">FHA eligible</option>
             <option value="VA">VA eligible</option>
             <option value="Cash">Cash only</option>
+          </select>
+
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="text-sm px-3 py-2 bg-gray-100 rounded-lg outline-none">
+            <option value="active">{fr ? "Actifs" : "Active"}</option>
+            <option value="pending">{fr ? "En attente" : "Pending"}</option>
+            <option value="sold">{fr ? "Vendus" : "Sold"}</option>
+            <option value="archived">{fr ? "Archivés" : "Archived"}</option>
+            <option value="all">{fr ? "Tous statuts" : "All statuses"}</option>
           </select>
 
           <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} className="text-sm px-3 py-2 bg-gray-100 rounded-lg outline-none ml-auto">
@@ -146,9 +189,32 @@ function ForeclosuresPage() {
         {!loading && filtered.length === 0 ? (
           <div className="text-center py-16 text-gray-500">{fr ? "Aucun résultat avec ces filtres." : "No results with these filters."}</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {filtered.map((f) => <ForeclosureCard key={f.id} f={f} />)}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {pageItems.map((f) => <ForeclosureCard key={f.id} f={f} />)}
+            </div>
+            {totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 bg-white disabled:opacity-50"
+                >
+                  ← {fr ? "Précédent" : "Previous"}
+                </button>
+                <span className="text-sm text-gray-600 px-2">
+                  {fr ? "Page" : "Page"} {page} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 bg-white disabled:opacity-50"
+                >
+                  {fr ? "Suivant" : "Next"} →
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
