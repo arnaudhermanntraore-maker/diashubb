@@ -75,19 +75,36 @@ function ForeclosureDetail() {
           <div className="lg:col-span-2 space-y-5">
             {/* Photos */}
             <div>
-              <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative">
-                {f.photos?.[activePhoto] && <img src={f.photos[activePhoto]} alt={f.address} className="w-full h-full object-cover" />}
-                <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white" style={{ background: t.bg }}>
+              <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative group">
+                {f.photos?.[activePhoto] && (
+                  <button
+                    type="button"
+                    onClick={() => setLightboxOpen(true)}
+                    className="absolute inset-0 w-full h-full"
+                    aria-label="Open photo gallery"
+                  >
+                    <img src={f.photos[activePhoto]} alt={f.address} className="w-full h-full object-cover" />
+                  </button>
+                )}
+                <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white pointer-events-none" style={{ background: t.bg }}>
                   {t.emoji} {t.label}
                 </span>
-                <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded bg-black/60 text-white capitalize">
+                <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded bg-black/60 text-white capitalize pointer-events-none">
                   {f.status}
                 </span>
+                {f.photos?.length > 0 && (
+                  <button
+                    onClick={() => setLightboxOpen(true)}
+                    className="absolute bottom-3 right-3 inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-md bg-black/60 hover:bg-black/80 text-white backdrop-blur"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" /> {fr ? `${f.photos.length} photos` : `${f.photos.length} photos`}
+                  </button>
+                )}
               </div>
               {f.photos?.length > 1 && (
                 <div className="mt-2 flex gap-2 overflow-x-auto">
                   {f.photos.map((p, i) => (
-                    <button key={i} onClick={() => setActivePhoto(i)}
+                    <button key={i} onClick={() => { setActivePhoto(i); setLightboxOpen(true); }}
                       className={`shrink-0 w-20 h-16 rounded overflow-hidden border-2 ${i === activePhoto ? "border-red-600" : "border-transparent"}`}>
                       <img src={p} alt="" className="w-full h-full object-cover" />
                     </button>
