@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef, forwardRef } from "react";
+import { useTranslation } from "react-i18next";
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 interface Props {
@@ -10,6 +11,9 @@ interface Props {
 }
 
 export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" }: Props) {
+  const { t } = useTranslation();
+  const total = photos.length;
+  const galleryLabel = alt ? t("lightbox.galleryWith", { label: alt }) : t("lightbox.gallery");
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
@@ -85,23 +89,23 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
       className="fixed inset-0 z-[100] bg-black/95 flex flex-col"
       role="dialog"
       aria-modal="true"
-      aria-label={alt ? `Photo gallery — ${alt}` : "Photo gallery"}
+      aria-label={galleryLabel}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <h2 id="lightbox-title" className="sr-only">{alt ? `Photo gallery — ${alt}` : "Photo gallery"}</h2>
+      <h2 id="lightbox-title" className="sr-only">{galleryLabel}</h2>
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        Photo {index + 1} of {photos.length}
+        {t("lightbox.counter", { current: index + 1, total })}
       </div>
 
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 text-white">
-        <div className="text-sm opacity-80" aria-hidden="true">{index + 1} / {photos.length}</div>
+        <div className="text-sm opacity-80" aria-hidden="true">{index + 1} / {total}</div>
         <div className="flex items-center gap-1">
-          <IconBtn onClick={() => setZoom((z) => Math.max(1, z - 0.5))} aria-label="Zoom out"><ZoomOut className="w-5 h-5" /></IconBtn>
-          <span className="text-xs w-12 text-center tabular-nums" aria-label={`Zoom level ${Math.round(zoom * 100)} percent`}>{Math.round(zoom * 100)}%</span>
-          <IconBtn onClick={() => setZoom((z) => Math.min(5, z + 0.5))} aria-label="Zoom in"><ZoomIn className="w-5 h-5" /></IconBtn>
-          <IconBtn onClick={reset} aria-label="Reset zoom and position"><RotateCcw className="w-5 h-5" /></IconBtn>
-          <IconBtn ref={closeBtnRef} onClick={onClose} aria-label="Close gallery (Escape)"><X className="w-5 h-5" /></IconBtn>
+          <IconBtn onClick={() => setZoom((z) => Math.max(1, z - 0.5))} aria-label={t("lightbox.zoomOut")}><ZoomOut className="w-5 h-5" /></IconBtn>
+          <span className="text-xs w-12 text-center tabular-nums" aria-label={t("lightbox.zoomLevel", { percent: Math.round(zoom * 100) })}>{Math.round(zoom * 100)}%</span>
+          <IconBtn onClick={() => setZoom((z) => Math.min(5, z + 0.5))} aria-label={t("lightbox.zoomIn")}><ZoomIn className="w-5 h-5" /></IconBtn>
+          <IconBtn onClick={reset} aria-label={t("lightbox.reset")}><RotateCcw className="w-5 h-5" /></IconBtn>
+          <IconBtn ref={closeBtnRef} onClick={onClose} aria-label={t("lightbox.close")}><X className="w-5 h-5" /></IconBtn>
         </div>
       </div>
 
@@ -130,18 +134,18 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
           className="object-contain"
         />
 
-        {photos.length > 1 && (
+        {total > 1 && (
           <>
             <button
               onClick={prev}
-              aria-label={`Previous photo (${((index - 1 + photos.length) % photos.length) + 1} of ${photos.length})`}
+              aria-label={t("lightbox.prev", { current: ((index - 1 + total) % total) + 1, total })}
               className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white text-white flex items-center justify-center backdrop-blur"
             >
               <ChevronLeft className="w-6 h-6" aria-hidden="true" />
             </button>
             <button
               onClick={next}
-              aria-label={`Next photo (${((index + 1) % photos.length) + 1} of ${photos.length})`}
+              aria-label={t("lightbox.next", { current: ((index + 1) % total) + 1, total })}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white text-white flex items-center justify-center backdrop-blur"
             >
               <ChevronRight className="w-6 h-6" aria-hidden="true" />
@@ -151,13 +155,13 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
       </div>
 
       {/* Thumbs */}
-      {photos.length > 1 && (
-        <div className="px-4 py-3 flex gap-2 overflow-x-auto justify-center" role="tablist" aria-label="Photo thumbnails">
+      {total > 1 && (
+        <div className="px-4 py-3 flex gap-2 overflow-x-auto justify-center" role="tablist" aria-label={t("lightbox.thumbs")}>
           {photos.map((p, i) => (
             <button key={i} onClick={() => { onIndexChange(i); reset(); }}
               role="tab"
               aria-selected={i === index}
-              aria-label={`Show photo ${i + 1} of ${photos.length}`}
+              aria-label={t("lightbox.thumb", { current: i + 1, total })}
               className={`shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition focus:outline-none focus:ring-2 focus:ring-white ${i === index ? "border-red-500" : "border-transparent opacity-60 hover:opacity-100"}`}>
               <img src={p} alt="" className="w-full h-full object-cover" />
             </button>
@@ -166,7 +170,7 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
       )}
 
       <div className="text-center text-[11px] text-white/50 pb-2" aria-hidden="true">
-        ← → navigate · +/− zoom · 0 reset · Esc close
+        {t("lightbox.hint")}
       </div>
     </div>
   );
