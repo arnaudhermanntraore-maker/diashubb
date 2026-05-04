@@ -5,9 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
 import { typeBadge, daysUntil, type Foreclosure } from "@/lib/foreclosures";
-import { AlertTriangle, Heart, Bell, Gavel, ArrowLeft } from "lucide-react";
+import { AlertTriangle, Heart, Bell, Gavel, ArrowLeft, Mail, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthWall } from "@/components/AuthWall";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/foreclosures_/$id")({
+  head: () => ({
+    meta: [
+      { title: "Foreclosure detail — TerraFrique" },
+      { name: "description", content: "Detailed view of a US foreclosure listing." },
+    ],
+  }),
   component: ForeclosureDetail,
 });
 
@@ -16,11 +25,17 @@ function ForeclosureDetail() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
   const enabled = useFeatureFlag("foreclosures");
+  const { user } = useAuth();
   const [f, setF] = useState<Foreclosure | null>(null);
   const [loading, setLoading] = useState(true);
   const [downPct, setDownPct] = useState(3.5);
   const [rate, setRate] = useState(7.2);
   const [term, setTerm] = useState(30);
+  const [activePhoto, setActivePhoto] = useState(0);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactMsg, setContactMsg] = useState("");
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
@@ -57,11 +72,26 @@ function ForeclosureDetail() {
           {/* Left col */}
           <div className="lg:col-span-2 space-y-5">
             {/* Photos */}
-            <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative">
-              {f.photos?.[0] && <img src={f.photos[0]} alt={f.address} className="w-full h-full object-cover" />}
-              <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white" style={{ background: t.bg }}>
-                {t.emoji} {t.label}
-              </span>
+            <div>
+              <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative">
+                {f.photos?.[activePhoto] && <img src={f.photos[activePhoto]} alt={f.address} className="w-full h-full object-cover" />}
+                <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white" style={{ background: t.bg }}>
+                  {t.emoji} {t.label}
+                </span>
+                <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded bg-black/60 text-white capitalize">
+                  {f.status}
+                </span>
+              </div>
+              {f.photos?.length > 1 && (
+                <div className="mt-2 flex gap-2 overflow-x-auto">
+                  {f.photos.map((p, i) => (
+                    <button key={i} onClick={() => setActivePhoto(i)}
+                      className={`shrink-0 w-20 h-16 rounded overflow-hidden border-2 ${i === activePhoto ? "border-red-600" : "border-transparent"}`}>
+                      <img src={p} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Header */}
@@ -182,6 +212,13 @@ function ForeclosureDetail() {
 
             {/* Actions */}
             <div className="bg-white rounded-xl border border-gray-200 p-3 space-y-2">
+              <button
+                onClick={() => (user ? setContactOpen(true) : setAuthOpen(true))}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg text-white"
+                style={{ background: "#DC2626" }}
+              >
+                <Mail className="w-4 h-4" /> {fr ? "Demander contact" : "Request contact"}
+              </button>
               <button className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50">
                 <Heart className="w-4 h-4" /> {fr ? "Sauvegarder" : "Save this property"}
               </button>
@@ -192,6 +229,62 @@ function ForeclosureDetail() {
           </div>
         </div>
       </div>
+
+      <AuthWall open={authOpen} onOpenChange={setAuthOpen} titleKey="contact" />
+
+      {contactOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => !sending && setContactOpen(false)}>
+          <div className="bg-white rounded-xl max-w-md w-full p-5" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-gray-900">{fr ? "Demander contact" : "Request contact"}</h3>
+            <p className="text-sm text-gray-600 mt-1">{f.address}, {f.city}, {f.state}</p>
+            <textarea
+              value={contactMsg}
+              onChange={(e) => setContactMsg(e.target.value)}
+              rows={5}
+              placeholder={fr ? "Bonjour, je suis intéressé(e) par cette saisie. Pouvez-vous me contacter ?" : "Hello, I'm interested in this foreclosure. Please contact me."}
+              className="w-full mt-3 p-3 border border-gray-300 rounded-lg text-sm outline-none focus:border-red-500"
+            />
+            <div className="mt-4 flex gap-2 justify-end">
+              <button
+                onClick={() => setContactOpen(false)}
+                disabled={sending}
+                className="text-sm px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+              >
+                {fr ? "Annuler" : "Cancel"}
+              </button>
+              <button
+                disabled={sending || !contactMsg.trim()}
+                onClick={async () => {
+                  if (!user) return;
+                  setSending(true);
+                  try {
+                    const message = contactMsg.trim() || (fr ? "Intéressé par cette saisie." : "Interested in this foreclosure.");
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const { error } = await (supabase as any).from("audit_logs").insert({
+                      user_id: user.id,
+                      action: "foreclosure_contact_request",
+                      metadata: { foreclosure_id: f.id, address: f.address, city: f.city, state: f.state, message },
+                    });
+                    if (error) throw error;
+                    toast.success(fr ? "Demande envoyée. Un spécialiste vous contactera." : "Request sent. A specialist will reach out.");
+                    setContactOpen(false);
+                    setContactMsg("");
+                  } catch (e) {
+                    toast.error(fr ? "Erreur d'envoi" : "Failed to send");
+                  } finally {
+                    setSending(false);
+                  }
+                }}
+                className="text-sm font-semibold px-4 py-2 rounded-lg text-white inline-flex items-center gap-2 disabled:opacity-50"
+                style={{ background: "#DC2626" }}
+              >
+                {sending && <Loader2 className="w-4 h-4 animate-spin" />}
+                {fr ? "Envoyer" : "Send"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
