@@ -44,15 +44,26 @@ function ForeclosuresPage() {
     (async () => {
       setLoading(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data } = await (supabase as any).from("foreclosures").select("*").eq("status", "active").limit(200);
+      let q = (supabase as any).from("foreclosures").select("*").limit(500);
+      if (status !== "all") q = q.eq("status", status);
+      const { data } = await q;
       setItems((data ?? []) as Foreclosure[]);
       setLoading(false);
     })();
-  }, [enabled]);
+  }, [enabled, status]);
+
+  useEffect(() => { setPage(1); }, [state, type, maxPrice, minPrice, financing, query, sort, status]);
 
   const filtered = useMemo(() => {
     let r = items;
     if (state) r = r.filter((x) => x.state === state);
+    if (type !== "all") r = r.filter((x) => x.foreclosure_type === type);
+    if (maxPrice) r = r.filter((x) => (x.listing_price ?? 0) <= Number(maxPrice));
+    if (minPrice) r = r.filter((x) => (x.listing_price ?? 0) >= Number(minPrice));
+    if (query) {
+      const qq = query.toLowerCase();
+      r = r.filter((x) => `${x.address} ${x.city} ${x.state} ${x.zip_code ?? ""}`.toLowerCase().includes(qq));
+    }
     if (type !== "all") r = r.filter((x) => x.foreclosure_type === type);
     if (maxPrice) r = r.filter((x) => (x.listing_price ?? 0) <= Number(maxPrice));
     if (financing === "FHA") r = r.filter((x) => x.fha_eligible);
