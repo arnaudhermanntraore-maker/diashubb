@@ -21,6 +21,7 @@ interface Props {
 export function LiveRateCards({ selected, onSelect }: Props) {
   const { i18n } = useTranslation();
   const fr = i18n.language?.startsWith("fr");
+  const live = useLiveRates();
 
   return (
     <div>
@@ -34,7 +35,8 @@ export function LiveRateCards({ selected, onSelect }: Props) {
           const country = cu.countries.find((x) => x.code === co);
           if (!country) return null;
           const isSel = selected?.currency === cc && selected?.country === co;
-          const tp = cu.trend * 100;
+          const lr = liveRate(live, cc);
+          const tp = lr.trend * 100;
           const trend =
             tp > 0.05 ? { text: `↑ +${tp.toFixed(1)}%`, color: "#0F6E56" } :
             tp < -0.05 ? { text: `↓ ${tp.toFixed(1)}%`, color: "#C0282D" } :
@@ -60,7 +62,7 @@ export function LiveRateCards({ selected, onSelect }: Props) {
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#111827" }}>{cu.code}</span>
               </div>
               <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{country.name}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#0F6E56", marginTop: 4 }}>{formatRateOneUSD(cu.code)}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#0F6E56", marginTop: 4 }}>{formatRateOneUSD(cu.code, lr.rate)}</div>
               <div style={{ fontSize: 10, color: trend.color, marginTop: 2 }}>{trend.text}</div>
             </button>
           );
