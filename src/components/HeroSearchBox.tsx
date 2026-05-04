@@ -158,6 +158,8 @@ export function HeroSearchBox() {
           ...(cityClean ? { city: cityClean } : {}),
         } as never,
       });
+    } else if (tab === "foreclosures") {
+      navigate({ to: "/foreclosures", search: {} as never });
     }
   };
 
