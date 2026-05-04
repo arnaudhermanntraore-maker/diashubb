@@ -1,12 +1,13 @@
 import { type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
-import { Users, Home, Shield, BarChart3, Flag, Settings } from "lucide-react";
+import { Users, Home, Shield, BarChart3, Flag, Settings, Gavel } from "lucide-react";
 
 const TABS = [
   { to: "/admin", label: "Vue d'ensemble", icon: Settings },
   { to: "/admin/users", label: "Utilisateurs", icon: Users },
   { to: "/admin/listings", label: "Annonces", icon: Home },
+  { to: "/admin/foreclosures", label: "Foreclosures", icon: Gavel },
   { to: "/admin/security", label: "Sécurité", icon: Shield },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/admin/flags", label: "Feature Flags", icon: Flag, superOnly: true },
