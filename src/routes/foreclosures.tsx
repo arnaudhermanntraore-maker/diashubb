@@ -6,7 +6,9 @@ import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
 import { ForeclosureCard } from "@/components/ForeclosureCard";
 import { FORECLOSURE_TYPES, US_STATES, type Foreclosure } from "@/lib/foreclosures";
-import { Gavel, BookOpen } from "lucide-react";
+import { Gavel, BookOpen, Search } from "lucide-react";
+
+const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/foreclosures")({
   head: () => ({
