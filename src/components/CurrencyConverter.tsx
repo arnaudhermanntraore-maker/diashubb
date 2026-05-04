@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeftRight, ArrowUpDown, ChevronDown, Search, X } from "lucide-react";
 import { CURRENCIES, convertFromUSD, findCurrency, formatLocal, formatRateOneUSD } from "@/lib/currencies";
 import { useAuth } from "@/hooks/useAuth";
+import { useLiveRates, liveRate } from "@/hooks/useLiveRates";
 
 const QUICK = [100, 500, 1000, 5000, 10000];
 const FEE_USD = 12;
