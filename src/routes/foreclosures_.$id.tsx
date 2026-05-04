@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
 import { typeBadge, daysUntil, type Foreclosure } from "@/lib/foreclosures";
-import { AlertTriangle, Heart, Bell, Gavel, ArrowLeft, Mail, Loader2 } from "lucide-react";
+import { AlertTriangle, Heart, Bell, Gavel, ArrowLeft, Mail, Loader2, Maximize2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthWall } from "@/components/AuthWall";
+import { PhotoLightbox } from "@/components/PhotoLightbox";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/foreclosures_/$id")({
