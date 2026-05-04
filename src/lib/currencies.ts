@@ -54,9 +54,10 @@ export function findCurrency(code: string) {
   return CURRENCIES.find((c) => c.code === code);
 }
 
-export function convertFromUSD(amountUSD: number, code: string): number {
+export function convertFromUSD(amountUSD: number, code: string, rateOverride?: number): number {
   const c = findCurrency(code);
-  return c ? amountUSD * c.rate : 0;
+  if (!c) return 0;
+  return amountUSD * (rateOverride ?? c.rate);
 }
 
 export function formatLocal(amount: number, code: string): string {
@@ -68,9 +69,11 @@ export function formatLocal(amount: number, code: string): string {
   return c.symbol + " " + amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export function formatRateOneUSD(code: string): string {
+export function formatRateOneUSD(code: string, rateOverride?: number): string {
   const c = findCurrency(code);
   if (!c) return "";
-  if (NO_DECIMALS.has(code)) return Math.round(c.rate).toLocaleString("fr-FR").replace(/,/g, " ") + " " + c.symbol;
-  return c.rate.toFixed(2) + " " + c.symbol;
+  const r = rateOverride ?? c.rate;
+  if (NO_DECIMALS.has(code)) return Math.round(r).toLocaleString("fr-FR").replace(/,/g, " ") + " " + c.symbol;
+  return r.toFixed(2) + " " + c.symbol;
 }
+

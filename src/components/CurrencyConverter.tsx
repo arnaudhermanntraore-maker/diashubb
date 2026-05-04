@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeftRight, ArrowUpDown, ChevronDown, Search, X } from "lucide-react";
 import { CURRENCIES, convertFromUSD, findCurrency, formatLocal, formatRateOneUSD } from "@/lib/currencies";
 import { useAuth } from "@/hooks/useAuth";
+import { useLiveRates, liveRate } from "@/hooks/useLiveRates";
 
 const QUICK = [100, 500, 1000, 5000, 10000];
 const FEE_USD = 12;
@@ -29,10 +30,12 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
   const dropRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  const live = useLiveRates();
   const currency = findCurrency(currencyCode)!;
   const country = currency.countries.find((c) => c.code === countryCode) ?? currency.countries[0];
-  const converted = convertFromUSD(amount, currencyCode);
-  const trendPct = currency.trend * 100;
+  const lr = liveRate(live, currencyCode);
+  const converted = convertFromUSD(amount, currencyCode, lr.rate);
+  const trendPct = lr.trend * 100;
 
   // Close dropdown
   useEffect(() => {
@@ -121,7 +124,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
             </span>
             {fr ? "Taux en direct" : "Live rates"}
           </span>
-          <span style={{ fontSize: 10, color: "#9CA3AF" }}>{fr ? "Mis à jour: il y a 2 min" : "Updated: 2 min ago"}</span>
+          <span style={{ fontSize: 10, color: "#9CA3AF" }}>{formatUpdated(live.updatedAt, fr)}</span>
         </div>
       </div>
 
@@ -225,7 +228,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
                       {fr ? "Populaires" : "Popular"}
                     </div>
                     {popular.map(({ country: co, currency: cu }) => (
-                      <Option key={`p-${co.code}`} co={co} cu={cu} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
+                      <Option key={`p-${co.code}`} co={co} cu={cu} rate={liveRate(live, cu.code).rate} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
                     ))}
                     <div style={{ height: 1, background: "#F3F4F6", margin: "6px 0" }} />
                   </>
@@ -237,7 +240,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
                     .slice()
                     .sort((a, b) => a.country.name.localeCompare(b.country.name))
                     .map(({ country: co, currency: cu }) => (
-                      <Option key={`${cu.code}-${co.code}`} co={co} cu={cu} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
+                      <Option key={`${cu.code}-${co.code}`} co={co} cu={cu} rate={liveRate(live, cu.code).rate} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
                     ))
                 )}
               </div>
@@ -249,7 +252,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
       {/* Rate row */}
       <div className="flex items-center justify-between" style={{ padding: "8px 0", borderBottom: "0.5px solid #F3F4F6" }}>
         <div style={{ fontSize: 12, color: "#6B7280" }}>
-          1 USD = <span style={{ fontWeight: 700, color: "#111827" }}>{formatRateOneUSD(currencyCode)}</span>
+          1 USD = <span style={{ fontWeight: 700, color: "#111827" }}>{formatRateOneUSD(currencyCode, lr.rate)}</span>
         </div>
         <div style={{ fontSize: 12, color: trendLabel.color }}>{trendLabel.text}</div>
       </div>
@@ -290,6 +293,17 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
   );
 }
 
+function formatUpdated(iso: string | null, fr: boolean): string {
+  if (!iso) return fr ? "Mise à jour bientôt" : "Updating soon";
+  const diffMin = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (diffMin < 1) return fr ? "Mis à jour: à l'instant" : "Updated: just now";
+  if (diffMin < 60) return fr ? `Mis à jour: il y a ${diffMin} min` : `Updated: ${diffMin} min ago`;
+  const h = Math.round(diffMin / 60);
+  if (h < 24) return fr ? `Mis à jour: il y a ${h} h` : `Updated: ${h} h ago`;
+  const d = Math.round(h / 24);
+  return fr ? `Mis à jour: il y a ${d} j` : `Updated: ${d} d ago`;
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
@@ -299,9 +313,10 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function Option({ co, cu, selected, onClick }: {
+function Option({ co, cu, rate, selected, onClick }: {
   co: { code: string; name: string; flag: string };
   cu: { code: string; name: string; symbol: string; rate: number };
+  rate: number;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -323,7 +338,7 @@ function Option({ co, cu, selected, onClick }: {
         <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{co.name}</div>
         <div style={{ fontSize: 11, color: "#9CA3AF" }}>{cu.name} · {cu.code}</div>
       </div>
-      <div style={{ fontSize: 12, color: "#0F6E56", whiteSpace: "nowrap" }}>1 USD = {formatRateOneUSD(cu.code)}</div>
+      <div style={{ fontSize: 12, color: "#0F6E56", whiteSpace: "nowrap" }}>1 USD = {formatRateOneUSD(cu.code, rate)}</div>
     </button>
   );
 }

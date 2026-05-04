@@ -654,6 +654,39 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_config: {
+        Row: {
+          created_at: string
+          currency_code: string
+          id: string
+          rate_from_usd: number
+          source: string
+          trend_24h: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency_code: string
+          id?: string
+          rate_from_usd: number
+          source?: string
+          trend_24h?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency_code?: string
+          id?: string
+          rate_from_usd?: number
+          source?: string
+          trend_24h?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount_usd: number
