@@ -251,6 +251,16 @@ function ForeclosureDetail() {
 
       <AuthWall open={authOpen} onOpenChange={setAuthOpen} titleKey="contact" />
 
+      {lightboxOpen && f.photos?.length > 0 && (
+        <PhotoLightbox
+          photos={f.photos}
+          index={activePhoto}
+          onIndexChange={setActivePhoto}
+          onClose={() => setLightboxOpen(false)}
+          alt={f.address}
+        />
+      )}
+
       {contactOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => !sending && setContactOpen(false)}>
           <div className="bg-white rounded-xl max-w-md w-full p-5" onClick={(e) => e.stopPropagation()}>
