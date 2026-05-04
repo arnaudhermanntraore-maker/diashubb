@@ -88,9 +88,14 @@ async function fetchHudListings(): Promise<HudRecord[]> {
 
 async function handle(request: Request) {
   const auth = request.headers.get("authorization") ?? "";
+  const apiKey = request.headers.get("apikey") ?? "";
   const token = auth.replace(/^Bearer\s+/i, "");
-  const expected = process.env.CRON_SECRET;
-  if (!expected || token !== expected) {
+  const cronSecret = process.env.CRON_SECRET;
+  const anonKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const ok =
+    (cronSecret && token === cronSecret) ||
+    (anonKey && (apiKey === anonKey || token === anonKey));
+  if (!ok) {
     return new Response(JSON.stringify({ error: "unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
