@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { CURRENCIES, formatRateOneUSD } from "@/lib/currencies";
+import { useLiveRates, liveRate } from "@/hooks/useLiveRates";
 
 const FEATURED: { currency: string; country: string }[] = [
   { currency: "XOF", country: "CI" },

@@ -293,6 +293,17 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
   );
 }
 
+function formatUpdated(iso: string | null, fr: boolean): string {
+  if (!iso) return fr ? "Mise à jour bientôt" : "Updating soon";
+  const diffMin = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (diffMin < 1) return fr ? "Mis à jour: à l'instant" : "Updated: just now";
+  if (diffMin < 60) return fr ? `Mis à jour: il y a ${diffMin} min` : `Updated: ${diffMin} min ago`;
+  const h = Math.round(diffMin / 60);
+  if (h < 24) return fr ? `Mis à jour: il y a ${h} h` : `Updated: ${h} h ago`;
+  const d = Math.round(h / 24);
+  return fr ? `Mis à jour: il y a ${d} j` : `Updated: ${d} d ago`;
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
