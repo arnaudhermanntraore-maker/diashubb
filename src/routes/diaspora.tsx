@@ -151,6 +151,29 @@ function DiasporaPage() {
           </div>
         )}
       </section>
+
+      {/* US Foreclosures */}
+      {foreclosuresEnabled && foreclosures.length > 0 && (
+        <section className="bg-gradient-to-br from-red-50 to-orange-50 py-12">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-red-700 mb-1">
+                  <Gavel className="w-4 h-4" /> Opportunités USA
+                </div>
+                <h2 className="text-2xl font-display font-bold">Saisies immobilières — jusqu'à -50% du marché</h2>
+                <p className="text-sm text-muted-foreground mt-1">HUD Homes, Bank REO et enchères. Financement FHA disponible pour la diaspora.</p>
+              </div>
+              <Link to="/foreclosures" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-600 text-white text-sm font-medium hover:bg-red-700">
+                Voir toutes les saisies <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {foreclosures.map((f) => <ForeclosureCard key={f.id} f={f} />)}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
