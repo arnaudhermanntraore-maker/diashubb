@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
-import { Globe2, TrendingUp, Sparkles, Coins, ArrowRight } from "lucide-react";
+import { ForeclosureCard } from "@/components/ForeclosureCard";
+import type { Foreclosure } from "@/lib/foreclosures";
+import { Globe2, TrendingUp, Sparkles, Coins, ArrowRight, Gavel } from "lucide-react";
 
 interface Prop {
   id: string;
