@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef, forwardRef } from "react";
+import { useTranslation } from "react-i18next";
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 interface Props {
