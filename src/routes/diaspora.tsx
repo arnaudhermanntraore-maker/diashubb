@@ -170,6 +170,16 @@ function DiasporaPage() {
   );
 }
 
+function ConverterBlock() {
+  const [sel, setSel] = useState<{ currency: string; country: string }>({ currency: "XOF", country: "CI" });
+  return (
+    <div className="space-y-4 py-6">
+      <LiveRateCards selected={sel} onSelect={(currency, country) => setSel({ currency, country })} />
+      <CurrencyConverter initialCurrency={sel.currency} initialCountry={sel.country} key={`${sel.currency}-${sel.country}`} />
+    </div>
+  );
+}
+
 function Pillar({ icon: Icon, title, text }: { icon: typeof Globe2; title: string; text: string }) {
   return (
     <div className="bg-card border border-border rounded-2xl p-5">
