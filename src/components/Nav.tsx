@@ -58,6 +58,7 @@ export function Nav() {
           <NavIcon to="/listings" icon={Globe2} label={fr ? "Afrique" : "Africa"} search={{ region: "africa" }} />
           <NavIcon to="/diaspora" icon={Globe2} label={fr ? "Diaspora" : "Diaspora"} />
           <NavIcon to="/contractors" icon={Wrench} label={fr ? "Artisans" : "Contractors"} />
+          <NavIcon to="/foreclosures" icon={ShieldAlert} label={fr ? "Saisies" : "Foreclosures"} />
           <NavIcon to="/agents" icon={Building2} label={fr ? "Agences" : "Agencies"} />
           <NavIcon to="/brokers" icon={Star} label={fr ? "Courtiers" : "Brokers"} />
           {user && <NavIcon to="/favorites" icon={Heart} label={fr ? "Favoris" : "Saved"} />}

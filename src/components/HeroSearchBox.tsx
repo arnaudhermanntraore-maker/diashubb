@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import { Search, MapPin, Loader2, X, Home, Building2, Hammer, Calculator, KeyRound } from "lucide-react";
+import { Search, MapPin, Loader2, X, Home, Building2, Hammer, Calculator, KeyRound, Gavel } from "lucide-react";
 
 const TF_BLUE = "#185FA5";
 const TF_GREEN = "#1D9E75";
 const TF_AMBER = "#EF9F27";
 const TF_PURPLE = "#534AB7";
+const TF_RED = "#DC2626";
 
-type TabId = "buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate";
+type TabId = "buy_us" | "rent_us" | "invest_af" | "contractor" | "estimate" | "foreclosures";
 type ListingType = "land" | "house" | "apartment" | "commercial" | "farm";
 const ALLOWED_LISTING_TYPES: ReadonlySet<ListingType> = new Set(["land", "house", "apartment", "commercial", "farm"]);
 const asListingType = (v: string): ListingType | undefined =>
@@ -76,6 +77,12 @@ export function HeroSearchBox() {
   const [availability, setAvailability] = useState("");
   const [rating, setRating] = useState("");
 
+  // Foreclosures
+  const [fcState, setFcState] = useState("");
+  const [fcType, setFcType] = useState("all");
+  const [fcMaxPrice, setFcMaxPrice] = useState("");
+  const [fcFinancing, setFcFinancing] = useState("");
+
   // Estimate
   const [estAddress, setEstAddress] = useState("");
   const [estType, setEstType] = useState("house");
@@ -96,6 +103,7 @@ export function HeroSearchBox() {
     { id: "invest_af", label: fr ? "Investir en Afrique" : "Invest in Africa", color: TF_GREEN, icon: Building2 },
     { id: "contractor", label: fr ? "Trouver un artisan" : "Find contractor", color: TF_AMBER, icon: Hammer },
     { id: "estimate", label: fr ? "Estimer un bien" : "Estimate value", color: TF_PURPLE, icon: Calculator },
+    { id: "foreclosures", label: fr ? "Saisies" : "Foreclosures", color: TF_RED, icon: Gavel },
   ];
 
   const activeTab = tabs.find((t) => t.id === tab)!;
