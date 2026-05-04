@@ -66,11 +66,26 @@ function ForeclosureDetail() {
           {/* Left col */}
           <div className="lg:col-span-2 space-y-5">
             {/* Photos */}
-            <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative">
-              {f.photos?.[0] && <img src={f.photos[0]} alt={f.address} className="w-full h-full object-cover" />}
-              <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white" style={{ background: t.bg }}>
-                {t.emoji} {t.label}
-              </span>
+            <div>
+              <div className="aspect-[16/10] bg-gray-200 rounded-xl overflow-hidden relative">
+                {f.photos?.[activePhoto] && <img src={f.photos[activePhoto]} alt={f.address} className="w-full h-full object-cover" />}
+                <span className="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded text-white" style={{ background: t.bg }}>
+                  {t.emoji} {t.label}
+                </span>
+                <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded bg-black/60 text-white capitalize">
+                  {f.status}
+                </span>
+              </div>
+              {f.photos?.length > 1 && (
+                <div className="mt-2 flex gap-2 overflow-x-auto">
+                  {f.photos.map((p, i) => (
+                    <button key={i} onClick={() => setActivePhoto(i)}
+                      className={`shrink-0 w-20 h-16 rounded overflow-hidden border-2 ${i === activePhoto ? "border-red-600" : "border-transparent"}`}>
+                      <img src={p} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Header */}
