@@ -11,6 +11,12 @@ import { AuthWall } from "@/components/AuthWall";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/foreclosures_/$id")({
+  head: () => ({
+    meta: [
+      { title: "Foreclosure detail — TerraFrique" },
+      { name: "description", content: "Detailed view of a US foreclosure listing." },
+    ],
+  }),
   component: ForeclosureDetail,
 });
 
