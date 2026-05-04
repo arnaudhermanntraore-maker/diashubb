@@ -11,6 +11,9 @@ interface Props {
 }
 
 export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" }: Props) {
+  const { t } = useTranslation();
+  const total = photos.length;
+  const galleryLabel = alt ? t("lightbox.galleryWith", { label: alt }) : t("lightbox.gallery");
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
