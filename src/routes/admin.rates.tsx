@@ -1,11 +1,13 @@
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, Search, RefreshCw, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { CURRENCIES } from "@/lib/currencies";
+import { upsertRate, deleteRate } from "@/server/rates.functions";
 
 interface RateRow {
   id: string;
