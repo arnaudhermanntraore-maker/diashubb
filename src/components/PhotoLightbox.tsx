@@ -13,20 +13,45 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   const reset = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
   const prev = useCallback(() => { onIndexChange((index - 1 + photos.length) % photos.length); reset(); }, [index, photos.length, onIndexChange, reset]);
   const next = useCallback(() => { onIndexChange((index + 1) % photos.length); reset(); }, [index, photos.length, onIndexChange, reset]);
 
+  // Save focus, autofocus close button, restore on unmount
+  useEffect(() => {
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+    return () => {
+      previouslyFocused.current?.focus?.();
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft") prev();
-      else if (e.key === "ArrowRight") next();
-      else if (e.key === "+" || e.key === "=") setZoom((z) => Math.min(5, z + 0.5));
-      else if (e.key === "-") setZoom((z) => Math.max(1, z - 0.5));
-      else if (e.key === "0") reset();
+      if (e.key === "Escape") { e.preventDefault(); onClose(); return; }
+      if (e.key === "ArrowLeft") { prev(); return; }
+      if (e.key === "ArrowRight") { next(); return; }
+      if (e.key === "+" || e.key === "=") { setZoom((z) => Math.min(5, z + 0.5)); return; }
+      if (e.key === "-") { setZoom((z) => Math.max(1, z - 0.5)); return; }
+      if (e.key === "0") { reset(); return; }
+
+      // Focus trap
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && active === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus(); }
+      }
     };
     window.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
