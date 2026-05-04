@@ -80,16 +80,28 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
   const photo = photos[index];
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col" role="dialog" aria-modal="true">
+    <div
+      ref={dialogRef}
+      className="fixed inset-0 z-[100] bg-black/95 flex flex-col"
+      role="dialog"
+      aria-modal="true"
+      aria-label={alt ? `Photo gallery — ${alt}` : "Photo gallery"}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <h2 id="lightbox-title" className="sr-only">{alt ? `Photo gallery — ${alt}` : "Photo gallery"}</h2>
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        Photo {index + 1} of {photos.length}
+      </div>
+
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 text-white">
-        <div className="text-sm opacity-80">{index + 1} / {photos.length}</div>
+        <div className="text-sm opacity-80" aria-hidden="true">{index + 1} / {photos.length}</div>
         <div className="flex items-center gap-1">
           <IconBtn onClick={() => setZoom((z) => Math.max(1, z - 0.5))} aria-label="Zoom out"><ZoomOut className="w-5 h-5" /></IconBtn>
-          <span className="text-xs w-12 text-center tabular-nums">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs w-12 text-center tabular-nums" aria-label={`Zoom level ${Math.round(zoom * 100)} percent`}>{Math.round(zoom * 100)}%</span>
           <IconBtn onClick={() => setZoom((z) => Math.min(5, z + 0.5))} aria-label="Zoom in"><ZoomIn className="w-5 h-5" /></IconBtn>
-          <IconBtn onClick={reset} aria-label="Reset"><RotateCcw className="w-5 h-5" /></IconBtn>
-          <IconBtn onClick={onClose} aria-label="Close"><X className="w-5 h-5" /></IconBtn>
+          <IconBtn onClick={reset} aria-label="Reset zoom and position"><RotateCcw className="w-5 h-5" /></IconBtn>
+          <IconBtn ref={closeBtnRef} onClick={onClose} aria-label="Close gallery (Escape)"><X className="w-5 h-5" /></IconBtn>
         </div>
       </div>
 
