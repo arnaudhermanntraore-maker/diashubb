@@ -64,8 +64,6 @@ function ForeclosuresPage() {
       const qq = query.toLowerCase();
       r = r.filter((x) => `${x.address} ${x.city} ${x.state} ${x.zip_code ?? ""}`.toLowerCase().includes(qq));
     }
-    if (type !== "all") r = r.filter((x) => x.foreclosure_type === type);
-    if (maxPrice) r = r.filter((x) => (x.listing_price ?? 0) <= Number(maxPrice));
     if (financing === "FHA") r = r.filter((x) => x.fha_eligible);
     if (financing === "VA") r = r.filter((x) => x.va_eligible);
     if (financing === "Cash") r = r.filter((x) => x.financing_available?.includes("Cash only"));
@@ -80,7 +78,10 @@ function ForeclosuresPage() {
       }
     });
     return sorted;
-  }, [items, state, type, maxPrice, financing, sort]);
+  }, [items, state, type, maxPrice, minPrice, query, financing, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (!enabled) return <FeatureDisabled featureKey="foreclosures" />;
 
