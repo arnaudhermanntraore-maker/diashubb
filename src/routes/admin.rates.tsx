@@ -38,7 +38,7 @@ function validate(code: string, rate: number, trend: number): string | null {
 function RatesAdmin() {
   const { i18n } = useTranslation();
   const fr = i18n.language?.startsWith("fr");
-  const { isAdmin, roles, user, loading: authLoading } = useAuth();
+  const { isAdmin, roles, loading: authLoading } = useAuth();
   const isSuper = roles.includes("super_admin");
   const canEdit = isSuper;
 
