@@ -134,17 +134,17 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
           <>
             <button
               onClick={prev}
-              aria-label="Previous"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur"
+              aria-label={`Previous photo (${((index - 1 + photos.length) % photos.length) + 1} of ${photos.length})`}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white text-white flex items-center justify-center backdrop-blur"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-6 h-6" aria-hidden="true" />
             </button>
             <button
               onClick={next}
-              aria-label="Next"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur"
+              aria-label={`Next photo (${((index + 1) % photos.length) + 1} of ${photos.length})`}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white text-white flex items-center justify-center backdrop-blur"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-6 h-6" aria-hidden="true" />
             </button>
           </>
         )}
@@ -152,27 +152,36 @@ export function PhotoLightbox({ photos, index, onClose, onIndexChange, alt = "" 
 
       {/* Thumbs */}
       {photos.length > 1 && (
-        <div className="px-4 py-3 flex gap-2 overflow-x-auto justify-center">
+        <div className="px-4 py-3 flex gap-2 overflow-x-auto justify-center" role="tablist" aria-label="Photo thumbnails">
           {photos.map((p, i) => (
             <button key={i} onClick={() => { onIndexChange(i); reset(); }}
-              className={`shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition ${i === index ? "border-red-500" : "border-transparent opacity-60 hover:opacity-100"}`}>
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Show photo ${i + 1} of ${photos.length}`}
+              className={`shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition focus:outline-none focus:ring-2 focus:ring-white ${i === index ? "border-red-500" : "border-transparent opacity-60 hover:opacity-100"}`}>
               <img src={p} alt="" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
       )}
 
-      <div className="text-center text-[11px] text-white/50 pb-2">
+      <div className="text-center text-[11px] text-white/50 pb-2" aria-hidden="true">
         ← → navigate · +/− zoom · 0 reset · Esc close
       </div>
     </div>
   );
 }
 
-function IconBtn({ children, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button {...rest} className="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center transition">
-      {children}
-    </button>
-  );
-}
+const IconBtn = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  function IconBtn({ children, className, ...rest }, ref) {
+    return (
+      <button
+        ref={ref}
+        {...rest}
+        className={`w-9 h-9 rounded-full hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white flex items-center justify-center transition ${className ?? ""}`}
+      >
+        {children}
+      </button>
+    );
+  }
+);
