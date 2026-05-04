@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 import { FeatureDisabled } from "@/components/FeatureDisabled";
-import { Globe2, TrendingUp, Sparkles, Coins, ArrowRight } from "lucide-react";
+import { ForeclosureCard } from "@/components/ForeclosureCard";
+import type { Foreclosure } from "@/lib/foreclosures";
+import { Globe2, TrendingUp, Sparkles, Coins, ArrowRight, Gavel } from "lucide-react";
 
 interface Prop {
   id: string;
@@ -30,14 +32,16 @@ export const Route = createFileRoute("/diaspora")({
 
 function DiasporaPage() {
   const enabled = useFeatureFlag("diaspora_portal");
+  const foreclosuresEnabled = useFeatureFlag("foreclosures");
   const [props, setProps] = useState<Prop[]>([]);
   const [rates, setRates] = useState<FX[]>([]);
+  const [foreclosures, setForeclosures] = useState<Foreclosure[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!enabled) return;
     (async () => {
-      const [{ data: p }, { data: r }] = await Promise.all([
+      const [{ data: p }, { data: r }, { data: f }] = await Promise.all([
         supabase.from("properties")
           .select("id, title, city, country, price_usd, cover_url, tf_verified, ai_score, boosted_until")
           .eq("status", "active")
@@ -45,12 +49,16 @@ function DiasporaPage() {
           .order("boosted_until", { ascending: false, nullsFirst: false })
           .limit(12),
         supabase.from("currency_rates").select("code, symbol, rate, country").order("country"),
+        foreclosuresEnabled
+          ? supabase.from("foreclosures").select("*").eq("status", "active").order("discount_percent", { ascending: false, nullsFirst: false }).limit(6)
+          : Promise.resolve({ data: [] as any }),
       ]);
       setProps((p ?? []) as Prop[]);
       setRates((r ?? []) as FX[]);
+      setForeclosures((f ?? []) as Foreclosure[]);
       setLoading(false);
     })();
-  }, [enabled]);
+  }, [enabled, foreclosuresEnabled]);
 
   if (!enabled) return <FeatureDisabled featureKey="diaspora_portal" />;
 
@@ -143,6 +151,29 @@ function DiasporaPage() {
           </div>
         )}
       </section>
+
+      {/* US Foreclosures */}
+      {foreclosuresEnabled && foreclosures.length > 0 && (
+        <section className="bg-gradient-to-br from-red-50 to-orange-50 py-12">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-red-700 mb-1">
+                  <Gavel className="w-4 h-4" /> Opportunités USA
+                </div>
+                <h2 className="text-2xl font-display font-bold">Saisies immobilières — jusqu'à -50% du marché</h2>
+                <p className="text-sm text-muted-foreground mt-1">HUD Homes, Bank REO et enchères. Financement FHA disponible pour la diaspora.</p>
+              </div>
+              <Link to="/foreclosures" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-600 text-white text-sm font-medium hover:bg-red-700">
+                Voir toutes les saisies <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {foreclosures.map((f) => <ForeclosureCard key={f.id} f={f} />)}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
