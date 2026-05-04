@@ -14,6 +14,7 @@ import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ListingsRouteImport } from './routes/listings'
+import { Route as ForeclosuresRouteImport } from './routes/foreclosures'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DiasporaRouteImport } from './routes/diaspora'
 import { Route as DemoLoginRouteImport } from './routes/demo-login'
@@ -28,6 +29,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
+import { Route as ForeclosuresGuideRouteImport } from './routes/foreclosures_.guide'
+import { Route as ForeclosuresIdRouteImport } from './routes/foreclosures_.$id'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -62,6 +65,11 @@ const MessagesRoute = MessagesRouteImport.update({
 const ListingsRoute = ListingsRouteImport.update({
   id: '/listings',
   path: '/listings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForeclosuresRoute = ForeclosuresRouteImport.update({
+  id: '/foreclosures',
+  path: '/foreclosures',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesRoute = FavoritesRouteImport.update({
@@ -134,6 +142,16 @@ const ListingsNewRoute = ListingsNewRouteImport.update({
   path: '/listings/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForeclosuresGuideRoute = ForeclosuresGuideRouteImport.update({
+  id: '/foreclosures_/guide',
+  path: '/foreclosures/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForeclosuresIdRoute = ForeclosuresIdRouteImport.update({
+  id: '/foreclosures_/$id',
+  path: '/foreclosures/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgencyRegisterRoute = AgencyRegisterRouteImport.update({
   id: '/agency/register',
   path: '/agency/register',
@@ -198,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
+  '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
@@ -210,6 +229,8 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/foreclosures/$id': typeof ForeclosuresIdRoute
+  '/foreclosures/guide': typeof ForeclosuresGuideRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -229,6 +250,7 @@ export interface FileRoutesByTo {
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
+  '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
@@ -241,6 +263,8 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/foreclosures/$id': typeof ForeclosuresIdRoute
+  '/foreclosures/guide': typeof ForeclosuresGuideRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -261,6 +285,7 @@ export interface FileRoutesById {
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
+  '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
@@ -273,6 +298,8 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/foreclosures_/$id': typeof ForeclosuresIdRoute
+  '/foreclosures_/guide': typeof ForeclosuresGuideRoute
   '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
   '/api/public/chat': typeof ApiPublicChatRoute
@@ -294,6 +321,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/diaspora'
     | '/favorites'
+    | '/foreclosures'
     | '/listings'
     | '/messages'
     | '/profile'
@@ -306,6 +334,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/foreclosures/$id'
+    | '/foreclosures/guide'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -325,6 +355,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/diaspora'
     | '/favorites'
+    | '/foreclosures'
     | '/listings'
     | '/messages'
     | '/profile'
@@ -337,6 +368,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/foreclosures/$id'
+    | '/foreclosures/guide'
     | '/listings/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -356,6 +389,7 @@ export interface FileRouteTypes {
     | '/demo-login'
     | '/diaspora'
     | '/favorites'
+    | '/foreclosures'
     | '/listings'
     | '/messages'
     | '/profile'
@@ -368,6 +402,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/foreclosures_/$id'
+    | '/foreclosures_/guide'
     | '/listings_/new'
     | '/property/$id'
     | '/api/public/chat'
@@ -388,6 +424,7 @@ export interface RootRouteChildren {
   DemoLoginRoute: typeof DemoLoginRoute
   DiasporaRoute: typeof DiasporaRoute
   FavoritesRoute: typeof FavoritesRoute
+  ForeclosuresRoute: typeof ForeclosuresRoute
   ListingsRoute: typeof ListingsRoute
   MessagesRoute: typeof MessagesRoute
   ProfileRoute: typeof ProfileRoute
@@ -395,6 +432,8 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
   AgencyRegisterRoute: typeof AgencyRegisterRoute
+  ForeclosuresIdRoute: typeof ForeclosuresIdRoute
+  ForeclosuresGuideRoute: typeof ForeclosuresGuideRoute
   ListingsNewRoute: typeof ListingsNewRoute
   PropertyIdRoute: typeof PropertyIdRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
@@ -437,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: '/listings'
       fullPath: '/listings'
       preLoaderRoute: typeof ListingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foreclosures': {
+      id: '/foreclosures'
+      path: '/foreclosures'
+      fullPath: '/foreclosures'
+      preLoaderRoute: typeof ForeclosuresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites': {
@@ -535,6 +581,20 @@ declare module '@tanstack/react-router' {
       path: '/listings/new'
       fullPath: '/listings/new'
       preLoaderRoute: typeof ListingsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foreclosures_/guide': {
+      id: '/foreclosures_/guide'
+      path: '/foreclosures/guide'
+      fullPath: '/foreclosures/guide'
+      preLoaderRoute: typeof ForeclosuresGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foreclosures_/$id': {
+      id: '/foreclosures_/$id'
+      path: '/foreclosures/$id'
+      fullPath: '/foreclosures/$id'
+      preLoaderRoute: typeof ForeclosuresIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agency/register': {
@@ -641,6 +701,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoLoginRoute: DemoLoginRoute,
   DiasporaRoute: DiasporaRoute,
   FavoritesRoute: FavoritesRoute,
+  ForeclosuresRoute: ForeclosuresRoute,
   ListingsRoute: ListingsRoute,
   MessagesRoute: MessagesRoute,
   ProfileRoute: ProfileRoute,
@@ -648,6 +709,8 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
   AgencyRegisterRoute: AgencyRegisterRoute,
+  ForeclosuresIdRoute: ForeclosuresIdRoute,
+  ForeclosuresGuideRoute: ForeclosuresGuideRoute,
   ListingsNewRoute: ListingsNewRoute,
   PropertyIdRoute: PropertyIdRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
@@ -657,3 +720,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
