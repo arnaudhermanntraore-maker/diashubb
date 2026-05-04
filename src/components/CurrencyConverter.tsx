@@ -30,10 +30,12 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
   const dropRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  const live = useLiveRates();
   const currency = findCurrency(currencyCode)!;
   const country = currency.countries.find((c) => c.code === countryCode) ?? currency.countries[0];
-  const converted = convertFromUSD(amount, currencyCode);
-  const trendPct = currency.trend * 100;
+  const lr = liveRate(live, currencyCode);
+  const converted = convertFromUSD(amount, currencyCode, lr.rate);
+  const trendPct = lr.trend * 100;
 
   // Close dropdown
   useEffect(() => {
