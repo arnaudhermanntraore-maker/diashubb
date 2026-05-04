@@ -470,6 +470,54 @@ export function HeroSearchBox() {
               </div>
             </div>
           )}
+
+          {tab === "foreclosures" && (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+              <div className="md:col-span-2">
+                <label className={labelClass}>{fr ? "État" : "State"}</label>
+                <select value={fcState} onChange={(e) => setFcState(e.target.value)} className={fieldClass}>
+                  <option value="">{fr ? "Tous les États" : "All states"}</option>
+                  {["AL","AZ","CA","FL","GA","MD","NY","TX","VA"].map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="md:col-span-3">
+                <label className={labelClass}>{fr ? "Type de saisie" : "Type"}</label>
+                <select value={fcType} onChange={(e) => setFcType(e.target.value)} className={fieldClass}>
+                  <option value="all">{fr ? "Tous les types" : "All types"}</option>
+                  <option value="hud_home">HUD Homes</option>
+                  <option value="reo">Bank REO</option>
+                  <option value="preforeclosure">Pre-foreclosure</option>
+                  <option value="auction">{fr ? "Enchères" : "Auction"}</option>
+                  <option value="fannie_mae">Fannie Mae</option>
+                  <option value="va_home">VA Homes</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelClass}>{fr ? "Prix max" : "Max price"}</label>
+                <select value={fcMaxPrice} onChange={(e) => setFcMaxPrice(e.target.value)} className={fieldClass}>
+                  <option value="">{fr ? "Tout budget" : "Any price"}</option>
+                  <option value="100000">&lt; $100,000</option>
+                  <option value="200000">&lt; $200,000</option>
+                  <option value="350000">&lt; $350,000</option>
+                  <option value="500000">&lt; $500,000</option>
+                </select>
+              </div>
+              <div className="md:col-span-3">
+                <label className={labelClass}>{fr ? "Financement" : "Financing"}</label>
+                <select value={fcFinancing} onChange={(e) => setFcFinancing(e.target.value)} className={fieldClass}>
+                  <option value="">{fr ? "Tout" : "Any"}</option>
+                  <option value="FHA">FHA eligible (3.5%)</option>
+                  <option value="VA">VA eligible (0%)</option>
+                  <option value="Cash">Cash only</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <button onClick={handleSearch} className="inline-flex items-center justify-center gap-2 w-full text-white font-semibold rounded-xl text-sm py-2.5 hover:opacity-90" style={{ background: TF_RED }}>
+                  <Gavel size={16} /> {fr ? "Trouver" : "Find"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
