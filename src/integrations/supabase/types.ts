@@ -364,6 +364,150 @@ export type Database = {
         }
         Relationships: []
       }
+      foreclosures: {
+        Row: {
+          address: string
+          ai_analysis: Json
+          ai_analyzed_at: string | null
+          ai_investment_score: number | null
+          ai_renovation_estimate: number | null
+          auction_date: string | null
+          bathrooms: number | null
+          bedrooms: number | null
+          boosted_until: string | null
+          case_number: string | null
+          city: string
+          country_code: string | null
+          created_at: string
+          default_date: string | null
+          discount_percent: number | null
+          estimated_market_value: number | null
+          fha_eligible: boolean
+          financing_available: string[]
+          foreclosure_stage: string | null
+          foreclosure_type: string
+          id: string
+          is_boosted: boolean
+          is_featured: boolean
+          last_synced_at: string
+          lat: number | null
+          lender_name: string | null
+          listing_date: string | null
+          listing_price: number | null
+          lng: number | null
+          opening_bid: number | null
+          outstanding_loan: number | null
+          photos: Json
+          property_type: string | null
+          raw_data: Json
+          saves_count: number
+          source: string
+          source_reference: string | null
+          state: string
+          status: string
+          surface_sqft: number | null
+          updated_at: string
+          va_eligible: boolean
+          views_count: number
+          year_built: number | null
+          zip_code: string | null
+        }
+        Insert: {
+          address: string
+          ai_analysis?: Json
+          ai_analyzed_at?: string | null
+          ai_investment_score?: number | null
+          ai_renovation_estimate?: number | null
+          auction_date?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          boosted_until?: string | null
+          case_number?: string | null
+          city: string
+          country_code?: string | null
+          created_at?: string
+          default_date?: string | null
+          discount_percent?: number | null
+          estimated_market_value?: number | null
+          fha_eligible?: boolean
+          financing_available?: string[]
+          foreclosure_stage?: string | null
+          foreclosure_type: string
+          id?: string
+          is_boosted?: boolean
+          is_featured?: boolean
+          last_synced_at?: string
+          lat?: number | null
+          lender_name?: string | null
+          listing_date?: string | null
+          listing_price?: number | null
+          lng?: number | null
+          opening_bid?: number | null
+          outstanding_loan?: number | null
+          photos?: Json
+          property_type?: string | null
+          raw_data?: Json
+          saves_count?: number
+          source: string
+          source_reference?: string | null
+          state: string
+          status?: string
+          surface_sqft?: number | null
+          updated_at?: string
+          va_eligible?: boolean
+          views_count?: number
+          year_built?: number | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string
+          ai_analysis?: Json
+          ai_analyzed_at?: string | null
+          ai_investment_score?: number | null
+          ai_renovation_estimate?: number | null
+          auction_date?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          boosted_until?: string | null
+          case_number?: string | null
+          city?: string
+          country_code?: string | null
+          created_at?: string
+          default_date?: string | null
+          discount_percent?: number | null
+          estimated_market_value?: number | null
+          fha_eligible?: boolean
+          financing_available?: string[]
+          foreclosure_stage?: string | null
+          foreclosure_type?: string
+          id?: string
+          is_boosted?: boolean
+          is_featured?: boolean
+          last_synced_at?: string
+          lat?: number | null
+          lender_name?: string | null
+          listing_date?: string | null
+          listing_price?: number | null
+          lng?: number | null
+          opening_bid?: number | null
+          outstanding_loan?: number | null
+          photos?: Json
+          property_type?: string | null
+          raw_data?: Json
+          saves_count?: number
+          source?: string
+          source_reference?: string | null
+          state?: string
+          status?: string
+          surface_sqft?: number | null
+          updated_at?: string
+          va_eligible?: boolean
+          views_count?: number
+          year_built?: number | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content_encrypted: string
