@@ -206,6 +206,13 @@ function ForeclosureDetail() {
 
             {/* Actions */}
             <div className="bg-white rounded-xl border border-gray-200 p-3 space-y-2">
+              <button
+                onClick={() => (user ? setContactOpen(true) : setAuthOpen(true))}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg text-white"
+                style={{ background: "#DC2626" }}
+              >
+                <Mail className="w-4 h-4" /> {fr ? "Demander contact" : "Request contact"}
+              </button>
               <button className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50">
                 <Heart className="w-4 h-4" /> {fr ? "Sauvegarder" : "Save this property"}
               </button>
@@ -216,6 +223,62 @@ function ForeclosureDetail() {
           </div>
         </div>
       </div>
+
+      <AuthWall open={authOpen} onOpenChange={setAuthOpen} titleKey="contact" />
+
+      {contactOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => !sending && setContactOpen(false)}>
+          <div className="bg-white rounded-xl max-w-md w-full p-5" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-gray-900">{fr ? "Demander contact" : "Request contact"}</h3>
+            <p className="text-sm text-gray-600 mt-1">{f.address}, {f.city}, {f.state}</p>
+            <textarea
+              value={contactMsg}
+              onChange={(e) => setContactMsg(e.target.value)}
+              rows={5}
+              placeholder={fr ? "Bonjour, je suis intéressé(e) par cette saisie. Pouvez-vous me contacter ?" : "Hello, I'm interested in this foreclosure. Please contact me."}
+              className="w-full mt-3 p-3 border border-gray-300 rounded-lg text-sm outline-none focus:border-red-500"
+            />
+            <div className="mt-4 flex gap-2 justify-end">
+              <button
+                onClick={() => setContactOpen(false)}
+                disabled={sending}
+                className="text-sm px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+              >
+                {fr ? "Annuler" : "Cancel"}
+              </button>
+              <button
+                disabled={sending || !contactMsg.trim()}
+                onClick={async () => {
+                  if (!user) return;
+                  setSending(true);
+                  try {
+                    const message = contactMsg.trim() || (fr ? "Intéressé par cette saisie." : "Interested in this foreclosure.");
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const { error } = await (supabase as any).from("audit_logs").insert({
+                      user_id: user.id,
+                      action: "foreclosure_contact_request",
+                      metadata: { foreclosure_id: f.id, address: f.address, city: f.city, state: f.state, message },
+                    });
+                    if (error) throw error;
+                    toast.success(fr ? "Demande envoyée. Un spécialiste vous contactera." : "Request sent. A specialist will reach out.");
+                    setContactOpen(false);
+                    setContactMsg("");
+                  } catch (e) {
+                    toast.error(fr ? "Erreur d'envoi" : "Failed to send");
+                  } finally {
+                    setSending(false);
+                  }
+                }}
+                className="text-sm font-semibold px-4 py-2 rounded-lg text-white inline-flex items-center gap-2 disabled:opacity-50"
+                style={{ background: "#DC2626" }}
+              >
+                {sending && <Loader2 className="w-4 h-4 animate-spin" />}
+                {fr ? "Envoyer" : "Send"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
