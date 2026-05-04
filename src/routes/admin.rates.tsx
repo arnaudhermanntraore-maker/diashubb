@@ -49,6 +49,9 @@ function RatesAdmin() {
   const [q, setQ] = useState("");
   const [newRow, setNewRow] = useState({ currency_code: "", rate_from_usd: 1, trend_24h: 0 });
 
+  const upsertFn = useServerFn(upsertRate);
+  const deleteFn = useServerFn(deleteRate);
+
   const load = async () => {
     setLoading(true);
     const { data, error } = await supabase.from("rate_config").select("*").order("currency_code");
@@ -78,27 +81,27 @@ function RatesAdmin() {
     const err = validate(r.currency_code, Number(r.rate_from_usd), Number(r.trend_24h));
     if (err) { toast.error(err); return; }
     setBusy(r.id);
-    const { error } = await supabase.from("rate_config").update({
-      rate_from_usd: r.rate_from_usd,
-      trend_24h: r.trend_24h,
-      source: "manual",
-      updated_by: user?.id ?? null,
-      updated_at: new Date().toISOString(),
-    }).eq("id", r.id);
-    setBusy(null);
-    if (error) toast.error(error.message);
-    else {
+    try {
+      await upsertFn({ data: { currency_code: r.currency_code, rate_from_usd: Number(r.rate_from_usd), trend_24h: Number(r.trend_24h) } });
       toast.success(`${r.currency_code} ${fr ? "mis à jour" : "updated"}`);
       setDirty((d) => { const n = { ...d }; delete n[r.id]; return n; });
+    } catch (e) {
+      toast.error((e as Error).message ?? "Error");
+    } finally {
+      setBusy(null);
     }
   };
 
   const remove = async (r: RateRow) => {
     if (!canEdit) return;
     if (!confirm(fr ? `Supprimer le taux ${r.currency_code} ?` : `Delete rate ${r.currency_code}?`)) return;
-    const { error } = await supabase.from("rate_config").delete().eq("id", r.id);
-    if (error) toast.error(error.message);
-    else { toast.success(fr ? "Supprimé" : "Deleted"); load(); }
+    try {
+      await deleteFn({ data: { currency_code: r.currency_code } });
+      toast.success(fr ? "Supprimé" : "Deleted");
+      load();
+    } catch (e) {
+      toast.error((e as Error).message ?? "Error");
+    }
   };
 
   const add = async () => {
@@ -107,18 +110,13 @@ function RatesAdmin() {
     const err = validate(code, Number(newRow.rate_from_usd), Number(newRow.trend_24h));
     if (err) { toast.error(err); return; }
     if (rows.some((r) => r.currency_code === code)) { toast.error(fr ? "Devise déjà existante" : "Currency already exists"); return; }
-    const { error } = await supabase.from("rate_config").insert({
-      currency_code: code,
-      rate_from_usd: newRow.rate_from_usd,
-      trend_24h: newRow.trend_24h,
-      source: "manual",
-      updated_by: user?.id ?? null,
-    });
-    if (error) toast.error(error.message);
-    else {
+    try {
+      await upsertFn({ data: { currency_code: code, rate_from_usd: Number(newRow.rate_from_usd), trend_24h: Number(newRow.trend_24h) } });
       toast.success(`${code} ${fr ? "ajouté" : "added"}`);
       setNewRow({ currency_code: "", rate_from_usd: 1, trend_24h: 0 });
       load();
+    } catch (e) {
+      toast.error((e as Error).message ?? "Error");
     }
   };
 
