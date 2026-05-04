@@ -124,7 +124,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
             </span>
             {fr ? "Taux en direct" : "Live rates"}
           </span>
-          <span style={{ fontSize: 10, color: "#9CA3AF" }}>{fr ? "Mis à jour: il y a 2 min" : "Updated: 2 min ago"}</span>
+          <span style={{ fontSize: 10, color: "#9CA3AF" }}>{formatUpdated(live.updatedAt, fr)}</span>
         </div>
       </div>
 
@@ -228,7 +228,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
                       {fr ? "Populaires" : "Popular"}
                     </div>
                     {popular.map(({ country: co, currency: cu }) => (
-                      <Option key={`p-${co.code}`} co={co} cu={cu} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
+                      <Option key={`p-${co.code}`} co={co} cu={cu} rate={liveRate(live, cu.code).rate} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
                     ))}
                     <div style={{ height: 1, background: "#F3F4F6", margin: "6px 0" }} />
                   </>
@@ -240,7 +240,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
                     .slice()
                     .sort((a, b) => a.country.name.localeCompare(b.country.name))
                     .map(({ country: co, currency: cu }) => (
-                      <Option key={`${cu.code}-${co.code}`} co={co} cu={cu} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
+                      <Option key={`${cu.code}-${co.code}`} co={co} cu={cu} rate={liveRate(live, cu.code).rate} selected={cu.code === currencyCode && co.code === countryCode} onClick={() => select(cu.code, co.code)} />
                     ))
                 )}
               </div>
@@ -252,7 +252,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
       {/* Rate row */}
       <div className="flex items-center justify-between" style={{ padding: "8px 0", borderBottom: "0.5px solid #F3F4F6" }}>
         <div style={{ fontSize: 12, color: "#6B7280" }}>
-          1 USD = <span style={{ fontWeight: 700, color: "#111827" }}>{formatRateOneUSD(currencyCode)}</span>
+          1 USD = <span style={{ fontWeight: 700, color: "#111827" }}>{formatRateOneUSD(currencyCode, lr.rate)}</span>
         </div>
         <div style={{ fontSize: 12, color: trendLabel.color }}>{trendLabel.text}</div>
       </div>
@@ -302,9 +302,10 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function Option({ co, cu, selected, onClick }: {
+function Option({ co, cu, rate, selected, onClick }: {
   co: { code: string; name: string; flag: string };
   cu: { code: string; name: string; symbol: string; rate: number };
+  rate: number;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -326,7 +327,7 @@ function Option({ co, cu, selected, onClick }: {
         <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{co.name}</div>
         <div style={{ fontSize: 11, color: "#9CA3AF" }}>{cu.name} · {cu.code}</div>
       </div>
-      <div style={{ fontSize: 12, color: "#0F6E56", whiteSpace: "nowrap" }}>1 USD = {formatRateOneUSD(cu.code)}</div>
+      <div style={{ fontSize: 12, color: "#0F6E56", whiteSpace: "nowrap" }}>1 USD = {formatRateOneUSD(cu.code, rate)}</div>
     </button>
   );
 }
