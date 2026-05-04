@@ -41,6 +41,7 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api.public.stripe-webhook'
 import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estimate'
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
+import { Route as ApiPublicHooksSyncHudRouteImport } from './routes/api/public/hooks/sync-hud'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -202,6 +203,11 @@ const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
   path: '/api/public/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksSyncHudRoute = ApiPublicHooksSyncHudRouteImport.update({
+  id: '/api/public/hooks/sync-hud',
+  path: '/api/public/hooks/sync-hud',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/hooks/sync-hud': typeof ApiPublicHooksSyncHudRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -270,6 +277,7 @@ export interface FileRoutesByTo {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/hooks/sync-hud': typeof ApiPublicHooksSyncHudRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -305,6 +313,7 @@ export interface FileRoutesById {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/hooks/sync-hud': typeof ApiPublicHooksSyncHudRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -341,6 +350,7 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
+    | '/api/public/hooks/sync-hud'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
+    | '/api/public/hooks/sync-hud'
   id:
     | '__root__'
     | '/'
@@ -409,6 +420,7 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
+    | '/api/public/hooks/sync-hud'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -439,6 +451,7 @@ export interface RootRouteChildren {
   ApiPublicChatRoute: typeof ApiPublicChatRoute
   ApiPublicEstimateRoute: typeof ApiPublicEstimateRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
+  ApiPublicHooksSyncHudRoute: typeof ApiPublicHooksSyncHudRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -667,6 +680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/sync-hud': {
+      id: '/api/public/hooks/sync-hud'
+      path: '/api/public/hooks/sync-hud'
+      fullPath: '/api/public/hooks/sync-hud'
+      preLoaderRoute: typeof ApiPublicHooksSyncHudRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -716,6 +736,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicChatRoute: ApiPublicChatRoute,
   ApiPublicEstimateRoute: ApiPublicEstimateRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
+  ApiPublicHooksSyncHudRoute: ApiPublicHooksSyncHudRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
