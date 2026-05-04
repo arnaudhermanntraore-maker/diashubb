@@ -37,6 +37,7 @@ function ForeclosureDetail() {
   const [contactOpen, setContactOpen] = useState(false);
   const [contactMsg, setContactMsg] = useState("");
   const [sending, setSending] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
