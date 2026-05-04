@@ -32,7 +32,11 @@ function ForeclosuresPage() {
   const [state, setState] = useState("");
   const [type, setType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
+  const [minPrice, setMinPrice] = useState("");
   const [financing, setFinancing] = useState("");
+  const [status, setStatus] = useState("active");
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortKey>("discount");
 
   useEffect(() => {
