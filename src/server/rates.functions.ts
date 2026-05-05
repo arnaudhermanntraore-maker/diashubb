@@ -82,7 +82,7 @@ export const upsertRate = createServerFn({ method: "POST" })
       .single();
     if (error) {
       console.error("upsertRate error", error);
-      throw new Response(error.message, { status: 400 });
+      throw rateError("RATES_DB_ERROR", 400, error.message);
     }
     return { ok: true as const, row };
   });
