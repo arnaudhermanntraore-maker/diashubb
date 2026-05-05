@@ -87,7 +87,7 @@ function RatesAdmin() {
       toast.success(`${r.currency_code} ${fr ? "mis à jour" : "updated"}`);
       setDirty((d) => { const n = { ...d }; delete n[r.id]; return n; });
     } catch (e) {
-      toast.error((e as Error).message ?? "Error");
+      toast.error(formatRateError(e));
     } finally {
       setBusy(null);
     }
@@ -101,7 +101,7 @@ function RatesAdmin() {
       toast.success(fr ? "Supprimé" : "Deleted");
       load();
     } catch (e) {
-      toast.error((e as Error).message ?? "Error");
+      toast.error(formatRateError(e));
     }
   };
 
@@ -117,7 +117,7 @@ function RatesAdmin() {
       setNewRow({ currency_code: "", rate_from_usd: 1, trend_24h: 0 });
       load();
     } catch (e) {
-      toast.error((e as Error).message ?? "Error");
+      toast.error(formatRateError(e));
     }
   };
 
