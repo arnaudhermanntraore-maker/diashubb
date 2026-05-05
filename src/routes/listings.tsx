@@ -6,6 +6,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard, type Property } from "@/components/PropertyCard";
 import { MapView } from "@/components/MapView";
+import { DemoBanner } from "@/components/DemoBanner";
 
 type PropertyType = "all" | "land" | "house" | "apartment" | "commercial" | "farm";
 
