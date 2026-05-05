@@ -10,15 +10,6 @@ interface Props {
   limit?: number;
 }
 
-const ADD_TO = {
-  us: "/listings_/new",
-  africa: "/listings_/new",
-} as const;
-const ADD_SEARCH = {
-  us: undefined,
-  africa: { continent: "africa" as const },
-};
-
 const SELECT = "id,title,title_fr,title_en,country,city,neighborhood,price_usd,type,cover_url,images,ai_score,tf_verified,bedrooms,bathrooms,surface_m2,has_360_tour,lat,lng,boosted_until";
 
 export function FeaturedPropertiesRow({ region, limit = 4 }: Props) {
