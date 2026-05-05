@@ -100,7 +100,7 @@ export const deleteRate = createServerFn({ method: "POST" })
       .eq("currency_code", data.currency_code);
     if (error) {
       console.error("deleteRate error", error);
-      throw new Response(error.message, { status: 400 });
+      throw rateError("RATES_DB_ERROR", 400, error.message);
     }
     return { ok: true as const };
   });
