@@ -552,6 +552,63 @@ export type Database = {
           },
         ]
       }
+      partner_applications: {
+        Row: {
+          bio: string | null
+          city: string | null
+          created_at: string
+          document_url: string | null
+          email: string
+          experience_years: number | null
+          id: string
+          kind: string
+          license_number: string | null
+          name: string
+          phone: string
+          region: string | null
+          specialty: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          document_url?: string | null
+          email: string
+          experience_years?: number | null
+          id?: string
+          kind: string
+          license_number?: string | null
+          name: string
+          phone: string
+          region?: string | null
+          specialty?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          document_url?: string | null
+          email?: string
+          experience_years?: number | null
+          id?: string
+          kind?: string
+          license_number?: string | null
+          name?: string
+          phone?: string
+          region?: string | null
+          specialty?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           country: string | null
