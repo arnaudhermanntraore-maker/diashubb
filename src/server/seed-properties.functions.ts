@@ -246,10 +246,10 @@ export const seedRealisticProperties = createServerFn({ method: "POST" }).handle
     boosted_until: p.boosted_days ? new Date(Date.now() + p.boosted_days * 86400000).toISOString() : null,
     views_count: p.views_count,
     saves_count: p.saves_count,
-    metadata: p.metadata ?? {},
+    metadata: (p.metadata ?? {}) as never,
   }));
 
-  const { data, error } = await supabaseAdmin.from("properties").insert(rows).select("id");
+  const { data, error } = await supabaseAdmin.from("properties").insert(rows as never).select("id");
   if (error) throw error;
   return { ok: true, inserted: data?.length ?? 0 };
 });
