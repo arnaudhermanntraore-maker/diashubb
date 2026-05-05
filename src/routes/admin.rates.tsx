@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Save, Plus, Trash2, Search, RefreshCw, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { CURRENCIES } from "@/lib/currencies";
 import { upsertRate, deleteRate } from "@/server/rates.functions";
+import { formatRateError } from "@/lib/rateErrors";
 
 interface RateRow {
   id: string;
