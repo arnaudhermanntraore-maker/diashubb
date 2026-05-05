@@ -37,6 +37,7 @@ function Home() {
   const fr = i18n.language === "fr";
   return (
     <div>
+      <DemoBanner />
       {/* HERO */}
       <section className="relative overflow-hidden text-white" style={{ background: TF_NAVY }}>
         <div className="absolute inset-0 bg-grid-overlay opacity-60 pointer-events-none" />
