@@ -444,6 +444,68 @@ function MarketCard({ title, badge, badgeColor, subtitle, bars, barFrom, barTo, 
   );
 }
 
+function MarketCardV2({ flag, location, trend, trendPositive, subtitle, bars, stats, accent, gradFrom, gradTo, lastBar }: {
+  flag: string; location: string; trend: string; trendPositive: boolean;
+  subtitle: string;
+  bars: { month: string; value: number; label: string }[];
+  stats: { value: string; label: string }[];
+  accent: string; gradFrom: string; gradTo: string; lastBar: string;
+}) {
+  return (
+    <div className="bg-white border rounded-xl p-3.5" style={{ borderColor: "rgba(0,0,0,0.08)", borderWidth: 0.5 }}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span style={{ fontSize: 20 }}>{flag}</span>
+          <span className="text-[13px] font-bold text-tf-navy">{location}</span>
+        </div>
+        <span className="text-[10px] font-semibold rounded-full" style={{
+          background: trendPositive ? "#E1F5EE" : "#FCEBEB",
+          color: trendPositive ? "#085041" : "#791F1F",
+          padding: "2px 8px",
+        }}>{trend}</span>
+      </div>
+      <div className="text-[11px] mt-1 mb-3" style={{ color: "#6B7280" }}>{subtitle}</div>
+      <div className="flex items-end gap-1.5" style={{ height: 80 }}>
+        {bars.map((b, i) => {
+          const isLast = i === bars.length - 1;
+          return (
+            <div key={i} className="flex flex-col items-center flex-1">
+              <div title={b.label} style={{
+                width: "100%",
+                height: `${b.value}%`,
+                borderRadius: "3px 3px 0 0",
+                background: isLast ? lastBar : `linear-gradient(to top, ${gradTo}, ${gradFrom})`,
+                boxShadow: isLast ? `0 0 8px ${accent}55` : "none",
+                animation: `tfBarGrow .6s ${i * 0.1}s ease-out both`,
+                transformOrigin: "bottom",
+              }} />
+              <div className="mt-1" style={{
+                fontSize: 9,
+                color: isLast ? accent : "#9CA3AF",
+                fontWeight: isLast ? 500 : 400,
+              }}>{b.month}</div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t" style={{ borderColor: "rgba(0,0,0,0.06)" }}>
+        {stats.map((s, i) => (
+          <div key={i} className="text-center">
+            <div className="text-[12px] font-semibold" style={{ color: i === 0 ? accent : "#111827" }}>{s.value}</div>
+            <div className="text-[10px]" style={{ color: "#9CA3AF" }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 text-right">
+        <Link to="/market" className="text-[11px] underline" style={{ color: accent }}>
+          {location.includes("Atlanta") ? "View full analysis →" : "Voir l'analyse complète →"}
+        </Link>
+      </div>
+      <style>{`@keyframes tfBarGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}`}</style>
+    </div>
+  );
+}
+
 function Testimonial({ initials, color, name, loc, quote }: { initials: string; color: string; name: string; loc: string; quote: string }) {
   return (
     <div className="bg-white rounded-2xl border border-border p-5 shadow-soft flex flex-col">
