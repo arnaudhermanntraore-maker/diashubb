@@ -93,6 +93,14 @@ const resources = {
         },
       },
       admin: { title: "Admin panel", users: "Users", listings: "Listings", flags: "Feature flags", audit: "Audit", txs: "Transactions" },
+      rateErrors: {
+        unauthorized: "Session expired — please sign in again.",
+        forbidden: "Access denied — super admin role required.",
+        validation: "Invalid data — check ISO code, rate and trend.",
+        dbError: "Database error: {{message}}",
+        network: "Could not reach the server. Please retry.",
+        unknown: "An unexpected error occurred.",
+      },
       lightbox: {
         gallery: "Photo gallery",
         galleryWith: "Photo gallery — {{label}}",
