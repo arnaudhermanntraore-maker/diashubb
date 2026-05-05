@@ -9,10 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransfersRouteImport } from './routes/transfers'
+import { Route as SurveyorsRouteImport } from './routes/surveyors'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MarketRouteImport } from './routes/market'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as ForeclosuresRouteImport } from './routes/foreclosures'
 import { Route as FavoritesRouteImport } from './routes/favorites'
@@ -27,10 +30,14 @@ import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SurveyorsRegisterRouteImport } from './routes/surveyors.register'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as ListingsNewRouteImport } from './routes/listings_.new'
 import { Route as ForeclosuresGuideRouteImport } from './routes/foreclosures_.guide'
 import { Route as ForeclosuresIdRouteImport } from './routes/foreclosures_.$id'
+import { Route as ContractorsRegisterRouteImport } from './routes/contractors.register'
+import { Route as BrokersRegisterRouteImport } from './routes/brokers.register'
+import { Route as AgentsRegisterRouteImport } from './routes/agents.register'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -45,6 +52,16 @@ import { Route as ApiPublicEstimateRouteImport } from './routes/api.public.estim
 import { Route as ApiPublicChatRouteImport } from './routes/api.public.chat'
 import { Route as ApiPublicHooksSyncHudRouteImport } from './routes/api/public/hooks/sync-hud'
 
+const TransfersRoute = TransfersRouteImport.update({
+  id: '/transfers',
+  path: '/transfers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SurveyorsRoute = SurveyorsRouteImport.update({
+  id: '/surveyors',
+  path: '/surveyors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -63,6 +80,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketRoute = MarketRouteImport.update({
+  id: '/market',
+  path: '/market',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ListingsRoute = ListingsRouteImport.update({
@@ -135,6 +157,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SurveyorsRegisterRoute = SurveyorsRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => SurveyorsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -154,6 +181,21 @@ const ForeclosuresIdRoute = ForeclosuresIdRouteImport.update({
   id: '/foreclosures_/$id',
   path: '/foreclosures/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorsRegisterRoute = ContractorsRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => ContractorsRoute,
+} as any)
+const BrokersRegisterRoute = BrokersRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => BrokersRoute,
+} as any)
+const AgentsRegisterRoute = AgentsRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AgentsRoute,
 } as any)
 const AgencyRegisterRoute = AgencyRegisterRouteImport.update({
   id: '/agency/register',
@@ -224,22 +266,25 @@ const ApiPublicHooksSyncHudRoute = ApiPublicHooksSyncHudRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/agents': typeof AgentsRoute
+  '/agents': typeof AgentsRouteWithChildren
   '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
-  '/brokers': typeof BrokersRoute
+  '/brokers': typeof BrokersRouteWithChildren
   '/compare': typeof CompareRoute
-  '/contractors': typeof ContractorsRoute
+  '/contractors': typeof ContractorsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
+  '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/surveyors': typeof SurveyorsRouteWithChildren
+  '/transfers': typeof TransfersRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
@@ -249,10 +294,14 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/agents/register': typeof AgentsRegisterRoute
+  '/brokers/register': typeof BrokersRegisterRoute
+  '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures/$id': typeof ForeclosuresIdRoute
   '/foreclosures/guide': typeof ForeclosuresGuideRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
+  '/surveyors/register': typeof SurveyorsRegisterRoute
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
@@ -261,22 +310,25 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/agents': typeof AgentsRoute
+  '/agents': typeof AgentsRouteWithChildren
   '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
-  '/brokers': typeof BrokersRoute
+  '/brokers': typeof BrokersRouteWithChildren
   '/compare': typeof CompareRoute
-  '/contractors': typeof ContractorsRoute
+  '/contractors': typeof ContractorsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
+  '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/surveyors': typeof SurveyorsRouteWithChildren
+  '/transfers': typeof TransfersRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
@@ -286,10 +338,14 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/agents/register': typeof AgentsRegisterRoute
+  '/brokers/register': typeof BrokersRegisterRoute
+  '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures/$id': typeof ForeclosuresIdRoute
   '/foreclosures/guide': typeof ForeclosuresGuideRoute
   '/listings/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
+  '/surveyors/register': typeof SurveyorsRegisterRoute
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
@@ -299,22 +355,25 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/agents': typeof AgentsRoute
+  '/agents': typeof AgentsRouteWithChildren
   '/alerts': typeof AlertsRoute
   '/auth': typeof AuthRoute
-  '/brokers': typeof BrokersRoute
+  '/brokers': typeof BrokersRouteWithChildren
   '/compare': typeof CompareRoute
-  '/contractors': typeof ContractorsRoute
+  '/contractors': typeof ContractorsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/demo-login': typeof DemoLoginRoute
   '/diaspora': typeof DiasporaRoute
   '/favorites': typeof FavoritesRoute
   '/foreclosures': typeof ForeclosuresRoute
   '/listings': typeof ListingsRoute
+  '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
+  '/surveyors': typeof SurveyorsRouteWithChildren
+  '/transfers': typeof TransfersRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
@@ -324,10 +383,14 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
+  '/agents/register': typeof AgentsRegisterRoute
+  '/brokers/register': typeof BrokersRegisterRoute
+  '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures_/$id': typeof ForeclosuresIdRoute
   '/foreclosures_/guide': typeof ForeclosuresGuideRoute
   '/listings_/new': typeof ListingsNewRoute
   '/property/$id': typeof PropertyIdRoute
+  '/surveyors/register': typeof SurveyorsRegisterRoute
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/estimate': typeof ApiPublicEstimateRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
@@ -350,10 +413,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/foreclosures'
     | '/listings'
+    | '/market'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/surveyors'
+    | '/transfers'
     | '/admin/analytics'
     | '/admin/flags'
     | '/admin/foreclosures'
@@ -363,10 +429,14 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/agents/register'
+    | '/brokers/register'
+    | '/contractors/register'
     | '/foreclosures/$id'
     | '/foreclosures/guide'
     | '/listings/new'
     | '/property/$id'
+    | '/surveyors/register'
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
@@ -387,10 +457,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/foreclosures'
     | '/listings'
+    | '/market'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/surveyors'
+    | '/transfers'
     | '/admin/analytics'
     | '/admin/flags'
     | '/admin/foreclosures'
@@ -400,10 +473,14 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/agents/register'
+    | '/brokers/register'
+    | '/contractors/register'
     | '/foreclosures/$id'
     | '/foreclosures/guide'
     | '/listings/new'
     | '/property/$id'
+    | '/surveyors/register'
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
@@ -424,10 +501,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/foreclosures'
     | '/listings'
+    | '/market'
     | '/messages'
     | '/profile'
     | '/safety'
     | '/signup'
+    | '/surveyors'
+    | '/transfers'
     | '/admin/analytics'
     | '/admin/flags'
     | '/admin/foreclosures'
@@ -437,10 +517,14 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/agency/dashboard'
     | '/agency/register'
+    | '/agents/register'
+    | '/brokers/register'
+    | '/contractors/register'
     | '/foreclosures_/$id'
     | '/foreclosures_/guide'
     | '/listings_/new'
     | '/property/$id'
+    | '/surveyors/register'
     | '/api/public/chat'
     | '/api/public/estimate'
     | '/api/public/stripe-webhook'
@@ -450,22 +534,25 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AgentsRoute: typeof AgentsRoute
+  AgentsRoute: typeof AgentsRouteWithChildren
   AlertsRoute: typeof AlertsRoute
   AuthRoute: typeof AuthRoute
-  BrokersRoute: typeof BrokersRoute
+  BrokersRoute: typeof BrokersRouteWithChildren
   CompareRoute: typeof CompareRoute
-  ContractorsRoute: typeof ContractorsRoute
+  ContractorsRoute: typeof ContractorsRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   DemoLoginRoute: typeof DemoLoginRoute
   DiasporaRoute: typeof DiasporaRoute
   FavoritesRoute: typeof FavoritesRoute
   ForeclosuresRoute: typeof ForeclosuresRoute
   ListingsRoute: typeof ListingsRoute
+  MarketRoute: typeof MarketRoute
   MessagesRoute: typeof MessagesRoute
   ProfileRoute: typeof ProfileRoute
   SafetyRoute: typeof SafetyRoute
   SignupRoute: typeof SignupRoute
+  SurveyorsRoute: typeof SurveyorsRouteWithChildren
+  TransfersRoute: typeof TransfersRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
   AgencyRegisterRoute: typeof AgencyRegisterRoute
   ForeclosuresIdRoute: typeof ForeclosuresIdRoute
@@ -480,6 +567,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transfers': {
+      id: '/transfers'
+      path: '/transfers'
+      fullPath: '/transfers'
+      preLoaderRoute: typeof TransfersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/surveyors': {
+      id: '/surveyors'
+      path: '/surveyors'
+      fullPath: '/surveyors'
+      preLoaderRoute: typeof SurveyorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -506,6 +607,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market': {
+      id: '/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof MarketRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/listings': {
@@ -606,6 +714,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/surveyors/register': {
+      id: '/surveyors/register'
+      path: '/register'
+      fullPath: '/surveyors/register'
+      preLoaderRoute: typeof SurveyorsRegisterRouteImport
+      parentRoute: typeof SurveyorsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
@@ -633,6 +748,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/foreclosures/$id'
       preLoaderRoute: typeof ForeclosuresIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/contractors/register': {
+      id: '/contractors/register'
+      path: '/register'
+      fullPath: '/contractors/register'
+      preLoaderRoute: typeof ContractorsRegisterRouteImport
+      parentRoute: typeof ContractorsRoute
+    }
+    '/brokers/register': {
+      id: '/brokers/register'
+      path: '/register'
+      fullPath: '/brokers/register'
+      preLoaderRoute: typeof BrokersRegisterRouteImport
+      parentRoute: typeof BrokersRoute
+    }
+    '/agents/register': {
+      id: '/agents/register'
+      path: '/register'
+      fullPath: '/agents/register'
+      preLoaderRoute: typeof AgentsRegisterRouteImport
+      parentRoute: typeof AgentsRoute
     }
     '/agency/register': {
       id: '/agency/register'
@@ -750,25 +886,74 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AgentsRouteChildren {
+  AgentsRegisterRoute: typeof AgentsRegisterRoute
+}
+
+const AgentsRouteChildren: AgentsRouteChildren = {
+  AgentsRegisterRoute: AgentsRegisterRoute,
+}
+
+const AgentsRouteWithChildren =
+  AgentsRoute._addFileChildren(AgentsRouteChildren)
+
+interface BrokersRouteChildren {
+  BrokersRegisterRoute: typeof BrokersRegisterRoute
+}
+
+const BrokersRouteChildren: BrokersRouteChildren = {
+  BrokersRegisterRoute: BrokersRegisterRoute,
+}
+
+const BrokersRouteWithChildren =
+  BrokersRoute._addFileChildren(BrokersRouteChildren)
+
+interface ContractorsRouteChildren {
+  ContractorsRegisterRoute: typeof ContractorsRegisterRoute
+}
+
+const ContractorsRouteChildren: ContractorsRouteChildren = {
+  ContractorsRegisterRoute: ContractorsRegisterRoute,
+}
+
+const ContractorsRouteWithChildren = ContractorsRoute._addFileChildren(
+  ContractorsRouteChildren,
+)
+
+interface SurveyorsRouteChildren {
+  SurveyorsRegisterRoute: typeof SurveyorsRegisterRoute
+}
+
+const SurveyorsRouteChildren: SurveyorsRouteChildren = {
+  SurveyorsRegisterRoute: SurveyorsRegisterRoute,
+}
+
+const SurveyorsRouteWithChildren = SurveyorsRoute._addFileChildren(
+  SurveyorsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AgentsRoute: AgentsRoute,
+  AgentsRoute: AgentsRouteWithChildren,
   AlertsRoute: AlertsRoute,
   AuthRoute: AuthRoute,
-  BrokersRoute: BrokersRoute,
+  BrokersRoute: BrokersRouteWithChildren,
   CompareRoute: CompareRoute,
-  ContractorsRoute: ContractorsRoute,
+  ContractorsRoute: ContractorsRouteWithChildren,
   DashboardRoute: DashboardRoute,
   DemoLoginRoute: DemoLoginRoute,
   DiasporaRoute: DiasporaRoute,
   FavoritesRoute: FavoritesRoute,
   ForeclosuresRoute: ForeclosuresRoute,
   ListingsRoute: ListingsRoute,
+  MarketRoute: MarketRoute,
   MessagesRoute: MessagesRoute,
   ProfileRoute: ProfileRoute,
   SafetyRoute: SafetyRoute,
   SignupRoute: SignupRoute,
+  SurveyorsRoute: SurveyorsRouteWithChildren,
+  TransfersRoute: TransfersRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
   AgencyRegisterRoute: AgencyRegisterRoute,
   ForeclosuresIdRoute: ForeclosuresIdRoute,
