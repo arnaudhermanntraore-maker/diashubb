@@ -31,6 +31,13 @@ export const getRates = createServerFn({ method: "GET" }).handler(async (): Prom
 
 // ---- Admin RBAC helpers ----------------------------------------------------
 
+function rateError(code: string, status: number, message: string): Response {
+  return new Response(JSON.stringify({ code, message }), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
+
 async function assertSuperAdmin(userId: string): Promise<void> {
   const { data, error } = await supabaseAdmin
     .from("user_roles")
@@ -39,10 +46,10 @@ async function assertSuperAdmin(userId: string): Promise<void> {
     .in("role", ["super_admin"]);
   if (error) {
     console.error("assertSuperAdmin error", error);
-    throw new Response("Forbidden", { status: 403 });
+    throw rateError("RATES_FORBIDDEN", 403, "Forbidden");
   }
   if (!data || data.length === 0) {
-    throw new Response("Forbidden: super_admin required", { status: 403 });
+    throw rateError("RATES_FORBIDDEN", 403, "super_admin required");
   }
 }
 
@@ -75,7 +82,7 @@ export const upsertRate = createServerFn({ method: "POST" })
       .single();
     if (error) {
       console.error("upsertRate error", error);
-      throw new Response(error.message, { status: 400 });
+      throw rateError("RATES_DB_ERROR", 400, error.message);
     }
     return { ok: true as const, row };
   });
@@ -93,7 +100,7 @@ export const deleteRate = createServerFn({ method: "POST" })
       .eq("currency_code", data.currency_code);
     if (error) {
       console.error("deleteRate error", error);
-      throw new Response(error.message, { status: 400 });
+      throw rateError("RATES_DB_ERROR", 400, error.message);
     }
     return { ok: true as const };
   });
