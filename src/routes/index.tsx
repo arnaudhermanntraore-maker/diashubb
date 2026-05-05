@@ -163,21 +163,13 @@ function Home() {
       {/* FEATURED US HOMES */}
       <SectionHeader title={fr ? "Maisons US à la une" : "Featured US homes for sale"} link={fr ? "Tout voir" : "View all"} />
       <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <USCard boosted location="Atlanta GA" status={fr ? "À vendre" : "For sale"} statusColor={TF_GREEN} title="4bd · 3ba · 2,100 sqft" subtitle="Buckhead, Atlanta GA" price="$485,000" tags={["MLS", "360°", "AI 87"]} ribbon={fr ? "À la une · Score 87" : "Featured · Score 87"} bg={TF_BLUE_LIGHT} />
-        <USCard location="Houston TX" locColor={TF_GREEN} status={fr ? "À vendre" : "For sale"} statusColor={TF_GREEN} title="3bd · 2ba · 1,650 sqft" subtitle="Sugar Land, Houston TX" price="$312,000" tags={[fr ? "MLS vérifié" : "MLS verified"]} bg={TF_GREEN_LIGHT} />
-        <USCard location="Maryland" status="Hot" statusColor={TF_CORAL} title="5bd · 4ba · 3,200 sqft" subtitle="Silver Spring, MD" price="$678,000" tags={["MLS", "Pool"]} bg={TF_AMBER} icon="building" />
-        <USCard location="New York NY" locColor={TF_PURPLE} status={fr ? "À louer" : "For rent"} statusColor={TF_PURPLE} title="2bd · 2ba · Condo" subtitle="Harlem, New York NY" price="$2,850/mo" tags={[fr ? "MLS vérifié" : "MLS verified"]} bg={TF_PURPLE} icon="apt" />
-        <AddCard label={fr ? "Lister un bien" : "List a property"} />
+        <FeaturedPropertiesRow region="us" limit={4} />
       </div>
 
       {/* AFRICA */}
       <SectionHeader title={fr ? "Investir en Afrique — payer en USD" : "Invest in Africa — pay in USD"} link={fr ? "Tout parcourir" : "Browse all"} />
       <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <AfCard boosted location="Côte d'Ivoire" status="Available" title={fr ? "Terrain · 400m² · Cocody" : "Plot · 400m² · Cocody"} subtitle="Abidjan, CI" price="$72,000" tags={[fr ? "Titre vérifié" : "Title verified", "360°"]} ribbon={fr ? "Meilleure offre" : "Best value"} bg={TF_LIME} />
-        <AfCard location="Senegal" locColor={TF_PURPLE} status="Available" title="Villa · 220m² · Almadies" subtitle="Dakar, SN" price="$128,000" tags={[fr ? "Titre foncier" : "Title deed", fr ? "Vue mer" : "Sea view"]} bg={TF_PURPLE} />
-        <AfCard location="Ghana" locColor={TF_AMBER} status="Available" title="Plot AC-17 · 500m²" subtitle="Airport City, Accra" price="$48,000" tags={["Indenture deed"]} bg={TF_AMBER} />
-        <AfCard location="Morocco" locColor={TF_CORAL} status="Available" title="Villa · 310m² · Rabat" subtitle="Hay Riad, MA" price="$420,000" tags={["Titre", "Pool"]} bg={TF_CORAL} />
-        <AddCard label={fr ? "Lister en Afrique" : "List in Africa"} />
+        <FeaturedPropertiesRow region="africa" limit={4} />
       </div>
 
       {/* CONTRACTORS */}
