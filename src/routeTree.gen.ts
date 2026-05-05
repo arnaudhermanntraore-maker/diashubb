@@ -43,6 +43,7 @@ import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminRatesRouteImport } from './routes/admin.rates'
+import { Route as AdminPartnersRouteImport } from './routes/admin.partners'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminForeclosuresRouteImport } from './routes/admin.foreclosures'
 import { Route as AdminFlagsRouteImport } from './routes/admin.flags'
@@ -222,6 +223,11 @@ const AdminRatesRoute = AdminRatesRouteImport.update({
   path: '/rates',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPartnersRoute = AdminPartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminListingsRoute = AdminListingsRouteImport.update({
   id: '/listings',
   path: '/listings',
@@ -289,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/partners': typeof AdminPartnersRoute
   '/admin/rates': typeof AdminRatesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/users': typeof AdminUsersRoute
@@ -333,6 +340,7 @@ export interface FileRoutesByTo {
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/partners': typeof AdminPartnersRoute
   '/admin/rates': typeof AdminRatesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/users': typeof AdminUsersRoute
@@ -378,6 +386,7 @@ export interface FileRoutesById {
   '/admin/flags': typeof AdminFlagsRoute
   '/admin/foreclosures': typeof AdminForeclosuresRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/partners': typeof AdminPartnersRoute
   '/admin/rates': typeof AdminRatesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/users': typeof AdminUsersRoute
@@ -424,6 +433,7 @@ export interface FileRouteTypes {
     | '/admin/flags'
     | '/admin/foreclosures'
     | '/admin/listings'
+    | '/admin/partners'
     | '/admin/rates'
     | '/admin/security'
     | '/admin/users'
@@ -468,6 +478,7 @@ export interface FileRouteTypes {
     | '/admin/flags'
     | '/admin/foreclosures'
     | '/admin/listings'
+    | '/admin/partners'
     | '/admin/rates'
     | '/admin/security'
     | '/admin/users'
@@ -512,6 +523,7 @@ export interface FileRouteTypes {
     | '/admin/flags'
     | '/admin/foreclosures'
     | '/admin/listings'
+    | '/admin/partners'
     | '/admin/rates'
     | '/admin/security'
     | '/admin/users'
@@ -805,6 +817,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRatesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/partners': {
+      id: '/admin/partners'
+      path: '/partners'
+      fullPath: '/admin/partners'
+      preLoaderRoute: typeof AdminPartnersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/listings': {
       id: '/admin/listings'
       path: '/listings'
@@ -869,6 +888,7 @@ interface AdminRouteChildren {
   AdminFlagsRoute: typeof AdminFlagsRoute
   AdminForeclosuresRoute: typeof AdminForeclosuresRoute
   AdminListingsRoute: typeof AdminListingsRoute
+  AdminPartnersRoute: typeof AdminPartnersRoute
   AdminRatesRoute: typeof AdminRatesRoute
   AdminSecurityRoute: typeof AdminSecurityRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -879,6 +899,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFlagsRoute: AdminFlagsRoute,
   AdminForeclosuresRoute: AdminForeclosuresRoute,
   AdminListingsRoute: AdminListingsRoute,
+  AdminPartnersRoute: AdminPartnersRoute,
   AdminRatesRoute: AdminRatesRoute,
   AdminSecurityRoute: AdminSecurityRoute,
   AdminUsersRoute: AdminUsersRoute,
