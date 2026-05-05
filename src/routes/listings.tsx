@@ -95,7 +95,7 @@ function Listings() {
 
   useEffect(() => {
     setLoading(true);
-    supabase.from("properties").select("id,title,country,city,price_usd,type,cover_url,ai_score,tf_verified,lat,lng,boosted_until").eq("status", "active").order("boosted_until", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(60).then(({ data }) => {
+    supabase.from("properties").select("id,title,title_fr,title_en,country,city,neighborhood,price_usd,type,cover_url,images,ai_score,tf_verified,bedrooms,bathrooms,surface_m2,has_360_tour,lat,lng,boosted_until").eq("status", "active").order("boosted_until", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(60).then(({ data }) => {
       setItems((data ?? []) as Property[]); setLoading(false);
     });
   }, []);
