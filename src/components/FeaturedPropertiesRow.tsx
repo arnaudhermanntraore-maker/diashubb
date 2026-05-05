@@ -57,7 +57,7 @@ export function FeaturedPropertiesRow({ region, limit = 4 }: Props) {
 function AddCard({ label, search }: { label: string; search?: Record<string, string> }) {
   return (
     <Link
-      to="/listings_/new"
+      to="/listings/new"
       search={search as never}
       className="aspect-[4/3] rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
     >
