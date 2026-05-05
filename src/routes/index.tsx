@@ -182,7 +182,7 @@ function Home() {
         <ContractorCard initials="RW" color={TF_GREEN} name="Rivera & Williams" meta={fr ? "Électriciens · 4.8★ · Houston TX" : "Electricians · 4.8★ · Houston TX"} rate="$95/hr" badge={fr ? "Disponible" : "Available now"} badgeColor={TF_GREEN} />
         <ContractorCard initials="AO" color={TF_AMBER} name="Adebayo Oluwole" meta={fr ? "Plombier · 4.7★ · Atlanta GA" : "Plumber · 4.7★ · Atlanta GA"} rate="$80/hr" badge={fr ? "Disponible" : "Available"} badgeColor={TF_GREEN} />
         <ContractorCard initials="KD" color={TF_PURPLE} name="Kwame Design Build" meta={fr ? "Rénovation · 4.9★ · Washington DC" : "Renovation · 4.9★ · Washington DC"} rate={fr ? "Devis projet" : "Project quote"} badge={fr ? "Antécédents vérifiés" : "Background checked"} badgeColor={TF_BLUE} />
-        <AddCard label={fr ? "Rejoindre comme artisan" : "Join as contractor"} />
+        <AddCard label={fr ? "Rejoindre comme artisan" : "Join as contractor"} to="/contractors/register" />
       </div>
 
       {/* MARKET INTELLIGENCE */}
