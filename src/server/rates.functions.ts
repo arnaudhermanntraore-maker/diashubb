@@ -31,6 +31,13 @@ export const getRates = createServerFn({ method: "GET" }).handler(async (): Prom
 
 // ---- Admin RBAC helpers ----------------------------------------------------
 
+function rateError(code: string, status: number, message: string): Response {
+  return new Response(JSON.stringify({ code, message }), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
+
 async function assertSuperAdmin(userId: string): Promise<void> {
   const { data, error } = await supabaseAdmin
     .from("user_roles")
@@ -39,10 +46,10 @@ async function assertSuperAdmin(userId: string): Promise<void> {
     .in("role", ["super_admin"]);
   if (error) {
     console.error("assertSuperAdmin error", error);
-    throw new Response("Forbidden", { status: 403 });
+    throw rateError("RATES_FORBIDDEN", 403, "Forbidden");
   }
   if (!data || data.length === 0) {
-    throw new Response("Forbidden: super_admin required", { status: 403 });
+    throw rateError("RATES_FORBIDDEN", 403, "super_admin required");
   }
 }
 
