@@ -187,22 +187,58 @@ function Home() {
 
       {/* MARKET INTELLIGENCE */}
       <section className="container mx-auto px-4 py-12 max-w-7xl">
-        <h2 className="text-2xl font-display font-bold text-tf-navy mb-6">{fr ? "Intelligence marché en direct" : "Live market intelligence"}</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          <MarketCard title="Cocody · Abidjan" badge="+8% YoY" badgeColor={TF_GREEN} subtitle={fr ? "Prix par m² · FCFA" : "Plot price per m² · FCFA"}
-            bars={[40, 56, 68, 80, 96]} barFrom="#9FE1CB" barTo={TF_GREEN_DEEP}
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-sm font-bold text-tf-navy">{fr ? "Intelligence de marché" : "Live Market Intelligence"}</h2>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "#E1F5EE", color: "#085041" }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#1D9E75" }} />
+            {fr ? "En direct" : "Live"}
+          </span>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <MarketCardV2
+            flag="🇨🇮" location="Cocody · Abidjan" trend="+8% YoY" trendPositive
+            subtitle={fr ? "Prix terrain m² · FCFA" : "Plot price per m² · FCFA"}
+            bars={[
+              { month: "Jan", value: 60, label: "98,000" },
+              { month: fr ? "Fév" : "Feb", value: 70, label: "103,000" },
+              { month: fr ? "Mar" : "Mar", value: 75, label: "106,000" },
+              { month: fr ? "Avr" : "Apr", value: 85, label: "109,000" },
+              { month: fr ? "Mai" : "May", value: 100, label: "112,500" },
+            ]}
             stats={[
-              { label: fr ? "Prix moyen/m²" : "Avg price/m²", value: "112,500 FCFA", color: TF_GREEN_DEEP },
-              { label: fr ? "Jours sur marché" : "Days on market", value: "34 days" },
-              { label: fr ? "Zone chaude" : "Hot zone", value: "Bingerville +14%", pillColor: TF_GREEN },
-            ]} />
-          <MarketCard title="Atlanta · Georgia" badge="+9% YoY" badgeColor={TF_BLUE} subtitle={fr ? "Prix médian · USD" : "Median home price · USD"}
-            bars={[40, 54, 66, 78, 96]} barFrom="#B5D4F4" barTo="#0C447C"
+              { value: "112,500 FCFA", label: fr ? "Prix moyen m²" : "Avg price m²" },
+              { value: fr ? "34 jours" : "34 days", label: fr ? "Jours sur le marché" : "Days on market" },
+              { value: "🔥 Bingerville +14%", label: fr ? "Zone chaude" : "Hot zone" },
+            ]}
+            accent="#1D9E75" gradFrom="#9FE1CB" gradTo="#0F6E56" lastBar="#1D9E75"
+          />
+          <MarketCardV2
+            flag="🇺🇸" location="Atlanta · Georgia" trend="+9% YoY" trendPositive
+            subtitle={fr ? "Prix médian · USD" : "Median home price · USD"}
+            bars={[
+              { month: "Jan", value: 60, label: "$378k" },
+              { month: "Feb", value: 68, label: "$385k" },
+              { month: "Mar", value: 75, label: "$392k" },
+              { month: "Apr", value: 88, label: "$402k" },
+              { month: "May", value: 100, label: "$412k" },
+            ]}
             stats={[
-              { label: fr ? "Prix médian" : "Median price", value: "$412,000", color: TF_BLUE },
-              { label: fr ? "Jours sur marché" : "Days on market", value: "28 days" },
-              { label: fr ? "Zone chaude" : "Hot zone", value: "SW Atlanta +12%", pillColor: TF_BLUE },
-            ]} />
+              { value: "$412,000", label: fr ? "Prix médian" : "Median price" },
+              { value: fr ? "28 jours" : "28 days", label: fr ? "Jours sur le marché" : "Days on market" },
+              { value: "🔥 SW Atlanta +12%", label: fr ? "Zone chaude" : "Hot zone" },
+            ]}
+            accent="#185FA5" gradFrom="#B5D4F4" gradTo="#0C447C" lastBar="#185FA5"
+          />
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            "🏠 4.2M+ " + (fr ? "annonces US" : "US listings"),
+            "🌍 12,480 " + (fr ? "biens Afrique" : "Africa properties"),
+            "📈 +9% Atlanta YoY",
+            "💰 $412k " + (fr ? "prix médian" : "median price"),
+          ].map((t) => (
+            <span key={t} className="inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full" style={{ background: "#F9FAFB", border: "0.5px solid #E5E7EB", color: "#6B7280" }}>{t}</span>
+          ))}
         </div>
       </section>
 
