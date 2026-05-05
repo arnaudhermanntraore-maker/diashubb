@@ -114,6 +114,8 @@ function Listings() {
   const countries = useMemo(() => Array.from(new Set(items.map((p) => p.country))).sort(), [items]);
 
   return (
+    <>
+    <DemoBanner />
     <div className="container mx-auto px-4 py-10 max-w-7xl">
       <div className="bg-card border border-border rounded-2xl p-4 shadow-soft mb-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
