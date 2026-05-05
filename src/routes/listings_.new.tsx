@@ -9,6 +9,9 @@ import { SingleFileUploader, MultiPhotoUploader } from "@/components/FileUploade
 import { Pano360Viewer } from "@/components/Pano360Viewer";
 
 export const Route = createFileRoute("/listings_/new")({
+  validateSearch: (s: Record<string, unknown>): { continent?: "usa" | "africa" } => ({
+    continent: s.continent === "usa" || s.continent === "africa" ? s.continent : undefined,
+  }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
