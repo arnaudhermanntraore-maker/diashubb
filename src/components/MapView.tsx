@@ -19,9 +19,11 @@ interface Props {
   height?: string;
   onMarkerClick?: (id: string) => void;
   fitBoundsOnLoad?: boolean;
+  autoFit?: boolean;
+  emptyMessage?: string;
 }
 
-export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10, height = "420px", onMarkerClick, fitBoundsOnLoad = false }: Props) {
+export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10, height = "420px", onMarkerClick, fitBoundsOnLoad = false, autoFit = false, emptyMessage }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -56,9 +58,10 @@ export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10,
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !markers.length) return;
+    if (!map) return;
     const pins: mapboxgl.Marker[] = [];
     const bounds = new mapboxgl.LngLatBounds();
+    let valid = 0;
     markers.forEach((m) => {
       if (typeof m.lat !== "number" || typeof m.lng !== "number") return;
       const el = document.createElement("button");
@@ -71,13 +74,33 @@ export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10,
       if (m.title) pin.setPopup(new mapboxgl.Popup({ offset: 16 }).setText(m.title));
       pins.push(pin);
       bounds.extend([m.lng, m.lat]);
+      valid++;
     });
-    if (fitBoundsOnLoad && pins.length > 1) map.fitBounds(bounds, { padding: 60, maxZoom: 10, duration: 0 });
-    else if (fitBoundsOnLoad && pins.length === 1) map.flyTo({ center: [markers[0].lng, markers[0].lat], zoom: 11, duration: 0 });
+    if ((autoFit || fitBoundsOnLoad) && valid > 1) {
+      map.fitBounds(bounds, { padding: 60, maxZoom: 11, duration: autoFit ? 600 : 0 });
+    } else if ((autoFit || fitBoundsOnLoad) && valid === 1) {
+      const first = markers.find((m) => typeof m.lat === "number" && typeof m.lng === "number")!;
+      map.flyTo({ center: [first.lng, first.lat], zoom: 11, duration: autoFit ? 600 : 0 });
+    }
     return () => pins.forEach((p) => p.remove());
-  }, [markers, onMarkerClick]);
+  }, [markers, onMarkerClick, autoFit]);
 
   if (err) return <div style={{ height }} className="rounded-2xl bg-muted flex items-center justify-center text-sm text-muted-foreground">{err}</div>;
 
-  return <div ref={ref} style={{ height }} className="rounded-2xl overflow-hidden border border-border" />;
+  const isEmpty = markers.filter((m) => typeof m.lat === "number" && typeof m.lng === "number").length === 0;
+
+  return (
+    <div className="relative">
+      <div ref={ref} style={{ height }} className="rounded-2xl overflow-hidden border border-border" />
+      {isEmpty && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-background/95 backdrop-blur-sm border border-border rounded-xl px-5 py-4 shadow-lg text-center max-w-xs pointer-events-auto">
+            <div className="text-2xl mb-1">🗺️</div>
+            <p className="text-sm font-medium text-foreground">{emptyMessage ?? "No properties match your filters"}</p>
+            <p className="text-xs text-muted-foreground mt-1">Try adjusting your search criteria</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

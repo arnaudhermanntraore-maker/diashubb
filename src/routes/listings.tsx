@@ -148,6 +148,8 @@ function Listings() {
           height="380px"
           center={mapRegion === "usa" ? [-84.3880, 33.7490] : [10, 5]}
           zoom={mapRegion === "usa" ? 4 : 3}
+          autoFit
+          emptyMessage={t("property.noResults")}
           markers={filtered.filter((p) => p.lat != null && p.lng != null).map((p) => ({ id: p.id, lat: p.lat as number, lng: p.lng as number, title: p.title, price_usd: Number(p.price_usd), region: (p.country === "US" ? "usa" : "africa") as "usa" | "africa" }))}
           onMarkerClick={(id) => nav({ to: "/property/$id", params: { id } })}
         />
