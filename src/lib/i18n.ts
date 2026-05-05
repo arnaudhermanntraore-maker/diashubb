@@ -35,6 +35,14 @@ const resources = {
         },
       },
       admin: { title: "Panneau d'administration", users: "Utilisateurs", listings: "Annonces", flags: "Feature flags", audit: "Audit", txs: "Transactions" },
+      rateErrors: {
+        unauthorized: "Session expirée — veuillez vous reconnecter.",
+        forbidden: "Accès refusé — rôle super administrateur requis.",
+        validation: "Données invalides — vérifiez le code ISO, le taux et le trend.",
+        dbError: "Erreur base de données : {{message}}",
+        network: "Impossible de joindre le serveur. Réessayez.",
+        unknown: "Une erreur inattendue est survenue.",
+      },
       lightbox: {
         gallery: "Galerie photos",
         galleryWith: "Galerie photos — {{label}}",
