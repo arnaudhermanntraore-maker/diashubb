@@ -587,70 +587,112 @@ export type Database = {
       }
       properties: {
         Row: {
+          address: string | null
           agent_id: string
           ai_score: number | null
+          bathrooms: number | null
+          bedrooms: number | null
           boosted_until: string | null
           city: string | null
           country: string
           cover_url: string | null
           created_at: string
           description: string | null
+          description_en: string | null
+          description_fr: string | null
           documents: Json
+          has_360_tour: boolean
           id: string
           images: Json
           lat: number | null
           lng: number | null
+          metadata: Json
+          neighborhood: string | null
           price_usd: number
+          saves_count: number
           status: Database["public"]["Enums"]["property_status"]
+          surface_m2: number | null
           tf_verified: boolean
           title: string
+          title_en: string | null
+          title_fr: string | null
           tour_360_url: string | null
           type: Database["public"]["Enums"]["property_type"]
           updated_at: string
+          video_url: string | null
+          views_count: number
         }
         Insert: {
+          address?: string | null
           agent_id: string
           ai_score?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
           boosted_until?: string | null
           city?: string | null
           country: string
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           documents?: Json
+          has_360_tour?: boolean
           id?: string
           images?: Json
           lat?: number | null
           lng?: number | null
+          metadata?: Json
+          neighborhood?: string | null
           price_usd?: number
+          saves_count?: number
           status?: Database["public"]["Enums"]["property_status"]
+          surface_m2?: number | null
           tf_verified?: boolean
           title: string
+          title_en?: string | null
+          title_fr?: string | null
           tour_360_url?: string | null
           type?: Database["public"]["Enums"]["property_type"]
           updated_at?: string
+          video_url?: string | null
+          views_count?: number
         }
         Update: {
+          address?: string | null
           agent_id?: string
           ai_score?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
           boosted_until?: string | null
           city?: string | null
           country?: string
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           documents?: Json
+          has_360_tour?: boolean
           id?: string
           images?: Json
           lat?: number | null
           lng?: number | null
+          metadata?: Json
+          neighborhood?: string | null
           price_usd?: number
+          saves_count?: number
           status?: Database["public"]["Enums"]["property_status"]
+          surface_m2?: number | null
           tf_verified?: boolean
           title?: string
+          title_en?: string | null
+          title_fr?: string | null
           tour_360_url?: string | null
           type?: Database["public"]["Enums"]["property_type"]
           updated_at?: string
+          video_url?: string | null
+          views_count?: number
         }
         Relationships: []
       }

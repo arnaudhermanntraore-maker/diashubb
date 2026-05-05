@@ -6,6 +6,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard, type Property } from "@/components/PropertyCard";
 import { MapView } from "@/components/MapView";
+import { DemoBanner } from "@/components/DemoBanner";
 
 type PropertyType = "all" | "land" | "house" | "apartment" | "commercial" | "farm";
 
@@ -95,7 +96,7 @@ function Listings() {
 
   useEffect(() => {
     setLoading(true);
-    supabase.from("properties").select("id,title,country,city,price_usd,type,cover_url,ai_score,tf_verified,lat,lng,boosted_until").eq("status", "active").order("boosted_until", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(60).then(({ data }) => {
+    supabase.from("properties").select("id,title,title_fr,title_en,country,city,neighborhood,price_usd,type,cover_url,images,ai_score,tf_verified,bedrooms,bathrooms,surface_m2,has_360_tour,lat,lng,boosted_until").eq("status", "active").order("boosted_until", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(60).then(({ data }) => {
       setItems((data ?? []) as Property[]); setLoading(false);
     });
   }, []);
@@ -114,6 +115,8 @@ function Listings() {
   const countries = useMemo(() => Array.from(new Set(items.map((p) => p.country))).sort(), [items]);
 
   return (
+    <>
+    <DemoBanner />
     <div className="container mx-auto px-4 py-10 max-w-7xl">
       <div className="bg-card border border-border rounded-2xl p-4 shadow-soft mb-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -162,5 +165,6 @@ function Listings() {
         </div>
       )}
     </div>
+    </>
   );
 }
