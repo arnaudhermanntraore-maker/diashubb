@@ -5,22 +5,47 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 
-const SS_KEY = "demo_banner_dismissed";
+const STORAGE_KEY = "demo_banner_dismissed";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 an
+
+function readCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/[.$?*|{}()[\]\\/+^]/g, "\\$&") + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function writeCookie(name: string, value: string) {
+  if (typeof document === "undefined") return;
+  const secure = typeof window !== "undefined" && window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax${secure}`;
+}
+
+function isDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (sessionStorage.getItem(STORAGE_KEY) === "1") return true;
+  } catch {/* ignore */}
+  return readCookie(STORAGE_KEY) === "1";
+}
 
 export function DemoBanner() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
   const { user } = useAuth();
   const flagEnabled = useFeatureFlag("demo_data_banner");
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setDismissed(sessionStorage.getItem(SS_KEY) === "1");
-    }
+    setDismissed(isDismissed());
   }, []);
 
   if (!flagEnabled || dismissed || user) return null;
+
+  const handleDismiss = () => {
+    try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch {/* ignore */}
+    writeCookie(STORAGE_KEY, "1");
+    setDismissed(true);
+  };
 
   return (
     <div
@@ -40,10 +65,7 @@ export function DemoBanner() {
         {fr ? "Publier mes biens →" : "Publish my listings →"}
       </Link>
       <button
-        onClick={() => {
-          sessionStorage.setItem(SS_KEY, "1");
-          setDismissed(true);
-        }}
+        onClick={handleDismiss}
         aria-label={fr ? "Masquer" : "Dismiss"}
         className="ml-2 hover:opacity-70 transition-opacity"
         style={{ color: "#7DD3FC" }}
