@@ -19,9 +19,11 @@ interface Props {
   height?: string;
   onMarkerClick?: (id: string) => void;
   fitBoundsOnLoad?: boolean;
+  autoFit?: boolean;
+  emptyMessage?: string;
 }
 
-export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10, height = "420px", onMarkerClick, fitBoundsOnLoad = false }: Props) {
+export function MapView({ markers = [], center = [-84.3880, 33.7490], zoom = 10, height = "420px", onMarkerClick, fitBoundsOnLoad = false, autoFit = false, emptyMessage }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [token, setToken] = useState<string | null>(null);
