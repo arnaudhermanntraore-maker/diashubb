@@ -182,27 +182,63 @@ function Home() {
         <ContractorCard initials="RW" color={TF_GREEN} name="Rivera & Williams" meta={fr ? "Électriciens · 4.8★ · Houston TX" : "Electricians · 4.8★ · Houston TX"} rate="$95/hr" badge={fr ? "Disponible" : "Available now"} badgeColor={TF_GREEN} />
         <ContractorCard initials="AO" color={TF_AMBER} name="Adebayo Oluwole" meta={fr ? "Plombier · 4.7★ · Atlanta GA" : "Plumber · 4.7★ · Atlanta GA"} rate="$80/hr" badge={fr ? "Disponible" : "Available"} badgeColor={TF_GREEN} />
         <ContractorCard initials="KD" color={TF_PURPLE} name="Kwame Design Build" meta={fr ? "Rénovation · 4.9★ · Washington DC" : "Renovation · 4.9★ · Washington DC"} rate={fr ? "Devis projet" : "Project quote"} badge={fr ? "Antécédents vérifiés" : "Background checked"} badgeColor={TF_BLUE} />
-        <AddCard label={fr ? "Rejoindre comme artisan" : "Join as contractor"} />
+        <AddCard label={fr ? "Rejoindre comme artisan" : "Join as contractor"} to="/contractors/register" />
       </div>
 
       {/* MARKET INTELLIGENCE */}
       <section className="container mx-auto px-4 py-12 max-w-7xl">
-        <h2 className="text-2xl font-display font-bold text-tf-navy mb-6">{fr ? "Intelligence marché en direct" : "Live market intelligence"}</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          <MarketCard title="Cocody · Abidjan" badge="+8% YoY" badgeColor={TF_GREEN} subtitle={fr ? "Prix par m² · FCFA" : "Plot price per m² · FCFA"}
-            bars={[40, 56, 68, 80, 96]} barFrom="#9FE1CB" barTo={TF_GREEN_DEEP}
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-sm font-bold text-tf-navy">{fr ? "Intelligence de marché" : "Live Market Intelligence"}</h2>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "#E1F5EE", color: "#085041" }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#1D9E75" }} />
+            {fr ? "En direct" : "Live"}
+          </span>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <MarketCardV2
+            flag="🇨🇮" location="Cocody · Abidjan" trend="+8% YoY" trendPositive
+            subtitle={fr ? "Prix terrain m² · FCFA" : "Plot price per m² · FCFA"}
+            bars={[
+              { month: "Jan", value: 60, label: "98,000" },
+              { month: fr ? "Fév" : "Feb", value: 70, label: "103,000" },
+              { month: fr ? "Mar" : "Mar", value: 75, label: "106,000" },
+              { month: fr ? "Avr" : "Apr", value: 85, label: "109,000" },
+              { month: fr ? "Mai" : "May", value: 100, label: "112,500" },
+            ]}
             stats={[
-              { label: fr ? "Prix moyen/m²" : "Avg price/m²", value: "112,500 FCFA", color: TF_GREEN_DEEP },
-              { label: fr ? "Jours sur marché" : "Days on market", value: "34 days" },
-              { label: fr ? "Zone chaude" : "Hot zone", value: "Bingerville +14%", pillColor: TF_GREEN },
-            ]} />
-          <MarketCard title="Atlanta · Georgia" badge="+9% YoY" badgeColor={TF_BLUE} subtitle={fr ? "Prix médian · USD" : "Median home price · USD"}
-            bars={[40, 54, 66, 78, 96]} barFrom="#B5D4F4" barTo="#0C447C"
+              { value: "112,500 FCFA", label: fr ? "Prix moyen m²" : "Avg price m²" },
+              { value: fr ? "34 jours" : "34 days", label: fr ? "Jours sur le marché" : "Days on market" },
+              { value: "🔥 Bingerville +14%", label: fr ? "Zone chaude" : "Hot zone" },
+            ]}
+            accent="#1D9E75" gradFrom="#9FE1CB" gradTo="#0F6E56" lastBar="#1D9E75"
+          />
+          <MarketCardV2
+            flag="🇺🇸" location="Atlanta · Georgia" trend="+9% YoY" trendPositive
+            subtitle={fr ? "Prix médian · USD" : "Median home price · USD"}
+            bars={[
+              { month: "Jan", value: 60, label: "$378k" },
+              { month: "Feb", value: 68, label: "$385k" },
+              { month: "Mar", value: 75, label: "$392k" },
+              { month: "Apr", value: 88, label: "$402k" },
+              { month: "May", value: 100, label: "$412k" },
+            ]}
             stats={[
-              { label: fr ? "Prix médian" : "Median price", value: "$412,000", color: TF_BLUE },
-              { label: fr ? "Jours sur marché" : "Days on market", value: "28 days" },
-              { label: fr ? "Zone chaude" : "Hot zone", value: "SW Atlanta +12%", pillColor: TF_BLUE },
-            ]} />
+              { value: "$412,000", label: fr ? "Prix médian" : "Median price" },
+              { value: fr ? "28 jours" : "28 days", label: fr ? "Jours sur le marché" : "Days on market" },
+              { value: "🔥 SW Atlanta +12%", label: fr ? "Zone chaude" : "Hot zone" },
+            ]}
+            accent="#185FA5" gradFrom="#B5D4F4" gradTo="#0C447C" lastBar="#185FA5"
+          />
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            "🏠 4.2M+ " + (fr ? "annonces US" : "US listings"),
+            "🌍 12,480 " + (fr ? "biens Afrique" : "Africa properties"),
+            "📈 +9% Atlanta YoY",
+            "💰 $412k " + (fr ? "prix médian" : "median price"),
+          ].map((t) => (
+            <span key={t} className="inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full" style={{ background: "#F9FAFB", border: "0.5px solid #E5E7EB", color: "#6B7280" }}>{t}</span>
+          ))}
         </div>
       </section>
 
@@ -350,9 +386,9 @@ function AfCard(props: { boosted?: boolean; location: string; locColor?: string;
   );
 }
 
-function AddCard({ label }: { label: string }) {
+function AddCard({ label, to = "/listings_/new" }: { label: string; to?: string }) {
   return (
-    <Link to="/listings/new" className="rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center text-center p-6 hover:border-tf-blue hover:bg-muted/30 transition-colors min-h-[200px]">
+    <Link to={to} className="rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center text-center p-6 hover:border-tf-blue hover:bg-muted/30 transition-colors min-h-[200px]">
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-tf-blue"><Plus size={20} /></div>
       <div className="mt-2 text-sm font-semibold text-tf-navy">{label}</div>
     </Link>
@@ -404,6 +440,68 @@ function MarketCard({ title, badge, badgeColor, subtitle, bars, barFrom, barTo, 
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function MarketCardV2({ flag, location, trend, trendPositive, subtitle, bars, stats, accent, gradFrom, gradTo, lastBar }: {
+  flag: string; location: string; trend: string; trendPositive: boolean;
+  subtitle: string;
+  bars: { month: string; value: number; label: string }[];
+  stats: { value: string; label: string }[];
+  accent: string; gradFrom: string; gradTo: string; lastBar: string;
+}) {
+  return (
+    <div className="bg-white border rounded-xl p-3.5" style={{ borderColor: "rgba(0,0,0,0.08)", borderWidth: 0.5 }}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span style={{ fontSize: 20 }}>{flag}</span>
+          <span className="text-[13px] font-bold text-tf-navy">{location}</span>
+        </div>
+        <span className="text-[10px] font-semibold rounded-full" style={{
+          background: trendPositive ? "#E1F5EE" : "#FCEBEB",
+          color: trendPositive ? "#085041" : "#791F1F",
+          padding: "2px 8px",
+        }}>{trend}</span>
+      </div>
+      <div className="text-[11px] mt-1 mb-3" style={{ color: "#6B7280" }}>{subtitle}</div>
+      <div className="flex items-end gap-1.5" style={{ height: 80 }}>
+        {bars.map((b, i) => {
+          const isLast = i === bars.length - 1;
+          return (
+            <div key={i} className="flex flex-col items-center flex-1">
+              <div title={b.label} style={{
+                width: "100%",
+                height: `${b.value}%`,
+                borderRadius: "3px 3px 0 0",
+                background: isLast ? lastBar : `linear-gradient(to top, ${gradTo}, ${gradFrom})`,
+                boxShadow: isLast ? `0 0 8px ${accent}55` : "none",
+                animation: `tfBarGrow .6s ${i * 0.1}s ease-out both`,
+                transformOrigin: "bottom",
+              }} />
+              <div className="mt-1" style={{
+                fontSize: 9,
+                color: isLast ? accent : "#9CA3AF",
+                fontWeight: isLast ? 500 : 400,
+              }}>{b.month}</div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t" style={{ borderColor: "rgba(0,0,0,0.06)" }}>
+        {stats.map((s, i) => (
+          <div key={i} className="text-center">
+            <div className="text-[12px] font-semibold" style={{ color: i === 0 ? accent : "#111827" }}>{s.value}</div>
+            <div className="text-[10px]" style={{ color: "#9CA3AF" }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 text-right">
+        <Link to="/market" className="text-[11px] underline" style={{ color: accent }}>
+          {location.includes("Atlanta") ? "View full analysis →" : "Voir l'analyse complète →"}
+        </Link>
+      </div>
+      <style>{`@keyframes tfBarGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}`}</style>
     </div>
   );
 }

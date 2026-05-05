@@ -9,6 +9,9 @@ import { SingleFileUploader, MultiPhotoUploader } from "@/components/FileUploade
 import { Pano360Viewer } from "@/components/Pano360Viewer";
 
 export const Route = createFileRoute("/listings_/new")({
+  validateSearch: (s: Record<string, unknown>): { continent?: "usa" | "africa" } => ({
+    continent: s.continent === "usa" || s.continent === "africa" ? s.continent : undefined,
+  }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
@@ -80,8 +83,9 @@ function NewListing() {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
+  const search = Route.useSearch();
   const [step, setStep] = useState(1);
-  const [data, setData] = useState<FormData>(DEFAULTS);
+  const [data, setData] = useState<FormData>(() => ({ ...DEFAULTS, continent: search.continent ?? DEFAULTS.continent }));
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<{ ref: string } | null>(null);
 
@@ -91,8 +95,11 @@ function NewListing() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) try { setData({ ...DEFAULTS, ...JSON.parse(raw) }); } catch { /* noop */ }
-  }, []);
+    if (raw) try {
+      const parsed = JSON.parse(raw);
+      setData({ ...DEFAULTS, ...parsed, continent: search.continent ?? parsed.continent ?? DEFAULTS.continent });
+    } catch { /* noop */ }
+  }, [search.continent]);
   useEffect(() => {
     if (typeof window === "undefined") return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
