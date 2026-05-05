@@ -350,9 +350,9 @@ function AfCard(props: { boosted?: boolean; location: string; locColor?: string;
   );
 }
 
-function AddCard({ label }: { label: string }) {
+function AddCard({ label, to = "/listings_/new" }: { label: string; to?: string }) {
   return (
-    <Link to="/listings/new" className="rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center text-center p-6 hover:border-tf-blue hover:bg-muted/30 transition-colors min-h-[200px]">
+    <Link to={to} className="rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center text-center p-6 hover:border-tf-blue hover:bg-muted/30 transition-colors min-h-[200px]">
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-tf-blue"><Plus size={20} /></div>
       <div className="mt-2 text-sm font-semibold text-tf-navy">{label}</div>
     </Link>
