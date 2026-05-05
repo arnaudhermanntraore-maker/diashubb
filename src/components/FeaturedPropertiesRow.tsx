@@ -32,13 +32,16 @@ export function FeaturedPropertiesRow({ region, limit = 4 }: Props) {
     });
   }, [region, limit]);
 
+  const addLabel = region === "us" ? (fr ? "Lister un bien" : "List a property") : (fr ? "Lister en Afrique" : "List in Africa");
+  const addSearch = region === "africa" ? { continent: "africa" as const } : undefined;
+
   if (items === null) {
     return (
       <>
         {Array.from({ length: limit }).map((_, i) => (
           <div key={i} className="aspect-[4/3] bg-muted rounded-2xl animate-pulse" />
         ))}
-        <AddCard label={region === "us" ? (fr ? "Lister un bien" : "List a property") : (fr ? "Lister en Afrique" : "List in Africa")} />
+        <AddCard label={addLabel} search={addSearch} />
       </>
     );
   }
@@ -46,15 +49,16 @@ export function FeaturedPropertiesRow({ region, limit = 4 }: Props) {
   return (
     <>
       {items.map((p) => <PropertyCard key={p.id} p={p} />)}
-      <AddCard label={region === "us" ? (fr ? "Lister un bien" : "List a property") : (fr ? "Lister en Afrique" : "List in Africa")} />
+      <AddCard label={addLabel} search={addSearch} />
     </>
   );
 }
 
-function AddCard({ label }: { label: string }) {
+function AddCard({ label, search }: { label: string; search?: Record<string, string> }) {
   return (
     <Link
       to="/listings_/new"
+      search={search as never}
       className="aspect-[4/3] rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
     >
       <Plus size={28} />
