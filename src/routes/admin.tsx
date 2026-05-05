@@ -86,9 +86,10 @@ function Admin() {
   return (
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <h1 className="text-3xl font-display font-bold">{t("admin.title")}</h1>
-        <div className="mt-3 flex gap-4 text-sm">
+        <div className="mt-3 flex flex-wrap gap-4 text-sm">
           <a href="/admin/flags" className="text-primary hover:underline">→ Feature Flags</a>
           <a href="/admin/rates" className="text-primary hover:underline">→ Taux FX (rate_config)</a>
+          <a href="/admin/partners" className="text-primary hover:underline">→ Partner Applications</a>
         </div>
       <div className="mt-6 flex gap-2 border-b border-border">
         {(["overview", "flags", "escrow", "audit", "rates"] as const).map((k) => (
