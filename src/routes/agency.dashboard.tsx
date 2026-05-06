@@ -244,6 +244,21 @@ function AgencyDashboard() {
         </div>
       )}
 
+      {agency && agency.plan_key && agency.plan_key !== "starter" && (
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={openBillingPortal}
+            disabled={openingPortal}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-border hover:bg-muted disabled:opacity-60"
+          >
+            <Sparkles size={14} />
+            {openingPortal
+              ? (fr ? "Ouverture…" : "Opening…")
+              : (fr ? "Gérer la facturation" : "Manage billing")}
+          </button>
+        </div>
+      )}
+
       {/* Verification + Profile preview */}
       {loadingAgency ? (
         <div className="mt-6 h-32 rounded-2xl bg-muted animate-pulse" />
