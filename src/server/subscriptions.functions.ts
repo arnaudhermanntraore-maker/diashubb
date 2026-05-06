@@ -3,6 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { planKeySchema, validatePlanKey } from "@/lib/plan-key";
 
 function stripe() {
   const key = process.env.STRIPE_SECRET_KEY;
