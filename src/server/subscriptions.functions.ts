@@ -15,7 +15,7 @@ export const createSubscriptionCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      planKey: z.enum(["pro", "business", "enterprise"]),
+      planKey: planKeySchema.exclude(["starter"]),
       cycle: z.enum(["monthly", "yearly"]).default("monthly"),
       successUrl: z.string().url(),
       cancelUrl: z.string().url(),
