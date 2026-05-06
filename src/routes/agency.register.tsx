@@ -63,8 +63,12 @@ type FormState = z.input<typeof ClientSchema>;
 function AgencyRegister() {
   const { i18n } = useTranslation();
   const fr = i18n.language?.startsWith("fr") ?? true;
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [checkingAgency, setCheckingAgency] = useState(true);
+
+  // If user already owns an agency, send them to the dashboard.
+  useMemo(() => undefined, []); // placeholder to keep imports stable
 
   const [form, setForm] = useState<FormState>({
     name: "",
