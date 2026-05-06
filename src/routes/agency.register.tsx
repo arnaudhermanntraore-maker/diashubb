@@ -153,6 +153,14 @@ function AgencyRegister() {
     }
   };
 
+  if (authLoading || checkingAgency) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
   if (done) {
     return (
       <div className="container mx-auto px-4 py-16 max-w-xl">
