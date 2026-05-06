@@ -328,6 +328,7 @@ function AgencyRegister() {
             {fr ? "Envoyer pour vérification" : "Submit for verification"}
           </button>
         </div>
+        </fieldset>
       </form>
     </div>
   );
