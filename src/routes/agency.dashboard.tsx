@@ -126,7 +126,10 @@ function AgencyDashboard() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-display font-bold">{t("agency.title")}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-3xl font-display font-bold">{t("agency.title")}</h1>
+            {agency?.plan_key && <PlanBadge planKey={agency.plan_key} />}
+          </div>
           <p className="text-sm text-muted-foreground mt-1">{t("agency.subtitle")}</p>
         </div>
         <Link
