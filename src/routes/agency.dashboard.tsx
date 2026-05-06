@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { PlanBadge } from "@/components/PlanBadge";
 import { useServerFn } from "@tanstack/react-start";
 import { createSubscriptionCheckout } from "@/server/subscriptions.functions";
+import { createBillingPortalSession } from "@/server/billing-portal.functions";
 
 export const Route = createFileRoute("/agency/dashboard")({
   beforeLoad: async () => {
@@ -66,6 +67,22 @@ function AgencyDashboard() {
   const [loadingAgency, setLoadingAgency] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
   const checkout = useServerFn(createSubscriptionCheckout);
+  const portal = useServerFn(createBillingPortalSession);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const openBillingPortal = async () => {
+    try {
+      setOpeningPortal(true);
+      const res = await portal({
+        data: { returnUrl: `${window.location.origin}/agency/dashboard` },
+      });
+      if (res?.url) window.location.href = res.url;
+      else throw new Error("No portal URL returned");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Billing portal error");
+      setOpeningPortal(false);
+    }
+  };
 
   const startUpgrade = async (planKey: "pro" | "business" | "enterprise" = "pro") => {
     try {
@@ -224,6 +241,21 @@ function AgencyDashboard() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {agency && agency.plan_key && agency.plan_key !== "starter" && (
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={openBillingPortal}
+            disabled={openingPortal}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-border hover:bg-muted disabled:opacity-60"
+          >
+            <Sparkles size={14} />
+            {openingPortal
+              ? (fr ? "Ouverture…" : "Opening…")
+              : (fr ? "Gérer la facturation" : "Manage billing")}
+          </button>
         </div>
       )}
 
