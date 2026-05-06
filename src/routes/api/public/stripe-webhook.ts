@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { validatePlanKey, isPlanKey, type PlanKey } from "@/lib/plan-key";
 
 function stripe() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
   return new Stripe(key, { apiVersion: "2024-12-18.acacia" as never });
 }
-
-const PLAN_KEYS = new Set(["starter", "pro", "business", "enterprise"]);
 
 async function updateAgencyPlan(opts: {
   userId?: string | null;
