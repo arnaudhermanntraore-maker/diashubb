@@ -87,7 +87,7 @@ export const Route = createFileRoute("/api/public/stripe-webhook")({
               const userId = sub.metadata?.user_id ?? null;
               const agencyId = sub.metadata?.agency_id || null;
               const active = ["active", "trialing", "past_due"].includes(sub.status);
-              const planKey = active ? await planKeyFromSubscription(sub, s) : "starter";
+              const planKey = active ? await planKeyFromSubscription(sub) : "starter";
               if (planKey) {
                 await updateAgencyPlan({ userId, agencyId, customerId, planKey });
               }
