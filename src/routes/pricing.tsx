@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X, Sparkles, ChevronDown } from "lucide-react";
 import { PlanBadge, type PlanKey } from "@/components/PlanBadge";
+import { useServerFn } from "@tanstack/react-start";
+import { createSubscriptionCheckout } from "@/server/subscriptions.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -260,6 +263,35 @@ function PricingPage() {
 }
 
 function PlanCard({ plan, yearly, fr }: { plan: Plan; yearly: boolean; fr: boolean }) {
+  const checkout = useServerFn(createSubscriptionCheckout);
+  const [loading, setLoading] = useState(false);
+
+  const startCheckout = async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        window.location.href = `/auth?redirect=/pricing`;
+        return;
+      }
+      setLoading(true);
+      const origin = window.location.origin;
+      const res = await checkout({
+        data: {
+          planKey: plan.key as "pro" | "business" | "enterprise",
+          cycle: yearly ? "yearly" : "monthly",
+          successUrl: `${origin}/billing/success`,
+          cancelUrl: `${origin}/pricing`,
+        },
+      });
+      if (res?.url) window.location.href = res.url;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Checkout error";
+      // eslint-disable-next-line no-alert
+      alert(msg);
+      setLoading(false);
+    }
+  };
+
   const price = yearly ? plan.yearly : plan.monthly;
   const features = fr ? plan.featuresFr : plan.featuresEn;
   const excluded = fr ? (plan.excludedFr ?? []) : (plan.excludedEn ?? []);
@@ -306,24 +338,35 @@ function PlanCard({ plan, yearly, fr }: { plan: Plan; yearly: boolean; fr: boole
           )}
         </div>
 
-        <Link
-          to={plan.ctaTo}
-          search={{ plan: plan.key, cycle: yearly ? "yearly" : "monthly" } as never}
-          className={`w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 ${
-            plan.key === "starter" ? "border" : "text-white"
-          }`}
-          style={{
-            background: plan.key === "starter" ? "transparent" : plan.accent,
-            borderColor: plan.key === "starter" ? plan.accent : undefined,
-            color: plan.key === "starter" ? plan.accent : "white",
-          }}
-        >
-          {plan.key === "enterprise"
-            ? (fr ? "Contacter l'équipe →" : "Contact sales →")
-            : isFree
-              ? (fr ? "Commencer gratuitement →" : "Start for free →")
+        {plan.key === "pro" || plan.key === "business" ? (
+          <button
+            onClick={startCheckout}
+            disabled={loading}
+            className="w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 text-white disabled:opacity-60"
+            style={{ background: plan.accent }}
+          >
+            {loading
+              ? (fr ? "Redirection…" : "Redirecting…")
               : (fr ? `Démarrer ${plan.name} →` : `Start ${plan.name} →`)}
-        </Link>
+          </button>
+        ) : (
+          <Link
+            to={plan.ctaTo}
+            search={{ plan: plan.key, cycle: yearly ? "yearly" : "monthly" } as never}
+            className={`w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 ${
+              plan.key === "starter" ? "border" : "text-white"
+            }`}
+            style={{
+              background: plan.key === "starter" ? "transparent" : plan.accent,
+              borderColor: plan.key === "starter" ? plan.accent : undefined,
+              color: plan.key === "starter" ? plan.accent : "white",
+            }}
+          >
+            {plan.key === "enterprise"
+              ? (fr ? "Contacter l'équipe →" : "Contact sales →")
+              : (fr ? "Commencer gratuitement →" : "Start for free →")}
+          </Link>
+        )}
 
         <ul className="space-y-2 text-xs">
           {features.map((f, i) => (

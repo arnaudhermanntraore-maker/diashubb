@@ -10,6 +10,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { PlanBadge } from "@/components/PlanBadge";
+import { useServerFn } from "@tanstack/react-start";
+import { createSubscriptionCheckout } from "@/server/subscriptions.functions";
 
 export const Route = createFileRoute("/agency/dashboard")({
   beforeLoad: async () => {
@@ -62,6 +64,29 @@ function AgencyDashboard() {
   const [stats, setStats] = useState({ active: 0, pending: 0, draft: 0, sold: 0 });
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loadingAgency, setLoadingAgency] = useState(true);
+  const [upgrading, setUpgrading] = useState(false);
+  const checkout = useServerFn(createSubscriptionCheckout);
+
+  const startUpgrade = async (planKey: "pro" | "business" | "enterprise" = "pro") => {
+    try {
+      setUpgrading(true);
+      const origin = window.location.origin;
+      const res = await checkout({
+        data: {
+          planKey,
+          cycle: "monthly",
+          successUrl: `${origin}/billing/success`,
+          cancelUrl: `${origin}/agency/dashboard`,
+        },
+      });
+      if (res?.url) window.location.href = res.url;
+      else throw new Error("No checkout URL returned");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Checkout error";
+      toast.error(msg);
+      setUpgrading(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -160,13 +185,22 @@ function AgencyDashboard() {
               </p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap"
-            style={{ background: "var(--tf-blue)" }}
-          >
-            {fr ? "Voir les plans" : "View plans"}
-          </Link>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => startUpgrade("pro")}
+              disabled={upgrading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap disabled:opacity-60"
+              style={{ background: "var(--tf-blue)" }}
+            >
+              {upgrading ? (fr ? "Redirection…" : "Redirecting…") : (fr ? "Passer Pro — $49/mois" : "Upgrade to Pro — $49/mo")}
+            </button>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap border border-border hover:bg-muted"
+            >
+              {fr ? "Comparer les plans" : "Compare plans"}
+            </Link>
+          </div>
         </div>
       )}
 
