@@ -154,16 +154,21 @@ function AgencyRegister() {
       if (!res.ok) {
         if (res.error === "already_registered") {
           toast.info(fr ? "Vous avez déjà une agence enregistrée" : "You already have a registered agency");
-          navigate({ to: "/agency/dashboard" });
-        } else {
-          toast.error(res.error || (fr ? "Erreur" : "Error"));
+          setRedirecting(true);
+          navigate({ to: "/agency/dashboard", replace: true });
+          // keep lock + busy held while we navigate away
+          return;
         }
+        toast.error(res.error || (fr ? "Erreur" : "Error"));
+        submitLockRef.current = false;
         return;
       }
       setDone(true);
       toast.success(fr ? "Demande envoyée" : "Application submitted");
+      // success: lock stays held; the form unmounts into the confirmation screen
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Server error");
+      submitLockRef.current = false;
     } finally {
       setBusy(false);
     }
