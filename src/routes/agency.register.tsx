@@ -66,8 +66,9 @@ function AgencyRegister() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [checkingAgency, setCheckingAgency] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
 
-  // If user already owns an agency, send them to the dashboard.
+  // If user already owns an agency, send them to the dashboard immediately.
   useEffect(() => {
     if (authLoading) return;
     if (!user) { setCheckingAgency(false); return; }
@@ -80,7 +81,8 @@ function AgencyRegister() {
         .maybeSingle();
       if (!active) return;
       if (data) {
-        navigate({ to: "/agency/dashboard" });
+        setRedirecting(true);
+        navigate({ to: "/agency/dashboard", replace: true });
       } else {
         setCheckingAgency(false);
       }
@@ -153,7 +155,7 @@ function AgencyRegister() {
     }
   };
 
-  if (authLoading || checkingAgency) {
+  if (authLoading || checkingAgency || redirecting) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
