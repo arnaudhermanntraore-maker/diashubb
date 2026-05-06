@@ -127,6 +127,7 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (authLoading || checkingAgency || redirecting || busy) return;
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
@@ -224,6 +225,10 @@ function AgencyRegister() {
       </div>
 
       <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-soft space-y-5">
+        <fieldset
+          disabled={authLoading || checkingAgency || redirecting || busy}
+          className="space-y-5 contents disabled:opacity-60 disabled:pointer-events-none"
+        >
         <Section title={fr ? "Identité de l'agence" : "Agency identity"}>
           <Field label={fr ? "Nom commercial *" : "Trade name *"} error={errors.name}>
             <input value={form.name} onChange={(e) => setField("name", e.target.value)} className={inputCls} required />
@@ -315,7 +320,7 @@ function AgencyRegister() {
           </Link>
           <button
             type="submit"
-            disabled={busy}
+            disabled={busy || authLoading || checkingAgency || redirecting}
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-50"
             style={{ background: "var(--tf-blue)" }}
           >
@@ -323,6 +328,7 @@ function AgencyRegister() {
             {fr ? "Envoyer pour vérification" : "Submit for verification"}
           </button>
         </div>
+        </fieldset>
       </form>
     </div>
   );
