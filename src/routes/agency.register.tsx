@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -113,6 +113,9 @@ function AgencyRegister() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  // Synchronous lock — set BEFORE any async work so rapid clicks within the
+  // same tick (before React flushes setBusy) cannot enter twice.
+  const submitLockRef = useRef(false);
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -127,7 +130,9 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authLoading || checkingAgency || redirecting || busy) return;
+    if (authLoading || checkingAgency || redirecting || busy || done) return;
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
@@ -138,6 +143,7 @@ function AgencyRegister() {
       }
       setErrors(errs);
       toast.error(fr ? "Veuillez corriger les erreurs du formulaire" : "Please fix the form errors");
+      submitLockRef.current = false;
       return;
     }
 
@@ -148,16 +154,21 @@ function AgencyRegister() {
       if (!res.ok) {
         if (res.error === "already_registered") {
           toast.info(fr ? "Vous avez déjà une agence enregistrée" : "You already have a registered agency");
-          navigate({ to: "/agency/dashboard" });
-        } else {
-          toast.error(res.error || (fr ? "Erreur" : "Error"));
+          setRedirecting(true);
+          navigate({ to: "/agency/dashboard", replace: true });
+          // keep lock + busy held while we navigate away
+          return;
         }
+        toast.error(res.error || (fr ? "Erreur" : "Error"));
+        submitLockRef.current = false;
         return;
       }
       setDone(true);
       toast.success(fr ? "Demande envoyée" : "Application submitted");
+      // success: lock stays held; the form unmounts into the confirmation screen
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Server error");
+      submitLockRef.current = false;
     } finally {
       setBusy(false);
     }
