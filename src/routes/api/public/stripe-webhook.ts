@@ -72,11 +72,14 @@ export const Route = createFileRoute("/api/public/stripe-webhook")({
               if (session.mode !== "subscription") break;
               const userId = session.metadata?.user_id ?? null;
               const agencyId = session.metadata?.agency_id || null;
-              const planKey = session.metadata?.plan_key;
+              const rawPlanKey = session.metadata?.plan_key;
               const customerId =
                 typeof session.customer === "string" ? session.customer : session.customer?.id ?? null;
-              if (planKey && PLAN_KEYS.has(planKey)) {
-                await updateAgencyPlan({ userId, agencyId, customerId, planKey });
+              const validated = validatePlanKey(rawPlanKey, "en");
+              if (validated.ok) {
+                await updateAgencyPlan({ userId, agencyId, customerId, planKey: validated.planKey });
+              } else {
+                console.error("[stripe-webhook] checkout.session.completed", validated.reason);
               }
               break;
             }
