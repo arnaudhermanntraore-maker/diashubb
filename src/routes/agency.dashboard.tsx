@@ -4,10 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   Plus, Building2, Heart, ShieldCheck, Clock, XCircle,
   FileText, Upload, CheckCircle2, AlertTriangle, Globe2, Phone, Mail, MapPin, Pencil,
+  Star, Users, Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { PlanBadge } from "@/components/PlanBadge";
 
 export const Route = createFileRoute("/agency/dashboard")({
   beforeLoad: async () => {
