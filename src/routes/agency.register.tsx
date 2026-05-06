@@ -130,7 +130,9 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authLoading || checkingAgency || redirecting || busy) return;
+    if (authLoading || checkingAgency || redirecting || busy || done) return;
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
@@ -141,6 +143,7 @@ function AgencyRegister() {
       }
       setErrors(errs);
       toast.error(fr ? "Veuillez corriger les erreurs du formulaire" : "Please fix the form errors");
+      submitLockRef.current = false;
       return;
     }
 
