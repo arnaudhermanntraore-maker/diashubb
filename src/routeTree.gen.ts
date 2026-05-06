@@ -38,6 +38,7 @@ import { Route as ForeclosuresGuideRouteImport } from './routes/foreclosures_.gu
 import { Route as ForeclosuresIdRouteImport } from './routes/foreclosures_.$id'
 import { Route as ContractorsRegisterRouteImport } from './routes/contractors.register'
 import { Route as BrokersRegisterRouteImport } from './routes/brokers.register'
+import { Route as BillingSuccessRouteImport } from './routes/billing.success'
 import { Route as AgentsRegisterRouteImport } from './routes/agents.register'
 import { Route as AgencyRegisterRouteImport } from './routes/agency.register'
 import { Route as AgencyDashboardRouteImport } from './routes/agency.dashboard'
@@ -199,6 +200,11 @@ const BrokersRegisterRoute = BrokersRegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => BrokersRoute,
 } as any)
+const BillingSuccessRoute = BillingSuccessRouteImport.update({
+  id: '/billing/success',
+  path: '/billing/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgentsRegisterRoute = AgentsRegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -309,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/agents/register': typeof AgentsRegisterRoute
+  '/billing/success': typeof BillingSuccessRoute
   '/brokers/register': typeof BrokersRegisterRoute
   '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures/$id': typeof ForeclosuresIdRoute
@@ -355,6 +362,7 @@ export interface FileRoutesByTo {
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/agents/register': typeof AgentsRegisterRoute
+  '/billing/success': typeof BillingSuccessRoute
   '/brokers/register': typeof BrokersRegisterRoute
   '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures/$id': typeof ForeclosuresIdRoute
@@ -402,6 +410,7 @@ export interface FileRoutesById {
   '/agency/dashboard': typeof AgencyDashboardRoute
   '/agency/register': typeof AgencyRegisterRoute
   '/agents/register': typeof AgentsRegisterRoute
+  '/billing/success': typeof BillingSuccessRoute
   '/brokers/register': typeof BrokersRegisterRoute
   '/contractors/register': typeof ContractorsRegisterRoute
   '/foreclosures_/$id': typeof ForeclosuresIdRoute
@@ -450,6 +459,7 @@ export interface FileRouteTypes {
     | '/agency/dashboard'
     | '/agency/register'
     | '/agents/register'
+    | '/billing/success'
     | '/brokers/register'
     | '/contractors/register'
     | '/foreclosures/$id'
@@ -496,6 +506,7 @@ export interface FileRouteTypes {
     | '/agency/dashboard'
     | '/agency/register'
     | '/agents/register'
+    | '/billing/success'
     | '/brokers/register'
     | '/contractors/register'
     | '/foreclosures/$id'
@@ -542,6 +553,7 @@ export interface FileRouteTypes {
     | '/agency/dashboard'
     | '/agency/register'
     | '/agents/register'
+    | '/billing/success'
     | '/brokers/register'
     | '/contractors/register'
     | '/foreclosures_/$id'
@@ -580,6 +592,7 @@ export interface RootRouteChildren {
   TransfersRoute: typeof TransfersRoute
   AgencyDashboardRoute: typeof AgencyDashboardRoute
   AgencyRegisterRoute: typeof AgencyRegisterRoute
+  BillingSuccessRoute: typeof BillingSuccessRoute
   ForeclosuresIdRoute: typeof ForeclosuresIdRoute
   ForeclosuresGuideRoute: typeof ForeclosuresGuideRoute
   ListingsNewRoute: typeof ListingsNewRoute
@@ -795,6 +808,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrokersRegisterRouteImport
       parentRoute: typeof BrokersRoute
     }
+    '/billing/success': {
+      id: '/billing/success'
+      path: '/billing/success'
+      fullPath: '/billing/success'
+      preLoaderRoute: typeof BillingSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agents/register': {
       id: '/agents/register'
       path: '/register'
@@ -998,6 +1018,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransfersRoute: TransfersRoute,
   AgencyDashboardRoute: AgencyDashboardRoute,
   AgencyRegisterRoute: AgencyRegisterRoute,
+  BillingSuccessRoute: BillingSuccessRoute,
   ForeclosuresIdRoute: ForeclosuresIdRoute,
   ForeclosuresGuideRoute: ForeclosuresGuideRoute,
   ListingsNewRoute: ListingsNewRoute,
