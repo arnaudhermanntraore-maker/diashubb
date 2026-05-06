@@ -286,7 +286,8 @@ function AgencyDashboard() {
               : (fr ? "Gérer la facturation" : "Manage billing")}
           </button>
         </div>
-      )}
+        );
+      })()}
 
       {/* Verification + Profile preview */}
       {loadingAgency ? (
