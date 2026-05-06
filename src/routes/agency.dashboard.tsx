@@ -61,7 +61,7 @@ const REQUIRED_DOCS = [
 function AgencyDashboard() {
   const { t, i18n } = useTranslation();
   const fr = i18n.language?.startsWith("fr") ?? true;
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [stats, setStats] = useState({ active: 0, pending: 0, draft: 0, sold: 0 });
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loadingAgency, setLoadingAgency] = useState(true);
