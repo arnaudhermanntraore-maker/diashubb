@@ -13,9 +13,9 @@ async function updateAgencyPlan(opts: {
   userId?: string | null;
   agencyId?: string | null;
   customerId?: string | null;
-  planKey: string;
+  planKey: PlanKey;
 }) {
-  const patch: { plan_key: string; updated_at: string; stripe_customer_id?: string } = {
+  const patch: { plan_key: PlanKey; updated_at: string; stripe_customer_id?: string } = {
     plan_key: opts.planKey,
     updated_at: new Date().toISOString(),
   };
@@ -30,9 +30,9 @@ async function updateAgencyPlan(opts: {
   if (error) console.error("[stripe-webhook] agency update", error);
 }
 
-async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<string | null> {
+async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<PlanKey | null> {
   const meta = sub.metadata?.plan_key;
-  if (meta && PLAN_KEYS.has(meta)) return meta;
+  if (isPlanKey(meta)) return meta;
   // Fallback: lookup by price id
   const priceId = sub.items.data[0]?.price?.id;
   if (!priceId) return null;
@@ -41,7 +41,8 @@ async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<string
     .select("key")
     .or(`stripe_price_id_monthly.eq.${priceId},stripe_price_id_yearly.eq.${priceId}`)
     .maybeSingle();
-  return (data?.key as string) ?? null;
+  const candidate = data?.key;
+  return isPlanKey(candidate) ? candidate : null;
 }
 
 export const Route = createFileRoute("/api/public/stripe-webhook")({
