@@ -37,8 +37,20 @@ export const registerAgency = createServerFn({ method: "POST" })
       return { ok: false as const, error: "already_registered", status: existing.status };
     }
 
+    const slugBase = data.name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 60) || "agence";
+    const slug = `${slugBase}-${crypto.randomUUID().slice(0, 6)}`;
+
     const payload = {
       owner_id: userId,
+      slug,
       name: data.name,
       legal_name: data.legal_name || null,
       registration_number: data.registration_number || null,
