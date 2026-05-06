@@ -245,9 +245,28 @@ function AgencyDashboard() {
       )}
 
       {agency && agency.plan_key && agency.plan_key !== "starter" && (
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex items-center justify-end gap-2 flex-wrap">
+          <span className="text-xs uppercase tracking-wider text-muted-foreground mr-1">
+            {fr ? "Plan actuel" : "Current plan"}
+          </span>
+          <PlanBadge planKey={agency.plan_key} />
           <button
-            onClick={openBillingPortal}
+            onClick={() => openBillingPortal("invoices")}
+            disabled={openingPortal}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-border hover:bg-muted disabled:opacity-60"
+          >
+            <FileText size={14} />
+            {fr ? "Voir les factures" : "View invoices"}
+          </button>
+          <button
+            onClick={() => openBillingPortal("payment_methods")}
+            disabled={openingPortal}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-border hover:bg-muted disabled:opacity-60"
+          >
+            {fr ? "Moyens de paiement" : "Payment methods"}
+          </button>
+          <button
+            onClick={() => openBillingPortal()}
             disabled={openingPortal}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-border hover:bg-muted disabled:opacity-60"
           >
