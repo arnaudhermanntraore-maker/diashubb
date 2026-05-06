@@ -67,6 +67,22 @@ function AgencyDashboard() {
   const [loadingAgency, setLoadingAgency] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
   const checkout = useServerFn(createSubscriptionCheckout);
+  const portal = useServerFn(createBillingPortalSession);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const openBillingPortal = async () => {
+    try {
+      setOpeningPortal(true);
+      const res = await portal({
+        data: { returnUrl: `${window.location.origin}/agency/dashboard` },
+      });
+      if (res?.url) window.location.href = res.url;
+      else throw new Error("No portal URL returned");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Billing portal error");
+      setOpeningPortal(false);
+    }
+  };
 
   const startUpgrade = async (planKey: "pro" | "business" | "enterprise" = "pro") => {
     try {
