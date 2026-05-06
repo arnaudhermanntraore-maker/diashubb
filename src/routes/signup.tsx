@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { getMapboxToken } from "@/server/config.functions";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/signup")({ component: SignupPage });
+export const Route = createFileRoute("/signup")({
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) throw redirect({ to: "/dashboard" });
+  },
+  component: SignupPage,
+});
 
 type ProfileKey = "buyer" | "diaspora" | "agent" | "contractor" | "broker" | "surveyor";
 
