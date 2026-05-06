@@ -4,10 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   Plus, Building2, Heart, ShieldCheck, Clock, XCircle,
   FileText, Upload, CheckCircle2, AlertTriangle, Globe2, Phone, Mail, MapPin, Pencil,
+  Star, Users, Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { PlanBadge } from "@/components/PlanBadge";
 
 export const Route = createFileRoute("/agency/dashboard")({
   beforeLoad: async () => {
@@ -39,6 +41,11 @@ type Agency = {
   documents: AgencyDoc[];
   created_at: string;
   verified_at: string | null;
+  plan_key: "starter" | "pro" | "business" | "enterprise" | null;
+  active_listings: number | null;
+  avg_rating: number | null;
+  leads_received: number | null;
+  reviews_count: number | null;
 };
 
 const REQUIRED_DOCS = [
@@ -119,7 +126,10 @@ function AgencyDashboard() {
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-display font-bold">{t("agency.title")}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-3xl font-display font-bold">{t("agency.title")}</h1>
+            {agency?.plan_key && <PlanBadge planKey={agency.plan_key} />}
+          </div>
           <p className="text-sm text-muted-foreground mt-1">{t("agency.subtitle")}</p>
         </div>
         <Link
@@ -130,6 +140,58 @@ function AgencyDashboard() {
           <Plus size={16} /> {t("agency.publishCta")}
         </Link>
       </div>
+
+
+      {agency && (!agency.plan_key || agency.plan_key === "starter") && (
+        <div className="mt-6 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-border"
+             style={{ background: "linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.08))" }}>
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl grid place-items-center" style={{ background: "var(--tf-blue)" }}>
+              <Sparkles size={20} className="text-white" />
+            </div>
+            <div>
+              <div className="font-display font-bold">
+                {fr ? "Passez au plan Pro" : "Upgrade to Pro"}
+              </div>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {fr
+                  ? "Plus d'annonces, badge certifié, mise en avant et statistiques avancées."
+                  : "More listings, certified badge, featured placement and advanced analytics."}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap"
+            style={{ background: "var(--tf-blue)" }}
+          >
+            {fr ? "Voir les plans" : "View plans"}
+          </Link>
+        </div>
+      )}
+
+      {agency && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: fr ? "Annonces actives" : "Active listings", value: String(agency.active_listings ?? 0), Icon: Building2, color: "var(--tf-green)", suffix: "" },
+            { label: fr ? "Note moyenne" : "Avg. rating", value: (Number(agency.avg_rating) || 0).toFixed(1), Icon: Star, color: "var(--tf-amber)", suffix: ` (${agency.reviews_count ?? 0})` },
+            { label: fr ? "Leads reçus" : "Leads received", value: String(agency.leads_received ?? 0), Icon: Users, color: "var(--tf-blue)", suffix: "" },
+            { label: fr ? "Plan actuel" : "Current plan", value: (agency.plan_key ?? "starter").toUpperCase(), Icon: Sparkles, color: "#8b5cf6", suffix: "" },
+          ].map((c, i) => {
+            const Icon = c.Icon;
+            return (
+              <div key={i} className="bg-card border border-border rounded-2xl p-4">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                  <Icon size={14} style={{ color: c.color }} /> {c.label}
+                </div>
+                <div className="text-2xl font-display font-bold mt-1" style={{ color: c.color }}>
+                  {c.value}{c.suffix && <span className="text-sm text-muted-foreground font-normal">{c.suffix}</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Verification + Profile preview */}
       {loadingAgency ? (
