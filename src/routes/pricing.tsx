@@ -260,6 +260,35 @@ function PricingPage() {
 }
 
 function PlanCard({ plan, yearly, fr }: { plan: Plan; yearly: boolean; fr: boolean }) {
+  const checkout = useServerFn(createSubscriptionCheckout);
+  const [loading, setLoading] = useState(false);
+
+  const startCheckout = async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        window.location.href = `/auth?redirect=/pricing`;
+        return;
+      }
+      setLoading(true);
+      const origin = window.location.origin;
+      const res = await checkout({
+        data: {
+          planKey: plan.key as "pro" | "business" | "enterprise",
+          cycle: yearly ? "yearly" : "monthly",
+          successUrl: `${origin}/billing/success`,
+          cancelUrl: `${origin}/pricing`,
+        },
+      });
+      if (res?.url) window.location.href = res.url;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Checkout error";
+      // eslint-disable-next-line no-alert
+      alert(msg);
+      setLoading(false);
+    }
+  };
+
   const price = yearly ? plan.yearly : plan.monthly;
   const features = fr ? plan.featuresFr : plan.featuresEn;
   const excluded = fr ? (plan.excludedFr ?? []) : (plan.excludedEn ?? []);
