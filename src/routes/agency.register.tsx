@@ -225,6 +225,10 @@ function AgencyRegister() {
       </div>
 
       <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-soft space-y-5">
+        <fieldset
+          disabled={authLoading || checkingAgency || redirecting || busy}
+          className="space-y-5 contents disabled:opacity-60 disabled:pointer-events-none"
+        >
         <Section title={fr ? "Identité de l'agence" : "Agency identity"}>
           <Field label={fr ? "Nom commercial *" : "Trade name *"} error={errors.name}>
             <input value={form.name} onChange={(e) => setField("name", e.target.value)} className={inputCls} required />
