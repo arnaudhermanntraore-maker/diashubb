@@ -127,6 +127,7 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (authLoading || checkingAgency || redirecting || busy) return;
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
