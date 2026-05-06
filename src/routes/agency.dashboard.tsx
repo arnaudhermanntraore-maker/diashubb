@@ -244,12 +244,22 @@ function AgencyDashboard() {
         </div>
       )}
 
-      {agency && agency.plan_key && agency.plan_key !== "starter" && (
+      {agency && agency.plan_key && agency.plan_key !== "starter" && (() => {
+        const PLAN_NAMES: Record<"pro" | "business" | "enterprise", { fr: string; en: string }> = {
+          pro:        { fr: "Pro",        en: "Pro" },
+          business:   { fr: "Business",   en: "Business" },
+          enterprise: { fr: "Enterprise", en: "Enterprise" },
+        };
+        const planName = PLAN_NAMES[agency.plan_key as "pro" | "business" | "enterprise"];
+        return (
         <div className="mt-4 flex items-center justify-end gap-2 flex-wrap">
           <span className="text-xs uppercase tracking-wider text-muted-foreground mr-1">
             {fr ? "Plan actuel" : "Current plan"}
           </span>
-          <PlanBadge planKey={agency.plan_key} />
+          <span className="text-sm font-display font-bold" style={{ color: "var(--tf-blue)" }}>
+            {fr ? planName.fr : planName.en}
+          </span>
+          <PlanBadge planKey={agency.plan_key} lang={fr ? "fr" : "en"} />
           <button
             onClick={() => openBillingPortal("invoices")}
             disabled={openingPortal}
@@ -276,7 +286,8 @@ function AgencyDashboard() {
               : (fr ? "Gérer la facturation" : "Manage billing")}
           </button>
         </div>
-      )}
+        );
+      })()}
 
       {/* Verification + Profile preview */}
       {loadingAgency ? (
