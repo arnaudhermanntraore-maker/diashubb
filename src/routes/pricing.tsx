@@ -338,24 +338,35 @@ function PlanCard({ plan, yearly, fr }: { plan: Plan; yearly: boolean; fr: boole
           )}
         </div>
 
-        <Link
-          to={plan.ctaTo}
-          search={{ plan: plan.key, cycle: yearly ? "yearly" : "monthly" } as never}
-          className={`w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 ${
-            plan.key === "starter" ? "border" : "text-white"
-          }`}
-          style={{
-            background: plan.key === "starter" ? "transparent" : plan.accent,
-            borderColor: plan.key === "starter" ? plan.accent : undefined,
-            color: plan.key === "starter" ? plan.accent : "white",
-          }}
-        >
-          {plan.key === "enterprise"
-            ? (fr ? "Contacter l'équipe →" : "Contact sales →")
-            : isFree
-              ? (fr ? "Commencer gratuitement →" : "Start for free →")
+        {plan.key === "pro" || plan.key === "business" ? (
+          <button
+            onClick={startCheckout}
+            disabled={loading}
+            className="w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 text-white disabled:opacity-60"
+            style={{ background: plan.accent }}
+          >
+            {loading
+              ? (fr ? "Redirection…" : "Redirecting…")
               : (fr ? `Démarrer ${plan.name} →` : `Start ${plan.name} →`)}
-        </Link>
+          </button>
+        ) : (
+          <Link
+            to={plan.ctaTo}
+            search={{ plan: plan.key, cycle: yearly ? "yearly" : "monthly" } as never}
+            className={`w-full text-center px-4 py-2 rounded-full text-sm font-semibold mb-4 ${
+              plan.key === "starter" ? "border" : "text-white"
+            }`}
+            style={{
+              background: plan.key === "starter" ? "transparent" : plan.accent,
+              borderColor: plan.key === "starter" ? plan.accent : undefined,
+              color: plan.key === "starter" ? plan.accent : "white",
+            }}
+          >
+            {plan.key === "enterprise"
+              ? (fr ? "Contacter l'équipe →" : "Contact sales →")
+              : (fr ? "Commencer gratuitement →" : "Start for free →")}
+          </Link>
+        )}
 
         <ul className="space-y-2 text-xs">
           {features.map((f, i) => (
