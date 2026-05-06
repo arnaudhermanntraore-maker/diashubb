@@ -41,6 +41,11 @@ type Agency = {
   documents: AgencyDoc[];
   created_at: string;
   verified_at: string | null;
+  plan_key: "starter" | "pro" | "business" | "enterprise" | null;
+  active_listings: number | null;
+  avg_rating: number | null;
+  leads_received: number | null;
+  reviews_count: number | null;
 };
 
 const REQUIRED_DOCS = [
