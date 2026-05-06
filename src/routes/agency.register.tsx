@@ -113,6 +113,9 @@ function AgencyRegister() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  // Synchronous lock — set BEFORE any async work so rapid clicks within the
+  // same tick (before React flushes setBusy) cannot enter twice.
+  const submitLockRef = useRef(false);
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
