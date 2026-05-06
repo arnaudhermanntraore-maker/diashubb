@@ -64,6 +64,29 @@ function AgencyDashboard() {
   const [stats, setStats] = useState({ active: 0, pending: 0, draft: 0, sold: 0 });
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loadingAgency, setLoadingAgency] = useState(true);
+  const [upgrading, setUpgrading] = useState(false);
+  const checkout = useServerFn(createSubscriptionCheckout);
+
+  const startUpgrade = async (planKey: "pro" | "business" | "enterprise" = "pro") => {
+    try {
+      setUpgrading(true);
+      const origin = window.location.origin;
+      const res = await checkout({
+        data: {
+          planKey,
+          cycle: "monthly",
+          successUrl: `${origin}/billing/success`,
+          cancelUrl: `${origin}/agency/dashboard`,
+        },
+      });
+      if (res?.url) window.location.href = res.url;
+      else throw new Error("No checkout URL returned");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Checkout error";
+      toast.error(msg);
+      setUpgrading(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
