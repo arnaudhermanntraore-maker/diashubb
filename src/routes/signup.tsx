@@ -55,6 +55,8 @@ function SignupPage() {
     if (!loading && user) navigate({ to: "/dashboard" });
   }, [user, loading, navigate]);
 
+  const authBlocked = loading || !!user;
+
   // Geolocation in step 2
   useEffect(() => {
     if (step !== 2 || geoText !== null || geoErr) return;
