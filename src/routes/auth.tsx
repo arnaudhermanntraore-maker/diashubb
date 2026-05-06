@@ -1,14 +1,31 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/auth")({ component: Auth });
+export const Route = createFileRoute("/auth")({
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) throw redirect({ to: "/dashboard" });
+  },
+  component: Auth,
+});
+
+function AuthLoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center h-40">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
+}
 
 function Auth() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  if (loading || user) return <AuthLoadingSpinner />;
   const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);

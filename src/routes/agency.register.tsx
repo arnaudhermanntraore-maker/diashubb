@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -63,8 +63,30 @@ type FormState = z.input<typeof ClientSchema>;
 function AgencyRegister() {
   const { i18n } = useTranslation();
   const fr = i18n.language?.startsWith("fr") ?? true;
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [checkingAgency, setCheckingAgency] = useState(true);
+
+  // If user already owns an agency, send them to the dashboard.
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) { setCheckingAgency(false); return; }
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("agencies")
+        .select("id")
+        .eq("owner_id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (data) {
+        navigate({ to: "/agency/dashboard" });
+      } else {
+        setCheckingAgency(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [authLoading, user, navigate]);
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -130,6 +152,14 @@ function AgencyRegister() {
       setBusy(false);
     }
   };
+
+  if (authLoading || checkingAgency) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   if (done) {
     return (

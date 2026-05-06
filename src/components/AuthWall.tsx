@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
 import { Lock } from "lucide-react";
 
 interface Props {
@@ -26,8 +28,17 @@ const COPY = {
 
 export function AuthWall({ open, onOpenChange, titleKey = "publish" }: Props) {
   const { i18n } = useTranslation();
+  const { user, loading } = useAuth();
   const fr = i18n.language === "fr";
   const c = COPY[titleKey][fr ? "fr" : "en"];
+
+  // Never show login wall to already-authenticated users.
+  useEffect(() => {
+    if (open && !loading && user) onOpenChange(false);
+  }, [open, loading, user, onOpenChange]);
+
+  if (user) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
