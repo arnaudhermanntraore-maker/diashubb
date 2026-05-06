@@ -164,6 +164,22 @@ function AgencyDashboard() {
     toast.success(fr ? "Mis à jour" : "Updated");
   };
 
+  // Auth-state coherence: redirect to /agency/register when authenticated user has no agency.
+  useEffect(() => {
+    if (authLoading || loadingAgency) return;
+    if (user && !agency) {
+      window.location.replace("/agency/register");
+    }
+  }, [authLoading, loadingAgency, user, agency]);
+
+  if (authLoading || loadingAgency || (user && !agency)) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-10 max-w-6xl">
       <div className="flex items-start justify-between gap-4 flex-wrap">
