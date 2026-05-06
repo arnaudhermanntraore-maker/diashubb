@@ -131,8 +131,29 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authLoading || checkingAgency || redirecting || busy || done || submitting) return;
-    if (submitLockRef.current) return;
+    if (authLoading || checkingAgency || redirecting || busy || done || submitting) {
+      console.warn("[agency.register] submit blocked by state", {
+        authLoading,
+        checkingAgency,
+        redirecting,
+        busy,
+        done,
+        submitting,
+        submitLock: submitLockRef.current,
+        ts: Date.now(),
+      });
+      return;
+    }
+    if (submitLockRef.current) {
+      console.warn("[agency.register] submit blocked by submitLockRef (double-submit)", {
+        redirecting,
+        submitting,
+        busy,
+        ts: Date.now(),
+      });
+      return;
+    }
+    console.info("[agency.register] submit accepted", { ts: Date.now() });
     submitLockRef.current = true;
     setSubmitting(true);
     setErrors({});
