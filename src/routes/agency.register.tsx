@@ -69,26 +69,33 @@ function AgencyRegister() {
   const [redirecting, setRedirecting] = useState(false);
 
   // If user already owns an agency, send them to the dashboard immediately.
+  // Once `redirecting` is true, no further state updates or fetches occur.
   useEffect(() => {
+    if (redirecting) return;
     if (authLoading) return;
-    if (!user) { setCheckingAgency(false); return; }
+    if (!user) {
+      setCheckingAgency(false);
+      return;
+    }
     let active = true;
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("agencies")
         .select("id")
         .eq("owner_id", user.id)
         .maybeSingle();
       if (!active) return;
-      if (data) {
+      if (!error && data) {
+        // Mark redirecting BEFORE navigate; cancel any further work.
+        active = false;
         setRedirecting(true);
         navigate({ to: "/agency/dashboard", replace: true });
-      } else {
-        setCheckingAgency(false);
+        return;
       }
+      setCheckingAgency(false);
     })();
     return () => { active = false; };
-  }, [authLoading, user, navigate]);
+  }, [authLoading, user, navigate, redirecting]);
 
   const [form, setForm] = useState<FormState>({
     name: "",
