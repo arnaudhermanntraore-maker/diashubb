@@ -70,11 +70,11 @@ function AgencyDashboard() {
   const portal = useServerFn(createBillingPortalSession);
   const [openingPortal, setOpeningPortal] = useState(false);
 
-  const openBillingPortal = async () => {
+  const openBillingPortal = async (flow?: "invoices" | "payment_methods") => {
     try {
       setOpeningPortal(true);
       const res = await portal({
-        data: { returnUrl: `${window.location.origin}/agency/dashboard` },
+        data: { returnUrl: `${window.location.origin}/agency/dashboard`, flow },
       });
       if (res?.url) window.location.href = res.url;
       else throw new Error("No portal URL returned");
