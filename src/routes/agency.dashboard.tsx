@@ -250,7 +250,15 @@ function AgencyDashboard() {
           business:   { fr: "Business",   en: "Business" },
           enterprise: { fr: "Enterprise", en: "Enterprise" },
         };
-        const planName = PLAN_NAMES[agency.plan_key as "pro" | "business" | "enterprise"];
+        const planName =
+          PLAN_NAMES[agency.plan_key as "pro" | "business" | "enterprise"] ?? {
+            fr: agency.plan_key
+              ? agency.plan_key.charAt(0).toUpperCase() + agency.plan_key.slice(1)
+              : "Plan inconnu",
+            en: agency.plan_key
+              ? agency.plan_key.charAt(0).toUpperCase() + agency.plan_key.slice(1)
+              : "Unknown plan",
+          };
         return (
         <div className="mt-4 flex items-center justify-end gap-2 flex-wrap">
           <span className="text-xs uppercase tracking-wider text-muted-foreground mr-1">
