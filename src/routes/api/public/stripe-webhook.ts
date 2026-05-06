@@ -16,13 +16,12 @@ async function updateAgencyPlan(opts: {
   customerId?: string | null;
   planKey: string;
 }) {
-  const patch: Record<string, unknown> = {
+  const patch: { plan_key: string; updated_at: string; stripe_customer_id?: string } = {
     plan_key: opts.planKey,
     updated_at: new Date().toISOString(),
   };
   if (opts.customerId) patch.stripe_customer_id = opts.customerId;
 
-  // Prefer agency_id, then user_id, then stripe_customer_id
   let q = supabaseAdmin.from("agencies").update(patch);
   if (opts.agencyId) q = q.eq("id", opts.agencyId);
   else if (opts.userId) q = q.eq("owner_id", opts.userId);
@@ -32,7 +31,7 @@ async function updateAgencyPlan(opts: {
   if (error) console.error("[stripe-webhook] agency update", error);
 }
 
-async function planKeyFromSubscription(sub: Stripe.Subscription, s: Stripe.Stripe): Promise<string | null> {
+async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<string | null> {
   const meta = sub.metadata?.plan_key;
   if (meta && PLAN_KEYS.has(meta)) return meta;
   // Fallback: lookup by price id
