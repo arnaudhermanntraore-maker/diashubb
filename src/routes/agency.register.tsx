@@ -131,9 +131,10 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authLoading || checkingAgency || redirecting || busy || done) return;
+    if (authLoading || checkingAgency || redirecting || busy || done || submitting) return;
     if (submitLockRef.current) return;
     submitLockRef.current = true;
+    setSubmitting(true);
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
@@ -145,6 +146,7 @@ function AgencyRegister() {
       setErrors(errs);
       toast.error(fr ? "Veuillez corriger les erreurs du formulaire" : "Please fix the form errors");
       submitLockRef.current = false;
+      setSubmitting(false);
       return;
     }
 
@@ -157,11 +159,12 @@ function AgencyRegister() {
           toast.info(fr ? "Vous avez déjà une agence enregistrée" : "You already have a registered agency");
           setRedirecting(true);
           navigate({ to: "/agency/dashboard", replace: true });
-          // keep lock + busy held while we navigate away
+          // keep lock + submitting + busy held while we navigate away
           return;
         }
         toast.error(res.error || (fr ? "Erreur" : "Error"));
         submitLockRef.current = false;
+        setSubmitting(false);
         return;
       }
       setDone(true);
@@ -170,6 +173,7 @@ function AgencyRegister() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Server error");
       submitLockRef.current = false;
+      setSubmitting(false);
     } finally {
       setBusy(false);
     }
