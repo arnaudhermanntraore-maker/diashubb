@@ -141,6 +141,58 @@ function AgencyDashboard() {
         </Link>
       </div>
 
+
+      {agency && (!agency.plan_key || agency.plan_key === "starter") && (
+        <div className="mt-6 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-border"
+             style={{ background: "linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.08))" }}>
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl grid place-items-center" style={{ background: "var(--tf-blue)" }}>
+              <Sparkles size={20} className="text-white" />
+            </div>
+            <div>
+              <div className="font-display font-bold">
+                {fr ? "Passez au plan Pro" : "Upgrade to Pro"}
+              </div>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {fr
+                  ? "Plus d'annonces, badge certifié, mise en avant et statistiques avancées."
+                  : "More listings, certified badge, featured placement and advanced analytics."}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap"
+            style={{ background: "var(--tf-blue)" }}
+          >
+            {fr ? "Voir les plans" : "View plans"}
+          </Link>
+        </div>
+      )}
+
+      {agency && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: fr ? "Annonces actives" : "Active listings", value: String(agency.active_listings ?? 0), Icon: Building2, color: "var(--tf-green)", suffix: "" },
+            { label: fr ? "Note moyenne" : "Avg. rating", value: (Number(agency.avg_rating) || 0).toFixed(1), Icon: Star, color: "var(--tf-amber)", suffix: ` (${agency.reviews_count ?? 0})` },
+            { label: fr ? "Leads reçus" : "Leads received", value: String(agency.leads_received ?? 0), Icon: Users, color: "var(--tf-blue)", suffix: "" },
+            { label: fr ? "Plan actuel" : "Current plan", value: (agency.plan_key ?? "starter").toUpperCase(), Icon: Sparkles, color: "#8b5cf6", suffix: "" },
+          ].map((c, i) => {
+            const Icon = c.Icon;
+            return (
+              <div key={i} className="bg-card border border-border rounded-2xl p-4">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                  <Icon size={14} style={{ color: c.color }} /> {c.label}
+                </div>
+                <div className="text-2xl font-display font-bold mt-1" style={{ color: c.color }}>
+                  {c.value}{c.suffix && <span className="text-sm text-muted-foreground font-normal">{c.suffix}</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* Verification + Profile preview */}
       {loadingAgency ? (
         <div className="mt-6 h-32 rounded-2xl bg-muted animate-pulse" />
