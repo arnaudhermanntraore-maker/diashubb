@@ -46,7 +46,7 @@ export const registerAgency = createServerFn({ method: "POST" })
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "")
       .slice(0, 60) || "agence";
-    const slug = `${slugBase}-${crypto.randomUUID().slice(0, 6)}`;
+    const slug = `${slugBase}-${globalThis.crypto.randomUUID().slice(0, 6)}`;
 
     const payload = {
       owner_id: userId,
