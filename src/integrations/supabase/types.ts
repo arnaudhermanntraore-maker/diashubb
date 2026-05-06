@@ -16,72 +16,196 @@ export type Database = {
     Tables: {
       agencies: {
         Row: {
+          active_listings: number | null
           address: string | null
+          avg_rating: number | null
           city: string | null
+          countries_operating: string[] | null
           country: string
+          cover_photo_url: string | null
           created_at: string
           description: string | null
           documents: Json
           email: string
+          featured_until: string | null
+          founded_year: number | null
           id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
+          languages: string[] | null
+          leads_received: number | null
           legal_name: string | null
+          linkedin: string | null
           logo_url: string | null
+          metadata: Json | null
           name: string
+          office_photos: Json | null
           owner_id: string
           phone: string
+          plan_key: string | null
+          profile_views: number | null
           registration_number: string | null
           rejection_reason: string | null
+          reviews_count: number | null
+          slug: string
+          specialties: string[] | null
           status: string
+          stripe_customer_id: string | null
+          team_photos: Json | null
+          team_size: number | null
+          total_listings: number | null
+          total_transactions: number | null
           updated_at: string
           verified_at: string | null
           verified_by: string | null
           website: string | null
+          whatsapp: string | null
         }
         Insert: {
+          active_listings?: number | null
           address?: string | null
+          avg_rating?: number | null
           city?: string | null
+          countries_operating?: string[] | null
           country: string
+          cover_photo_url?: string | null
           created_at?: string
           description?: string | null
           documents?: Json
           email: string
+          featured_until?: string | null
+          founded_year?: number | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          leads_received?: number | null
           legal_name?: string | null
+          linkedin?: string | null
           logo_url?: string | null
+          metadata?: Json | null
           name: string
+          office_photos?: Json | null
           owner_id: string
           phone: string
+          plan_key?: string | null
+          profile_views?: number | null
           registration_number?: string | null
           rejection_reason?: string | null
+          reviews_count?: number | null
+          slug: string
+          specialties?: string[] | null
           status?: string
+          stripe_customer_id?: string | null
+          team_photos?: Json | null
+          team_size?: number | null
+          total_listings?: number | null
+          total_transactions?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
           website?: string | null
+          whatsapp?: string | null
         }
         Update: {
+          active_listings?: number | null
           address?: string | null
+          avg_rating?: number | null
           city?: string | null
+          countries_operating?: string[] | null
           country?: string
+          cover_photo_url?: string | null
           created_at?: string
           description?: string | null
           documents?: Json
           email?: string
+          featured_until?: string | null
+          founded_year?: number | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          leads_received?: number | null
           legal_name?: string | null
+          linkedin?: string | null
           logo_url?: string | null
+          metadata?: Json | null
           name?: string
+          office_photos?: Json | null
           owner_id?: string
           phone?: string
+          plan_key?: string | null
+          profile_views?: number | null
           registration_number?: string | null
           rejection_reason?: string | null
+          reviews_count?: number | null
+          slug?: string
+          specialties?: string[] | null
           status?: string
+          stripe_customer_id?: string | null
+          team_photos?: Json | null
+          team_size?: number | null
+          total_listings?: number | null
+          total_transactions?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
           website?: string | null
+          whatsapp?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "agencies_plan_key_fkey"
+            columns: ["plan_key"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      agency_reviews: {
+        Row: {
+          agency_id: string
+          comment: string | null
+          created_at: string | null
+          id: string
+          is_verified: boolean | null
+          rating: number
+          reviewer_id: string
+          title: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          agency_id: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          rating: number
+          reviewer_id: string
+          title?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          agency_id?: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          rating?: number
+          reviewer_id?: string
+          title?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_reviews_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       alerts: {
         Row: {
@@ -786,6 +910,75 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          badge_color: string | null
+          badge_label_en: string | null
+          badge_label_fr: string | null
+          boosts_included: number | null
+          created_at: string | null
+          description_en: string | null
+          description_fr: string | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          key: string
+          max_agents: number | null
+          max_listings: number | null
+          name_en: string
+          name_fr: string
+          price_monthly: number | null
+          price_yearly: number | null
+          sort_order: number | null
+          stripe_price_id_monthly: string | null
+          stripe_price_id_yearly: string | null
+        }
+        Insert: {
+          badge_color?: string | null
+          badge_label_en?: string | null
+          badge_label_fr?: string | null
+          boosts_included?: number | null
+          created_at?: string | null
+          description_en?: string | null
+          description_fr?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          max_agents?: number | null
+          max_listings?: number | null
+          name_en: string
+          name_fr: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          sort_order?: number | null
+          stripe_price_id_monthly?: string | null
+          stripe_price_id_yearly?: string | null
+        }
+        Update: {
+          badge_color?: string | null
+          badge_label_en?: string | null
+          badge_label_fr?: string | null
+          boosts_included?: number | null
+          created_at?: string | null
+          description_en?: string | null
+          description_fr?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          max_agents?: number | null
+          max_listings?: number | null
+          name_en?: string
+          name_fr?: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          sort_order?: number | null
+          stripe_price_id_monthly?: string | null
+          stripe_price_id_yearly?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount_usd: number
@@ -870,6 +1063,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       app_role:
