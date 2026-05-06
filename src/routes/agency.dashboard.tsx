@@ -185,13 +185,22 @@ function AgencyDashboard() {
               </p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap"
-            style={{ background: "var(--tf-blue)" }}
-          >
-            {fr ? "Voir les plans" : "View plans"}
-          </Link>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => startUpgrade("pro")}
+              disabled={upgrading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold whitespace-nowrap disabled:opacity-60"
+              style={{ background: "var(--tf-blue)" }}
+            >
+              {upgrading ? (fr ? "Redirection…" : "Redirecting…") : (fr ? "Passer Pro — $49/mois" : "Upgrade to Pro — $49/mo")}
+            </button>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap border border-border hover:bg-muted"
+            >
+              {fr ? "Comparer les plans" : "Compare plans"}
+            </Link>
+          </div>
         </div>
       )}
 
