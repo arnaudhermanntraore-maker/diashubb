@@ -97,22 +97,27 @@ export const confirmSubscription = createServerFn({ method: "POST" })
     if (session.payment_status !== "paid" && session.status !== "complete") {
       return { ok: false, status: session.status };
     }
-    const planKey = session.metadata?.plan_key;
+    const rawPlanKey = session.metadata?.plan_key;
     const sessionUserId = session.metadata?.user_id;
     if (sessionUserId && sessionUserId !== userId) throw new Error("Session does not belong to current user");
-    if (!planKey) throw new Error("Missing plan_key on session");
+    const lang = (session.metadata?.lang === "en" ? "en" : "fr") as "fr" | "en";
+    const validated = validatePlanKey(rawPlanKey, lang);
+    if (!validated.ok) {
+      console.error("[confirmSubscription] invalid plan_key", rawPlanKey);
+      throw new Error(validated.reason);
+    }
 
     const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id ?? null;
 
     const { error } = await supabaseAdmin
       .from("agencies")
       .update({
-        plan_key: planKey,
+        plan_key: validated.planKey,
         stripe_customer_id: customerId,
         updated_at: new Date().toISOString(),
       })
       .eq("owner_id", userId);
     if (error) throw new Error(error.message);
 
-    return { ok: true, planKey };
+    return { ok: true, planKey: validated.planKey };
   });
