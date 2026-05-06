@@ -68,7 +68,25 @@ function AgencyRegister() {
   const [checkingAgency, setCheckingAgency] = useState(true);
 
   // If user already owns an agency, send them to the dashboard.
-  useMemo(() => undefined, []); // placeholder to keep imports stable
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) { setCheckingAgency(false); return; }
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("agencies")
+        .select("id")
+        .eq("owner_id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (data) {
+        navigate({ to: "/agency/dashboard" });
+      } else {
+        setCheckingAgency(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [authLoading, user, navigate]);
 
   const [form, setForm] = useState<FormState>({
     name: "",
