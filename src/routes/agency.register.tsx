@@ -242,7 +242,7 @@ function AgencyRegister() {
 
       <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-soft space-y-5">
         <fieldset
-          disabled={authLoading || checkingAgency || redirecting || busy}
+          disabled={authLoading || checkingAgency || redirecting || busy || submitting}
           className="space-y-5 contents disabled:opacity-60 disabled:pointer-events-none"
         >
         <Section title={fr ? "Identité de l'agence" : "Agency identity"}>
