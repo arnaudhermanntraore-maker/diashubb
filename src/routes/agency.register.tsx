@@ -116,6 +116,7 @@ function AgencyRegister() {
   // Synchronous lock — set BEFORE any async work so rapid clicks within the
   // same tick (before React flushes setBusy) cannot enter twice.
   const submitLockRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -130,9 +131,10 @@ function AgencyRegister() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authLoading || checkingAgency || redirecting || busy || done) return;
+    if (authLoading || checkingAgency || redirecting || busy || done || submitting) return;
     if (submitLockRef.current) return;
     submitLockRef.current = true;
+    setSubmitting(true);
     setErrors({});
 
     const parsed = ClientSchema.safeParse(form);
@@ -144,6 +146,7 @@ function AgencyRegister() {
       setErrors(errs);
       toast.error(fr ? "Veuillez corriger les erreurs du formulaire" : "Please fix the form errors");
       submitLockRef.current = false;
+      setSubmitting(false);
       return;
     }
 
@@ -156,11 +159,12 @@ function AgencyRegister() {
           toast.info(fr ? "Vous avez déjà une agence enregistrée" : "You already have a registered agency");
           setRedirecting(true);
           navigate({ to: "/agency/dashboard", replace: true });
-          // keep lock + busy held while we navigate away
+          // keep lock + submitting + busy held while we navigate away
           return;
         }
         toast.error(res.error || (fr ? "Erreur" : "Error"));
         submitLockRef.current = false;
+        setSubmitting(false);
         return;
       }
       setDone(true);
@@ -169,6 +173,7 @@ function AgencyRegister() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Server error");
       submitLockRef.current = false;
+      setSubmitting(false);
     } finally {
       setBusy(false);
     }
@@ -237,7 +242,7 @@ function AgencyRegister() {
 
       <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-soft space-y-5">
         <fieldset
-          disabled={authLoading || checkingAgency || redirecting || busy}
+          disabled={authLoading || checkingAgency || redirecting || busy || submitting}
           className="space-y-5 contents disabled:opacity-60 disabled:pointer-events-none"
         >
         <Section title={fr ? "Identité de l'agence" : "Agency identity"}>
@@ -331,7 +336,8 @@ function AgencyRegister() {
           </Link>
           <button
             type="submit"
-            disabled={busy || authLoading || checkingAgency || redirecting}
+            disabled={busy || submitting || authLoading || checkingAgency || redirecting}
+            aria-busy={busy || submitting || redirecting}
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-50"
             style={{ background: "var(--tf-blue)" }}
           >
