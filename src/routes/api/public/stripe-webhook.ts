@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { validatePlanKey, isPlanKey, type PlanKey } from "@/lib/plan-key";
 
 function stripe() {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -8,15 +9,13 @@ function stripe() {
   return new Stripe(key, { apiVersion: "2024-12-18.acacia" as never });
 }
 
-const PLAN_KEYS = new Set(["starter", "pro", "business", "enterprise"]);
-
 async function updateAgencyPlan(opts: {
   userId?: string | null;
   agencyId?: string | null;
   customerId?: string | null;
-  planKey: string;
+  planKey: PlanKey;
 }) {
-  const patch: { plan_key: string; updated_at: string; stripe_customer_id?: string } = {
+  const patch: { plan_key: PlanKey; updated_at: string; stripe_customer_id?: string } = {
     plan_key: opts.planKey,
     updated_at: new Date().toISOString(),
   };
@@ -31,9 +30,9 @@ async function updateAgencyPlan(opts: {
   if (error) console.error("[stripe-webhook] agency update", error);
 }
 
-async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<string | null> {
+async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<PlanKey | null> {
   const meta = sub.metadata?.plan_key;
-  if (meta && PLAN_KEYS.has(meta)) return meta;
+  if (isPlanKey(meta)) return meta;
   // Fallback: lookup by price id
   const priceId = sub.items.data[0]?.price?.id;
   if (!priceId) return null;
@@ -42,7 +41,8 @@ async function planKeyFromSubscription(sub: Stripe.Subscription): Promise<string
     .select("key")
     .or(`stripe_price_id_monthly.eq.${priceId},stripe_price_id_yearly.eq.${priceId}`)
     .maybeSingle();
-  return (data?.key as string) ?? null;
+  const candidate = data?.key;
+  return isPlanKey(candidate) ? candidate : null;
 }
 
 export const Route = createFileRoute("/api/public/stripe-webhook")({
@@ -72,11 +72,14 @@ export const Route = createFileRoute("/api/public/stripe-webhook")({
               if (session.mode !== "subscription") break;
               const userId = session.metadata?.user_id ?? null;
               const agencyId = session.metadata?.agency_id || null;
-              const planKey = session.metadata?.plan_key;
+              const rawPlanKey = session.metadata?.plan_key;
               const customerId =
                 typeof session.customer === "string" ? session.customer : session.customer?.id ?? null;
-              if (planKey && PLAN_KEYS.has(planKey)) {
-                await updateAgencyPlan({ userId, agencyId, customerId, planKey });
+              const validated = validatePlanKey(rawPlanKey, "en");
+              if (validated.ok) {
+                await updateAgencyPlan({ userId, agencyId, customerId, planKey: validated.planKey });
+              } else {
+                console.error("[stripe-webhook] checkout.session.completed", validated.reason);
               }
               break;
             }
