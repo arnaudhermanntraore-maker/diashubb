@@ -12,7 +12,12 @@ function stripe() {
 
 export const createBillingPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ returnUrl: z.string().url() }).parse(d))
+  .inputValidator((d) =>
+    z.object({
+      returnUrl: z.string().url(),
+      flow: z.enum(["invoices", "payment_methods", "subscription_cancel"]).optional(),
+    }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { data: agency, error } = await supabaseAdmin
