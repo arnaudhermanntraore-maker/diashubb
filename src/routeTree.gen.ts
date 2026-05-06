@@ -14,6 +14,7 @@ import { Route as SurveyorsRouteImport } from './routes/surveyors'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MarketRouteImport } from './routes/market'
 import { Route as ListingsRouteImport } from './routes/listings'
@@ -76,6 +77,11 @@ const SafetyRoute = SafetyRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRoute = MessagesRouteImport.update({
@@ -286,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/listings': typeof ListingsRoute
   '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
@@ -331,6 +338,7 @@ export interface FileRoutesByTo {
   '/listings': typeof ListingsRoute
   '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
@@ -377,6 +385,7 @@ export interface FileRoutesById {
   '/listings': typeof ListingsRoute
   '/market': typeof MarketRoute
   '/messages': typeof MessagesRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/safety': typeof SafetyRoute
   '/signup': typeof SignupRoute
@@ -424,6 +433,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/market'
     | '/messages'
+    | '/pricing'
     | '/profile'
     | '/safety'
     | '/signup'
@@ -469,6 +479,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/market'
     | '/messages'
+    | '/pricing'
     | '/profile'
     | '/safety'
     | '/signup'
@@ -514,6 +525,7 @@ export interface FileRouteTypes {
     | '/listings'
     | '/market'
     | '/messages'
+    | '/pricing'
     | '/profile'
     | '/safety'
     | '/signup'
@@ -560,6 +572,7 @@ export interface RootRouteChildren {
   ListingsRoute: typeof ListingsRoute
   MarketRoute: typeof MarketRoute
   MessagesRoute: typeof MessagesRoute
+  PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
   SafetyRoute: typeof SafetyRoute
   SignupRoute: typeof SignupRoute
@@ -612,6 +625,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages': {
@@ -970,6 +990,7 @@ const rootRouteChildren: RootRouteChildren = {
   ListingsRoute: ListingsRoute,
   MarketRoute: MarketRoute,
   MessagesRoute: MessagesRoute,
+  PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
   SafetyRoute: SafetyRoute,
   SignupRoute: SignupRoute,
