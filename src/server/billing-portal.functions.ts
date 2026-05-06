@@ -12,7 +12,12 @@ function stripe() {
 
 export const createBillingPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ returnUrl: z.string().url() }).parse(d))
+  .inputValidator((d) =>
+    z.object({
+      returnUrl: z.string().url(),
+      flow: z.enum(["invoices", "payment_methods", "subscription_cancel"]).optional(),
+    }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { data: agency, error } = await supabaseAdmin
@@ -25,9 +30,15 @@ export const createBillingPortalSession = createServerFn({ method: "POST" })
       throw new Error("No Stripe customer found. Subscribe to a plan first.");
     }
     const s = stripe();
-    const session = await s.billingPortal.sessions.create({
+    const params: Stripe.BillingPortal.SessionCreateParams = {
       customer: agency.stripe_customer_id,
       return_url: data.returnUrl,
-    });
+    };
+    if (data.flow === "payment_methods") {
+      params.flow_data = { type: "payment_method_update" };
+    } else if (data.flow === "subscription_cancel") {
+      // requires a subscription id; skip deep-link if not trivially available
+    }
+    const session = await s.billingPortal.sessions.create(params);
     return { url: session.url };
   });
