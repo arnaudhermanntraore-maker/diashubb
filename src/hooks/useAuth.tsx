@@ -22,6 +22,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const w = window as unknown as { __tfFetchPatched?: boolean };
+    if (w.__tfFetchPatched) return;
+    w.__tfFetchPatched = true;
+    const original = window.fetch.bind(window);
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+      try {
+        const url =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.toString()
+              : input.url;
+        if (url.includes("/_serverFn/")) {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          if (token) {
+            const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+            if (!headers.has("authorization")) headers.set("authorization", `Bearer ${token}`);
+            return original(input, { ...init, headers });
+          }
+        }
+      } catch {
+        // fall through to original fetch
+      }
+      return original(input, init);
+    };
+  }, []);
+
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
