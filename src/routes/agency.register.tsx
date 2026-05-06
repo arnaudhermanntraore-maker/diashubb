@@ -336,7 +336,8 @@ function AgencyRegister() {
           </Link>
           <button
             type="submit"
-            disabled={busy || authLoading || checkingAgency || redirecting}
+            disabled={busy || submitting || authLoading || checkingAgency || redirecting}
+            aria-busy={busy || submitting || redirecting}
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-50"
             style={{ background: "var(--tf-blue)" }}
           >
