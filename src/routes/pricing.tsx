@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X, Sparkles, ChevronDown } from "lucide-react";
 import { PlanBadge, type PlanKey } from "@/components/PlanBadge";
+import { useServerFn } from "@tanstack/react-start";
+import { createSubscriptionCheckout } from "@/server/subscriptions.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
