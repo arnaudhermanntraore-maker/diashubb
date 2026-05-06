@@ -43,13 +43,13 @@ export const createSubscriptionCheckout = createServerFn({ method: "POST" })
     const unitAmount = data.cycle === "yearly" ? plan.price_yearly : plan.price_monthly;
 
     // Build line items: prefer pre-configured Stripe Price, otherwise inline price_data
-    const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = priceId
+    const lineItem = priceId
       ? { price: priceId, quantity: 1 }
       : {
           quantity: 1,
           price_data: {
             currency: "usd",
-            recurring: { interval: data.cycle === "yearly" ? "year" : "month" },
+            recurring: { interval: (data.cycle === "yearly" ? "year" : "month") as "year" | "month" },
             unit_amount: Math.round(Number(unitAmount ?? 0) * 100),
             product_data: {
               name: `TerraFrique ${plan.name_en} (${data.cycle})`,
