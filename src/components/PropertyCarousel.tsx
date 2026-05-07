@@ -237,14 +237,27 @@ export function PropertyCarousel({ region, title, subtitle, viewAllLabel }: Prop
   );
 }
 
+function formatBoostRemaining(until: string, fr: boolean): string {
+  const ms = new Date(until).getTime() - Date.now();
+  if (ms <= 0) return "";
+  const mins = Math.floor(ms / 60000);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+  if (days >= 1) return fr ? `${days}j restant${days > 1 ? "s" : ""}` : `${days}d left`;
+  if (hours >= 1) return fr ? `${hours}h restantes` : `${hours}h left`;
+  return fr ? `${Math.max(1, mins)}min restantes` : `${Math.max(1, mins)}m left`;
+}
+
 function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; fr: boolean }) {
   const boosted = !!(p.boosted_until && new Date(p.boosted_until) > new Date());
+  const boostRemaining = boosted && p.boosted_until ? formatBoostRemaining(p.boosted_until, fr) : "";
   const title = (fr ? p.title_fr : p.title_en) || p.title;
   const photos = (p.images && p.images.length > 0 ? p.images : p.cover_url ? [p.cover_url] : []).filter(Boolean) as string[];
   const cover = photos[0];
   const typeMeta = TYPE_LABEL[p.type] ?? { fr: p.type, en: p.type, emoji: "📍" };
   const flag = COUNTRY_FLAG[p.country] ?? "🌍";
   const locationText = [p.city, p.country].filter(Boolean).join(", ");
+
 
   return (
     <div
