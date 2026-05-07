@@ -249,14 +249,27 @@ function formatBoostRemaining(until: string, fr: boolean): string {
 }
 
 function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; fr: boolean }) {
-  const boosted = !!(p.boosted_until && new Date(p.boosted_until) > new Date());
-  const boostRemaining = boosted && p.boosted_until ? formatBoostRemaining(p.boosted_until, fr) : "";
+  const [now, setNow] = useState(() => Date.now());
+  const expiry = p.boosted_until ? new Date(p.boosted_until).getTime() : 0;
+  const boosted = expiry > now;
+
+  // Schedule a re-render exactly when the boost expires (or every minute while active)
+  useEffect(() => {
+    if (!expiry || expiry <= now) return;
+    const msUntilExpiry = expiry - now;
+    const tick = Math.min(msUntilExpiry, 60_000);
+    const t = window.setTimeout(() => setNow(Date.now()), tick + 50);
+    return () => window.clearTimeout(t);
+  }, [expiry, now]);
+
+  const boostRemaining = boosted ? formatBoostRemaining(p.boosted_until!, fr) : "";
   const title = (fr ? p.title_fr : p.title_en) || p.title;
   const photos = (p.images && p.images.length > 0 ? p.images : p.cover_url ? [p.cover_url] : []).filter(Boolean) as string[];
   const cover = photos[0];
   const typeMeta = TYPE_LABEL[p.type] ?? { fr: p.type, en: p.type, emoji: "📍" };
   const flag = COUNTRY_FLAG[p.country] ?? "🌍";
   const locationText = [p.city, p.country].filter(Boolean).join(", ");
+
 
 
   return (
