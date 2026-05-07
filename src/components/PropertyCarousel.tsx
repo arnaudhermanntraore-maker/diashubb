@@ -237,14 +237,27 @@ export function PropertyCarousel({ region, title, subtitle, viewAllLabel }: Prop
   );
 }
 
+function formatBoostRemaining(until: string, fr: boolean): string {
+  const ms = new Date(until).getTime() - Date.now();
+  if (ms <= 0) return "";
+  const mins = Math.floor(ms / 60000);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+  if (days >= 1) return fr ? `${days}j restant${days > 1 ? "s" : ""}` : `${days}d left`;
+  if (hours >= 1) return fr ? `${hours}h restantes` : `${hours}h left`;
+  return fr ? `${Math.max(1, mins)}min restantes` : `${Math.max(1, mins)}m left`;
+}
+
 function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; fr: boolean }) {
   const boosted = !!(p.boosted_until && new Date(p.boosted_until) > new Date());
+  const boostRemaining = boosted && p.boosted_until ? formatBoostRemaining(p.boosted_until, fr) : "";
   const title = (fr ? p.title_fr : p.title_en) || p.title;
   const photos = (p.images && p.images.length > 0 ? p.images : p.cover_url ? [p.cover_url] : []).filter(Boolean) as string[];
   const cover = photos[0];
   const typeMeta = TYPE_LABEL[p.type] ?? { fr: p.type, en: p.type, emoji: "📍" };
   const flag = COUNTRY_FLAG[p.country] ?? "🌍";
   const locationText = [p.city, p.country].filter(Boolean).join(", ");
+
 
   return (
     <div
@@ -297,8 +310,8 @@ function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; 
           {typeMeta.emoji} {fr ? typeMeta.fr : typeMeta.en}
         </span>
 
-        {/* AI score top-right */}
-        {p.ai_score != null && p.ai_score > 0 && (
+        {/* AI score top-right (hidden on boosted to make room for boost badge) */}
+        {!boosted && p.ai_score != null && p.ai_score > 0 && (
           <span
             className="absolute top-0 right-0 bg-white font-bold inline-flex items-center gap-0.5"
             style={{ color: aiScoreColor(p.ai_score), fontSize: 10, padding: "3px 8px", borderRadius: "0 0 0 8px" }}
@@ -307,12 +320,33 @@ function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; 
           </span>
         )}
 
+
         {/* 360 badge bottom-left */}
         {p.has_360_tour && (
           <span className="absolute bottom-2 left-2 text-white font-bold" style={{ background: "#185FA5", fontSize: 9, padding: "2px 6px", borderRadius: 4 }}>
             360°
           </span>
         )}
+
+        {/* boost remaining badge — top-right under AI score area, left side */}
+        {boosted && boostRemaining && (
+          <span
+            className="absolute text-white font-bold inline-flex items-center gap-1"
+            style={{
+              top: 8,
+              right: 8,
+              background: "#EF9F27",
+              fontSize: 9,
+              padding: "3px 7px",
+              borderRadius: 999,
+              boxShadow: "0 2px 6px rgba(239,159,39,0.4)",
+            }}
+            title={fr ? "Mise en avant active" : "Boost active"}
+          >
+            ⏱ {boostRemaining}
+          </span>
+        )}
+
 
         {/* photo count bottom-right */}
         {photos.length > 1 && !boosted && (
