@@ -327,6 +327,26 @@ function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; 
           </span>
         )}
 
+        {/* boost remaining badge — top-right under AI score area, left side */}
+        {boosted && boostRemaining && (
+          <span
+            className="absolute text-white font-bold inline-flex items-center gap-1"
+            style={{
+              top: 8,
+              right: 8,
+              background: "#EF9F27",
+              fontSize: 9,
+              padding: "3px 7px",
+              borderRadius: 999,
+              boxShadow: "0 2px 6px rgba(239,159,39,0.4)",
+            }}
+            title={fr ? "Mise en avant active" : "Boost active"}
+          >
+            ⏱ {boostRemaining}
+          </span>
+        )}
+
+
         {/* photo count bottom-right */}
         {photos.length > 1 && !boosted && (
           <span
