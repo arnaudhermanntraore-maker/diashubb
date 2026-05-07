@@ -310,8 +310,8 @@ function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; 
           {typeMeta.emoji} {fr ? typeMeta.fr : typeMeta.en}
         </span>
 
-        {/* AI score top-right */}
-        {p.ai_score != null && p.ai_score > 0 && (
+        {/* AI score top-right (hidden on boosted to make room for boost badge) */}
+        {!boosted && p.ai_score != null && p.ai_score > 0 && (
           <span
             className="absolute top-0 right-0 bg-white font-bold inline-flex items-center gap-0.5"
             style={{ color: aiScoreColor(p.ai_score), fontSize: 10, padding: "3px 8px", borderRadius: "0 0 0 8px" }}
@@ -319,6 +319,7 @@ function CarouselCard({ p, accent, fr }: { p: CarouselProperty; accent: string; 
             <Star size={10} fill="currentColor" /> {p.ai_score}
           </span>
         )}
+
 
         {/* 360 badge bottom-left */}
         {p.has_360_tour && (
