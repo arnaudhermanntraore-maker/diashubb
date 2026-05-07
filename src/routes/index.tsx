@@ -5,7 +5,7 @@ import {
   Building2, Globe2, HardHat, BadgeCheck, Users, Plus, Home as HomeIcon, MapPin,
 } from "lucide-react";
 import { HeroSearchBox } from "@/components/HeroSearchBox";
-import { FeaturedPropertiesRow } from "@/components/FeaturedPropertiesRow";
+import { PropertyCarousel } from "@/components/PropertyCarousel";
 import { DemoBanner } from "@/components/DemoBanner";
 
 export const Route = createFileRoute("/")({
