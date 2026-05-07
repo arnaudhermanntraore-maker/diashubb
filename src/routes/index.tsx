@@ -163,17 +163,21 @@ function Home() {
         </div>
       </section>
 
-      {/* FEATURED US HOMES */}
-      <SectionHeader title={fr ? "Maisons US à la une" : "Featured US homes for sale"} link={fr ? "Tout voir" : "View all"} />
-      <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <FeaturedPropertiesRow region="us" limit={4} />
-      </div>
+      {/* FEATURED US HOMES — auto-scrolling carousel */}
+      <PropertyCarousel
+        region="us"
+        title={fr ? "Biens immobiliers USA" : "US Properties"}
+        subtitle={fr ? "Défile automatiquement · Cliquez pour voir les détails" : "Auto-scrolling · Click to view details"}
+        viewAllLabel={fr ? "Voir tout" : "View all"}
+      />
 
-      {/* AFRICA */}
-      <SectionHeader title={fr ? "Investir en Afrique — payer en USD" : "Invest in Africa — pay in USD"} link={fr ? "Tout parcourir" : "Browse all"} />
-      <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <FeaturedPropertiesRow region="africa" limit={4} />
-      </div>
+      {/* AFRICA — auto-scrolling carousel */}
+      <PropertyCarousel
+        region="africa"
+        title={fr ? "Biens immobiliers Afrique" : "Africa Properties"}
+        subtitle={fr ? "Défile automatiquement · Cliquez pour voir les détails" : "Auto-scrolling · Click to view details"}
+        viewAllLabel={fr ? "Voir tout" : "View all"}
+      />
 
       {/* CONTRACTORS */}
       <SectionHeader title={fr ? "Artisans vérifiés près de chez vous" : "Verified contractors near you"} link={fr ? "Voir tous" : "See all"} />
