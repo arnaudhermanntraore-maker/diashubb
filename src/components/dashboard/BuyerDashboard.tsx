@@ -79,7 +79,7 @@ export function BuyerDashboard({ profile }: { profile: Profile | null }) {
               icon={Home}
               title="Aucun bien US sauvegardé"
               action={
-                <Link to="/listings" search={{ country: "US" }} className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-semibold" style={{ background: "#185FA5" }}>
+                <Link to="/listings" className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-semibold" style={{ background: "#185FA5" }}>
                   Chercher aux USA →
                 </Link>
               }
