@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Heart, Bell, Eye, MessageCircle, Home, Globe, Search, Send, Coins } from "lucide-react";
+import { Heart, Bell, Eye, MessageCircle, Home, Globe, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { KpiCard } from "./shared/KpiCard";
