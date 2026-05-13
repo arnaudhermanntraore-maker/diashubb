@@ -10,7 +10,7 @@ export const Route = createFileRoute("/profile")({
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
   },
-  head: () => ({ meta: [{ title: "Mon profil — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Mon profil — Diashubb" }] }),
   component: ProfilePage,
 });
 
@@ -21,7 +21,7 @@ interface Profile {
   country: string | null;
   lang_pref: string;
   verified: boolean;
-  terracoins: number;
+  diascoins: number;
   created_at: string;
 }
 
@@ -126,7 +126,7 @@ function ProfilePage() {
             ) : (profile?.country || "—")}
           />
           <Row icon={<Shield size={14} />} label={fr ? "Statut" : "Status"} value={profile?.verified ? (fr ? "Vérifié" : "Verified") : (fr ? "Non vérifié" : "Unverified")} />
-          <Row icon={<Coins size={14} />} label="TerraCoins" value={String(profile?.terracoins ?? 0)} />
+          <Row icon={<Coins size={14} />} label="DiasCoins" value={String(profile?.diascoins ?? 0)} />
         </div>
       </div>
 

@@ -11,9 +11,9 @@ import { DemoBanner } from "@/components/DemoBanner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TerraFrique Global — Your home in America. Your land in Africa." },
+      { title: "Diashubb — Your home in America. Your land in Africa." },
       { name: "description", content: "Bi-continental real estate. AI-verified titles, secure escrow, trusted contractors across the US and Africa." },
-      { property: "og:title", content: "TerraFrique Global" },
+      { property: "og:title", content: "Diashubb" },
       { property: "og:description", content: "Your home in America. Your land in Africa." },
     ],
   }),
@@ -87,7 +87,7 @@ function Home() {
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs" style={{ color: "rgba(255,255,255,0.85)" }}>
               {[
                 { icon: ShieldCheck, label: fr ? "Titres vérifiés par IA" : "AI-verified titles" },
-                { icon: Coins,       label: fr ? "100 TerraCoins offerts" : "100 TerraCoins on signup" },
+                { icon: Coins,       label: fr ? "100 DiasCoins offerts" : "100 DiasCoins on signup" },
                 { icon: Gift,        label: fr ? "Inscription gratuite"   : "Free to join" },
                 { icon: DollarSign,  label: fr ? "12 $ frais de transfert": "$12 flat transfer fee" },
               ].map((b, i) => (
@@ -140,7 +140,7 @@ function Home() {
       {/* HOW IT WORKS */}
       <section id="how" className="bg-muted/30 border-b border-border">
         <div className="container mx-auto px-4 py-16 max-w-6xl">
-          <h2 className="text-3xl font-display font-bold text-center mb-12 text-tf-navy">{fr ? "Comment fonctionne TerraFrique" : "How TerraFrique works"}</h2>
+          <h2 className="text-3xl font-display font-bold text-center mb-12 text-tf-navy">{fr ? "Comment fonctionne Diashubb" : "How Diashubb works"}</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 relative">
             <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-px bg-border" />
             {[
@@ -285,9 +285,9 @@ function Home() {
         </div>
         <div className="relative container mx-auto px-4 py-14 max-w-6xl flex flex-col md:flex-row items-center gap-6 justify-between">
           <div>
-            <h2 className="text-3xl font-display font-bold">{fr ? "Rejoignez TerraFrique Global — gratuit pour toujours" : "Join TerraFrique Global — free forever"}</h2>
+            <h2 className="text-3xl font-display font-bold">{fr ? "Rejoignez Diashubb — gratuit pour toujours" : "Join Diashubb — free forever"}</h2>
             <p className="mt-2 text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>
-              {fr ? "3 minutes · 100 TerraCoins offerts · Sans carte bancaire" : "3 minutes · 100 TerraCoins on signup · No credit card"}
+              {fr ? "3 minutes · 100 DiasCoins offerts · Sans carte bancaire" : "3 minutes · 100 DiasCoins on signup · No credit card"}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

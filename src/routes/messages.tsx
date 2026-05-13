@@ -65,7 +65,7 @@ function Messages() {
 
       {warning && (
         <div className="mt-4 bg-destructive/10 border border-destructive/40 text-destructive rounded-xl p-3 text-sm">
-          ⚠️ {fr ? "Message bloqué — Tentative de contact externe détectée. Tous les échanges doivent rester sur TerraFrique pour votre protection." : "Message blocked — external contact attempt detected. All exchanges must stay on TerraFrique."}
+          ⚠️ {fr ? "Message bloqué — Tentative de contact externe détectée. Tous les échanges doivent rester sur Diashubb pour votre protection." : "Message blocked — external contact attempt detected. All exchanges must stay on Diashubb."}
           <div className="text-xs mt-1 font-mono opacity-70">pattern: {warning}</div>
         </div>
       )}

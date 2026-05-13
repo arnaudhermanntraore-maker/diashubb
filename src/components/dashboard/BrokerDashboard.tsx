@@ -36,7 +36,7 @@ export function BrokerDashboard({ profile }: { profile: Profile | null }) {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-display font-bold">{profile?.full_name || "Démarcheur"}</h1>
-          <p className="text-sm text-muted-foreground mt-1">Démarcheur TerraFrique</p>
+          <p className="text-sm text-muted-foreground mt-1">Démarcheur Diashubb</p>
         </div>
         <span className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold">{level}</span>
       </div>

@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 export const Route = createFileRoute("/safety")({
   head: () => ({
     meta: [
-      { title: "Sécurité & Anti-arnaque — TerraFrique" },
-      { name: "description", content: "Guide anti-arnaque TerraFrique : règles d'or, types d'arnaques courantes et conseils pour acheteurs, vendeurs et agents." },
-      { property: "og:title", content: "Sécurité & Anti-arnaque — TerraFrique" },
+      { title: "Sécurité & Anti-arnaque — Diashubb" },
+      { name: "description", content: "Guide anti-arnaque Diashubb : règles d'or, types d'arnaques courantes et conseils pour acheteurs, vendeurs et agents." },
+      { property: "og:title", content: "Sécurité & Anti-arnaque — Diashubb" },
       { property: "og:description", content: "Achetez et vendez en toute sécurité entre les États-Unis et l'Afrique." },
     ],
   }),
@@ -18,26 +18,26 @@ const NEVER_DO_FR = [
   "Envoyer de l'argent par Western Union, MoneyGram ou crypto à un inconnu.",
   "Communiquer hors plateforme (WhatsApp, e-mail, téléphone) avant vérification.",
   "Partager vos coordonnées bancaires, mot de passe ou code OTP par message.",
-  "Verser un acompte sans avoir vu le titre foncier vérifié par TerraFrique.",
+  "Verser un acompte sans avoir vu le titre foncier vérifié par Diashubb.",
   "Signer un acte sans présence d'un notaire certifié sur la plateforme.",
 ];
 const NEVER_DO_EN = [
   "Wire money via Western Union, MoneyGram or crypto to a stranger.",
   "Communicate off-platform (WhatsApp, email, phone) before verification.",
   "Share bank details, password or OTP code in any message.",
-  "Pay a deposit before seeing the title deed verified by TerraFrique.",
+  "Pay a deposit before seeing the title deed verified by Diashubb.",
   "Sign a deed without a certified notary present on the platform.",
 ];
 const ALWAYS_DO_FR = [
-  "Vérifiez le badge \"TerraFrique Verified\" sur l'annonce et l'agent.",
-  "Utilisez l'escrow TerraFrique pour tout paiement (acompte, solde).",
+  "Vérifiez le badge \"Diashubb Verified\" sur l'annonce et l'agent.",
+  "Utilisez l'escrow Diashubb pour tout paiement (acompte, solde).",
   "Demandez le titre foncier original et vérifiez-le auprès du cadastre.",
   "Visitez le bien physiquement ou via la visite 360° certifiée.",
   "Conservez tous les échanges dans la messagerie sécurisée (preuve légale).",
 ];
 const ALWAYS_DO_EN = [
-  "Check the \"TerraFrique Verified\" badge on the listing and agent.",
-  "Use TerraFrique escrow for any payment (deposit, balance).",
+  "Check the \"Diashubb Verified\" badge on the listing and agent.",
+  "Use Diashubb escrow for any payment (deposit, balance).",
   "Request the original title deed and verify it with the land registry.",
   "Visit the property physically or via the certified 360° tour.",
   "Keep all exchanges in our secure messaging (legal proof).",
@@ -79,33 +79,33 @@ const SCAMS = [
     color: "var(--tf-blue)",
     titleFr: "Phishing OTP / mot de passe",
     titleEn: "OTP / password phishing",
-    descFr: "Un faux \"support TerraFrique\" vous appelle pour récupérer votre code OTP ou votre mot de passe.",
-    descEn: "A fake \"TerraFrique support\" calls to get your OTP or password.",
-    redFlagFr: "TerraFrique ne demande JAMAIS votre OTP par téléphone",
-    redFlagEn: "TerraFrique NEVER asks for your OTP by phone",
+    descFr: "Un faux \"support Diashubb\" vous appelle pour récupérer votre code OTP ou votre mot de passe.",
+    descEn: "A fake \"Diashubb support\" calls to get your OTP or password.",
+    redFlagFr: "Diashubb ne demande JAMAIS votre OTP par téléphone",
+    redFlagEn: "Diashubb NEVER asks for your OTP by phone",
   },
 ];
 
 const TIPS_BUYER_FR = [
   "Faites toujours une contre-visite avec un proche local ou un géomètre certifié.",
   "Comparez le prix au m² avec 3 annonces similaires dans la zone.",
-  "Demandez le score IA TerraFrique avant de faire une offre.",
+  "Demandez le score IA Diashubb avant de faire une offre.",
   "Ne payez jamais plus de 10% d'acompte avant signature notariée.",
 ];
 const TIPS_BUYER_EN = [
   "Always do a counter-visit with a local relative or certified surveyor.",
   "Compare price/sqm with 3 similar listings in the area.",
-  "Request the TerraFrique AI Score before making an offer.",
+  "Request the Diashubb AI Score before making an offer.",
   "Never pay more than 10% deposit before notarial signing.",
 ];
 const TIPS_AGENT_FR = [
-  "Vérifiez l'identité de l'acheteur via son badge KYC TerraFrique.",
+  "Vérifiez l'identité de l'acheteur via son badge KYC Diashubb.",
   "N'acceptez jamais de paiement en cash > $10 000 (déclaration obligatoire).",
   "Conservez chaque échange dans la messagerie : c'est votre preuve en cas de litige.",
   "Signalez toute demande suspecte via le bouton « Signaler » dans la conversation.",
 ];
 const TIPS_AGENT_EN = [
-  "Verify the buyer's identity via their TerraFrique KYC badge.",
+  "Verify the buyer's identity via their Diashubb KYC badge.",
   "Never accept cash payments > $10,000 (mandatory declaration).",
   "Keep every exchange in messaging — it's your proof in case of dispute.",
   "Report any suspicious request via the \"Report\" button in the conversation.",
@@ -138,8 +138,8 @@ function SafetyPage() {
           </h1>
           <p className="text-white/85 text-base sm:text-lg max-w-2xl">
             {fr
-              ? "Les arnaques immobilières existent partout. Voici comment TerraFrique vous protège — et comment vous protéger vous-même."
-              : "Real-estate scams exist everywhere. Here's how TerraFrique protects you — and how to protect yourself."}
+              ? "Les arnaques immobilières existent partout. Voici comment Diashubb vous protège — et comment vous protéger vous-même."
+              : "Real-estate scams exist everywhere. Here's how Diashubb protects you — and how to protect yourself."}
           </p>
         </div>
       </section>
@@ -243,7 +243,7 @@ function SafetyPage() {
             </div>
             <div>
               <h3 className="font-display font-bold text-xl mb-2">
-                {fr ? "L'engagement TerraFrique" : "The TerraFrique pledge"}
+                {fr ? "L'engagement Diashubb" : "The Diashubb pledge"}
               </h3>
               <p className="text-white/90 text-sm leading-relaxed max-w-2xl">
                 {fr
@@ -273,10 +273,10 @@ function SafetyPage() {
               <Flag size={16} /> {fr ? "Signaler maintenant" : "Report now"}
             </Link>
             <a
-              href="mailto:security@terrafrique.com"
+              href="mailto:security@diashubb.com"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-border bg-card font-semibold text-sm hover:bg-secondary transition-colors"
             >
-              <MessageSquare size={16} /> security@terrafrique.com
+              <MessageSquare size={16} /> security@diashubb.com
             </a>
             <a
               href="tel:+18005550199"

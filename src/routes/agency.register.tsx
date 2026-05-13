@@ -15,8 +15,8 @@ export const Route = createFileRoute("/agency/register")({
   },
   head: () => ({
     meta: [
-      { title: "Enregistrer votre agence — TerraFrique" },
-      { name: "description", content: "Inscrivez votre agence immobilière sur TerraFrique : vérification documentaire, validation manuelle, accès au tableau de bord agence." },
+      { title: "Enregistrer votre agence — Diashubb" },
+      { name: "description", content: "Inscrivez votre agence immobilière sur Diashubb : vérification documentaire, validation manuelle, accès au tableau de bord agence." },
     ],
   }),
   component: AgencyRegister,
@@ -256,8 +256,8 @@ function AgencyRegister() {
         <ShieldCheck className="text-primary shrink-0 mt-0.5" size={18} />
         <p className="text-xs text-muted-foreground">
           {fr
-            ? "Toutes les informations sont validées côté serveur. Une fois votre agence vérifiée, vous pourrez publier des annonces certifiées TerraFrique."
-            : "All information is validated server-side. Once verified, you can publish TerraFrique-certified listings."}
+            ? "Toutes les informations sont validées côté serveur. Une fois votre agence vérifiée, vous pourrez publier des annonces certifiées Diashubb."
+            : "All information is validated server-side. Once verified, you can publish Diashubb-certified listings."}
         </p>
       </div>
 
@@ -345,8 +345,8 @@ function AgencyRegister() {
           />
           <span className="text-muted-foreground">
             {fr
-              ? "Je certifie l'exactitude des informations et accepte le contrôle documentaire TerraFrique."
-              : "I certify the accuracy of the information and accept TerraFrique document verification."}
+              ? "Je certifie l'exactitude des informations et accepte le contrôle documentaire Diashubb."
+              : "I certify the accuracy of the information and accept Diashubb document verification."}
           </span>
         </label>
         {errors.consent && <p className="text-xs text-destructive -mt-3">{errors.consent}</p>}

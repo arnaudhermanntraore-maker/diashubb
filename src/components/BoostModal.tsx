@@ -36,7 +36,7 @@ export function BoostModal({
   const { user } = useAuth();
   const [audience, setAudience] = useState<Audience>("diaspora");
   const [plan, setPlan] = useState<Plan | null>(null);
-  const [terracoins, setTerracoins] = useState(0);
+  const [diascoins, setTerracoins] = useState(0);
   const [useTC, setUseTC] = useState(false);
   const [accept, setAccept] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,15 +44,15 @@ export function BoostModal({
 
   useEffect(() => {
     if (!open || !user) return;
-    supabase.from("profiles").select("terracoins").eq("id", user.id).maybeSingle()
-      .then(({ data }) => setTerracoins(data?.terracoins ?? 0));
+    supabase.from("profiles").select("diascoins").eq("id", user.id).maybeSingle()
+      .then(({ data }) => setTerracoins(data?.diascoins ?? 0));
   }, [open, user]);
 
   const planCfg = useMemo(() => PLANS.find((p) => p.id === plan) ?? null, [plan]);
   const tcDiscount = useMemo(() => {
     if (!planCfg || !useTC) return 0;
-    return Math.min(terracoins / 100, planCfg.price); // 100 TC = $1
-  }, [planCfg, useTC, terracoins]);
+    return Math.min(diascoins / 100, planCfg.price); // 100 TC = $1
+  }, [planCfg, useTC, diascoins]);
   const total = useMemo(() => Math.max(0, (planCfg?.price ?? 0) - tcDiscount), [planCfg, tcDiscount]);
 
   if (!open) return null;
@@ -161,17 +161,17 @@ export function BoostModal({
               <div className="flex justify-between"><span>{fr ? "Audience" : "Audience"}</span><span className="font-medium capitalize">{audience}</span></div>
               <div className="flex justify-between"><span>{fr ? "Sous-total" : "Subtotal"}</span><span>${planCfg.price}</span></div>
               <label className="flex items-center justify-between gap-2 pt-2 border-t border-border cursor-pointer">
-                <span className="inline-flex items-center gap-1.5"><Sparkles size={14} className="text-tf-amber" /> {fr ? `Utiliser mes TerraCoins (${terracoins} pts)` : `Use my TerraCoins (${terracoins} pts)`}</span>
-                <input type="checkbox" checked={useTC} onChange={(e) => setUseTC(e.target.checked)} disabled={terracoins < 100} className="accent-primary" />
+                <span className="inline-flex items-center gap-1.5"><Sparkles size={14} className="text-tf-amber" /> {fr ? `Utiliser mes DiasCoins (${diascoins} pts)` : `Use my DiasCoins (${diascoins} pts)`}</span>
+                <input type="checkbox" checked={useTC} onChange={(e) => setUseTC(e.target.checked)} disabled={diascoins < 100} className="accent-primary" />
               </label>
-              {tcDiscount > 0 && <div className="flex justify-between text-tf-green text-xs">- ${tcDiscount.toFixed(2)} TerraCoins</div>}
+              {tcDiscount > 0 && <div className="flex justify-between text-tf-green text-xs">- ${tcDiscount.toFixed(2)} DiasCoins</div>}
               <div className="flex justify-between pt-2 border-t border-border font-display font-bold text-base">
                 <span>Total</span><span>${total.toFixed(2)}</span>
               </div>
 
               <label className="flex items-start gap-2 pt-3 text-xs cursor-pointer">
                 <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} className="accent-primary mt-0.5" />
-                <span>{fr ? "J'accepte les conditions de boost TerraFrique" : "I accept TerraFrique boost terms"}</span>
+                <span>{fr ? "J'accepte les conditions de boost Diashubb" : "I accept Diashubb boost terms"}</span>
               </label>
 
               <button

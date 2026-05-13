@@ -42,7 +42,7 @@ function DemoLoginPage() {
     <div className="container max-w-3xl mx-auto py-12 px-4">
       <h1 className="text-3xl font-display font-bold mb-2">Demo accounts</h1>
       <p className="text-muted-foreground mb-2">
-        One-click sign-in to test TerraFrique with realistic profiles across roles and continents.
+        One-click sign-in to test Diashubb with realistic profiles across roles and continents.
       </p>
       <div className="flex items-center gap-2 mb-8 text-sm">
         <span className="text-muted-foreground">Shared password:</span>

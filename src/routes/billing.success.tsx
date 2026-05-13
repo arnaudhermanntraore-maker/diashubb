@@ -15,7 +15,7 @@ export const Route = createFileRoute("/billing/success")({
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
   },
-  head: () => ({ meta: [{ title: "Subscription confirmed — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Subscription confirmed — Diashubb" }] }),
   component: BillingSuccess,
 });
 

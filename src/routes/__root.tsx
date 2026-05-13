@@ -41,10 +41,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TerraFrique Global — Bi-continental real estate" },
+      { title: "Diashubb — Bi-continental real estate" },
       { name: "description", content: "Verified real estate across the US and Africa. Buy, sell, invest with confidence." },
-      { property: "og:title", content: "TerraFrique Global — Bi-continental real estate" },
-      { name: "twitter:title", content: "TerraFrique Global — Bi-continental real estate" },
+      { property: "og:title", content: "Diashubb — Bi-continental real estate" },
+      { name: "twitter:title", content: "Diashubb — Bi-continental real estate" },
       { property: "og:description", content: "Verified real estate across the US and Africa. Buy, sell, invest with confidence." },
       { name: "twitter:description", content: "Verified real estate across the US and Africa. Buy, sell, invest with confidence." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c0c9a341-a220-479b-8560-16df797460a1/id-preview-9a202519--f204870e-2dc1-4b89-b3f9-329af453a4e3.lovable.app-1777954130202.png" },
@@ -74,7 +74,7 @@ export const Route = createRootRoute({
         <div className="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ background: "var(--tf-navy)" }}>TF</div>
-            <span>TerraFrique Global · USA & Africa real estate</span>
+            <span>Diashubb · USA & Africa real estate</span>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <a href="#" className="hover:text-tf-blue">Terms</a>

@@ -14,7 +14,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/foreclosures_/$id")({
   head: () => ({
     meta: [
-      { title: "Foreclosure detail — TerraFrique" },
+      { title: "Foreclosure detail — Diashubb" },
       { name: "description", content: "Detailed view of a US foreclosure listing." },
     ],
   }),

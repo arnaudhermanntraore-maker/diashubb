@@ -146,10 +146,10 @@ function SignupPage() {
     });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    // Award TerraCoins if session is active (auto-confirm enabled)
+    // Award DiasCoins if session is active (auto-confirm enabled)
     try {
       const { data: u } = await supabase.auth.getUser();
-      if (u?.user) await supabase.from("profiles").update({ terracoins: 100, country: info.country, lang_pref: country.lang }).eq("id", u.user.id);
+      if (u?.user) await supabase.from("profiles").update({ diascoins: 100, country: info.country, lang_pref: country.lang }).eq("id", u.user.id);
     } catch {}
     toast.success(T("Check your email to confirm your account", "Vérifiez votre email pour confirmer votre compte"));
     setStep(5);
@@ -174,7 +174,7 @@ function SignupPage() {
               <PathHouse stroke="white" />
             </div>
             <div className="leading-tight">
-              <div style={{ fontSize: 13, fontWeight: 700 }}>TerraFrique</div>
+              <div style={{ fontSize: 13, fontWeight: 700 }}>Diashubb</div>
               <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)" }}>Global</div>
             </div>
           </div>
@@ -199,7 +199,7 @@ function SignupPage() {
             <PathStar stroke="white" />
           </div>
           <div className="leading-tight">
-            <div style={{ fontSize: 12, fontWeight: 700 }}>{T("100 TerraCoins on signup", "100 TerraCoins offerts")}</div>
+            <div style={{ fontSize: 12, fontWeight: 700 }}>{T("100 DiasCoins on signup", "100 DiasCoins offerts")}</div>
             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.65)" }}>{T("Worth $5 · credited instantly", "Valeur $5 · crédités immédiatement")}</div>
           </div>
         </div>
@@ -367,20 +367,20 @@ function SignupPage() {
               <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#E1F5EE", border: "2px solid #1D9E75", margin: "0 auto", animation: "pop 0.4s ease forwards" }} className="flex items-center justify-center">
                 <PathCheck stroke="#1D9E75" size={28} />
               </div>
-              <h1 style={{ fontSize: 18, fontWeight: 500, color: "#111827", marginTop: 14 }}>{T("Welcome to TerraFrique!", "Bienvenue sur TerraFrique !")}</h1>
+              <h1 style={{ fontSize: 18, fontWeight: 500, color: "#111827", marginTop: 14 }}>{T("Welcome to Diashubb!", "Bienvenue sur Diashubb !")}</h1>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>{T(`Your account is ready, ${info.firstName}.`, `Votre compte est prêt, ${info.firstName}.`)}</p>
 
               <div className="flex items-center gap-2 mx-auto" style={{ background: "#E1F5EE", border: "0.5px solid #9FE1CB", borderRadius: 12, padding: "10px 14px", maxWidth: 300, marginBottom: 16 }}>
                 <PathStar stroke="#1D9E75" size={20} />
                 <div className="text-left leading-tight">
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0F6E56" }}>{T("100 TerraCoins credited", "100 TerraCoins crédités")}</div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0F6E56" }}>{T("100 DiasCoins credited", "100 DiasCoins crédités")}</div>
                   <div style={{ fontSize: 11, color: "#085041" }}>{T("Worth $5 · Use on reports, boosts or transfers", "Valeur $5 · À utiliser sur rapports, boosts ou transferts")}</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 mx-auto" style={{ maxWidth: 320, marginBottom: 16 }}>
                 {[
-                  { n: "100", l: "TerraCoins", c: "#185FA5" },
+                  { n: "100", l: "DiasCoins", c: "#185FA5" },
                   { n: fr ? selectedProfile.name[1] : selectedProfile.name[0], l: T("Your profile", "Votre profil"), c: "#1D9E75" },
                   { n: "0", l: T("Saved listings", "Biens sauvegardés"), c: "#111827" },
                   { n: T("Active", "Actif"), l: T("Account status", "Statut compte"), c: "#1D9E75" },

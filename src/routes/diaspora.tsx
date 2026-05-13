@@ -26,7 +26,7 @@ interface FX { code: string; symbol: string; rate: number; country: string; }
 export const Route = createFileRoute("/diaspora")({
   head: () => ({
     meta: [
-      { title: "Portail Diaspora — TerraFrique" },
+      { title: "Portail Diaspora — Diashubb" },
       { name: "description", content: "Investissez dans l'immobilier africain depuis l'étranger en toute sécurité." },
     ],
   }),

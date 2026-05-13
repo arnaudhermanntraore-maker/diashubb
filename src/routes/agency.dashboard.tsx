@@ -19,7 +19,7 @@ export const Route = createFileRoute("/agency/dashboard")({
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
   },
-  head: () => ({ meta: [{ title: "Agency dashboard — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Agency dashboard — Diashubb" }] }),
   component: AgencyDashboard,
 });
 

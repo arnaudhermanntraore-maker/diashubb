@@ -4,7 +4,7 @@ import { PartnerDirectory, type PartnerCard } from "@/components/PartnerDirector
 export const Route = createFileRoute("/brokers")({
   head: () => ({
     meta: [
-      { title: "Courtiers TerraFrique — gagnez des commissions" },
+      { title: "Courtiers Diashubb — gagnez des commissions" },
       { name: "description", content: "Réseau de courtiers bi-continentaux entre USA et Afrique." },
     ],
   }),
@@ -16,7 +16,7 @@ const BROKERS: PartnerCard[] = [
     id: "brk-diaspora-capital",
     initials: "DC",
     avatarColor: "var(--tf-blue)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "Diaspora Capital Brokers",
     location: "New York, NY · USA",
     region: "usa",
@@ -48,7 +48,7 @@ const BROKERS: PartnerCard[] = [
     id: "brk-accra-link",
     initials: "AL",
     avatarColor: "var(--tf-green)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "Accra Link Brokers",
     location: "Accra, GH · Afrique",
     region: "africa",
@@ -79,15 +79,15 @@ const BROKERS: PartnerCard[] = [
 function BrokersPage() {
   return (
     <PartnerDirectory
-      title="Courtiers bi-continentaux TerraFrique"
+      title="Courtiers bi-continentaux Diashubb"
       subtitle="Trouvez un courtier qui négocie pour vous entre USA et Afrique."
       searchPlaceholder="Rechercher un courtier..."
       cards={BROKERS}
       ctaTitle="Vous êtes courtier en immobilier ?"
-      ctaText="Rejoignez TerraFrique, gagnez des commissions sur les transactions de la diaspora."
+      ctaText="Rejoignez Diashubb, gagnez des commissions sur les transactions de la diaspora."
       ctaButton="Devenir courtier partenaire"
       steps={[
-        { title: "Créez votre profil de courtier", text: "Licences vérifiées, badge TerraFrique." },
+        { title: "Créez votre profil de courtier", text: "Licences vérifiées, badge Diashubb." },
         { title: "Sourcez acheteurs et biens", text: "Outils CRM, leads bi-continentaux, FX intégré." },
         { title: "Touchez vos commissions escrow", text: "Paiement sécurisé dès la clôture du dossier." },
       ]}

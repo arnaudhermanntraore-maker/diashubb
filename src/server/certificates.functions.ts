@@ -30,7 +30,7 @@ export const generatePropertyCertificate = createServerFn({ method: "POST" })
 
     // Header
     page.drawRectangle({ x: 0, y: 762, width: 595, height: 80, color: navy });
-    page.drawText("TerraFrique", { x: 40, y: 800, size: 28, font: bold, color: rgb(1, 1, 1) });
+    page.drawText("Diashubb", { x: 40, y: 800, size: 28, font: bold, color: rgb(1, 1, 1) });
     page.drawText("Certificat de propriete", { x: 40, y: 778, size: 11, font, color: rgb(0.85, 0.9, 1) });
 
     // Verified badge
@@ -52,7 +52,7 @@ export const generatePropertyCertificate = createServerFn({ method: "POST" })
       ["Type", prop.type],
       ["Prix USD", `$${Number(prop.price_usd).toLocaleString()}`],
       ["Score IA", String(prop.ai_score ?? "—")],
-      ["Verification TerraFrique", prop.tf_verified ? "VERIFIE" : "Non verifie"],
+      ["Verification Diashubb", prop.tf_verified ? "VERIFIE" : "Non verifie"],
       ["Agent", agent?.full_name ?? "—"],
       ["Email agent", agent?.email ?? "—"],
       ["Date creation", new Date(prop.created_at).toLocaleDateString("fr-FR")],
@@ -65,7 +65,7 @@ export const generatePropertyCertificate = createServerFn({ method: "POST" })
 
     // Mention legale
     y -= 40;
-    page.drawText("Ce document atteste de l'existence de cette annonce sur la plateforme TerraFrique", {
+    page.drawText("Ce document atteste de l'existence de cette annonce sur la plateforme Diashubb", {
       x: 40, y, size: 9, font, color: gray,
     });
     y -= 14;

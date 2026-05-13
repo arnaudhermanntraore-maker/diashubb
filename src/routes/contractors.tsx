@@ -19,7 +19,7 @@ export const Route = createFileRoute("/contractors")({
   }),
   head: () => ({
     meta: [
-      { title: "Artisans & entrepreneurs certifiés — TerraFrique" },
+      { title: "Artisans & entrepreneurs certifiés — Diashubb" },
       { name: "description", content: "Trouvez un artisan vérifié pour vos travaux aux USA et en Afrique." },
     ],
   }),
@@ -31,7 +31,7 @@ const CONTRACTORS: PartnerCard[] = [
     id: "ctr-batisseurs",
     initials: "BC",
     avatarColor: "var(--tf-blue)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "Bâtisseurs CI",
     location: "Abidjan, CI · Afrique",
     region: "africa",
@@ -63,7 +63,7 @@ const CONTRACTORS: PartnerCard[] = [
     id: "ctr-sahel",
     initials: "SB",
     avatarColor: "var(--tf-green)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "Sahel Build",
     location: "Dakar, SN · Afrique",
     region: "africa",
@@ -99,7 +99,7 @@ function ContractorsPage() {
       searchPlaceholder="Rechercher un artisan..."
       cards={CONTRACTORS}
       ctaTitle="Vous êtes artisan ou entreprise du bâtiment ?"
-      ctaText="Rejoignez TerraFrique et recevez des chantiers qualifiés de la diaspora africaine."
+      ctaText="Rejoignez Diashubb et recevez des chantiers qualifiés de la diaspora africaine."
       ctaButton="Devenir partenaire"
       steps={[
         { title: "Créez votre profil vérifié", text: "Licences, assurances et avis vérifiés." },

@@ -4,7 +4,7 @@ import { PartnerDirectory, type PartnerCard } from "@/components/PartnerDirector
 export const Route = createFileRoute("/agents")({
   head: () => ({
     meta: [
-      { title: "Agences immobilières certifiées — TerraFrique" },
+      { title: "Agences immobilières certifiées — Diashubb" },
       { name: "description", content: "Trouvez un agent de confiance pour votre achat aux USA ou en Afrique." },
     ],
   }),
@@ -16,7 +16,7 @@ const AGENCIES: PartnerCard[] = [
     id: "agency-afriimmo",
     initials: "AI",
     avatarColor: "var(--tf-blue)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "AfriImmo Group",
     location: "Atlanta, GA · USA",
     region: "usa",
@@ -48,7 +48,7 @@ const AGENCIES: PartnerCard[] = [
     id: "agency-kouassi",
     initials: "KR",
     avatarColor: "var(--tf-green)",
-    badge: { label: "Certifié TerraFrique", tone: "green" },
+    badge: { label: "Certifié Diashubb", tone: "green" },
     name: "Kouassi Realty",
     location: "Abidjan, CI · Afrique",
     region: "africa",
@@ -84,10 +84,10 @@ function AgentsPage() {
       searchPlaceholder="Rechercher une agence..."
       cards={AGENCIES}
       ctaTitle="Vous êtes agent ou agence immobilière ?"
-      ctaText="Rejoignez TerraFrique et accédez à 44M+ d'acheteurs de la diaspora africaine."
+      ctaText="Rejoignez Diashubb et accédez à 44M+ d'acheteurs de la diaspora africaine."
       ctaButton="Devenir partenaire"
       steps={[
-        { title: "Créez votre profil certifié", text: "Vérification KYC et badge TerraFrique en 48h." },
+        { title: "Créez votre profil certifié", text: "Vérification KYC et badge Diashubb en 48h." },
         { title: "Publiez vos annonces FR/EN", text: "Outil bilingue, photos 360°, score IA inclus." },
         { title: "Recevez des leads qualifiés", text: "Acheteurs vérifiés, messagerie sécurisée." },
       ]}

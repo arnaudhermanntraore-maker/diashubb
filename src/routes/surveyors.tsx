@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, Compass } from "lucide-react";
 
 export const Route = createFileRoute("/surveyors")({
-  head: () => ({ meta: [{ title: "Géomètres ONIG — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Géomètres ONIG — Diashubb" }] }),
   component: Page,
 });
 

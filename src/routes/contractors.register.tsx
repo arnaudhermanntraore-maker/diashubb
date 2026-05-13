@@ -4,7 +4,7 @@ import { ArrowLeft, ShieldCheck, Star, TrendingUp } from "lucide-react";
 import { JoinForm } from "@/components/JoinForm";
 
 export const Route = createFileRoute("/contractors/register")({
-  head: () => ({ meta: [{ title: "Devenir artisan certifié — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Devenir artisan certifié — Diashubb" }] }),
   component: Page,
 });
 
@@ -17,7 +17,7 @@ function Page() {
   return (
     <div className="container mx-auto px-4 py-10 max-w-4xl">
       <Link to="/" className="text-sm text-muted-foreground inline-flex items-center gap-1 mb-4 hover:text-foreground"><ArrowLeft size={14}/> {fr ? "Retour" : "Back"}</Link>
-      <h1 className="text-3xl font-display font-bold text-tf-navy">{fr ? "Rejoignez TerraFrique en tant qu'artisan certifié" : "Join TerraFrique as a certified contractor"}</h1>
+      <h1 className="text-3xl font-display font-bold text-tf-navy">{fr ? "Rejoignez Diashubb en tant qu'artisan certifié" : "Join Diashubb as a certified contractor"}</h1>
       <p className="text-muted-foreground mt-2">{fr ? "Accédez à des milliers de clients de la diaspora africaine aux USA et en Afrique." : "Access thousands of African diaspora clients in the US and Africa."}</p>
       <div className="grid md:grid-cols-3 gap-3 mt-6">
         <Benefit icon="💰" title={fr ? "Paiements sécurisés" : "Secure payments"} sub={fr ? "Escrow protégé — payé à la livraison" : "Escrow protected — paid on delivery"} />

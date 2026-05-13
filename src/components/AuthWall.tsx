@@ -13,12 +13,12 @@ interface Props {
 
 const COPY = {
   publish: {
-    fr: { t: "Connectez-vous pour publier un bien", d: "Créez votre compte agent en moins d'une minute pour publier vos annonces vérifiées sur TerraFrique." },
-    en: { t: "Sign in to publish a property", d: "Create your agent account in under a minute to publish verified listings on TerraFrique." },
+    fr: { t: "Connectez-vous pour publier un bien", d: "Créez votre compte agent en moins d'une minute pour publier vos annonces vérifiées sur Diashubb." },
+    en: { t: "Sign in to publish a property", d: "Create your agent account in under a minute to publish verified listings on Diashubb." },
   },
   contact: {
-    fr: { t: "Connectez-vous pour contacter", d: "Un compte est requis pour échanger en toute sécurité via la messagerie TerraFrique." },
-    en: { t: "Sign in to contact", d: "An account is required to exchange securely via TerraFrique messaging." },
+    fr: { t: "Connectez-vous pour contacter", d: "Un compte est requis pour échanger en toute sécurité via la messagerie Diashubb." },
+    en: { t: "Sign in to contact", d: "An account is required to exchange securely via Diashubb messaging." },
   },
   save: {
     fr: { t: "Connectez-vous pour sauvegarder", d: "Sauvegardez vos biens favoris et recevez des alertes personnalisées." },
@@ -53,7 +53,7 @@ export function AuthWall({ open, onOpenChange, titleKey = "publish" }: Props) {
           <li>✓ {fr ? "Annonces vérifiées et titres certifiés" : "Verified listings and certified deeds"}</li>
           <li>✓ {fr ? "Paiements sécurisés via escrow" : "Secure escrow payments"}</li>
           <li>✓ {fr ? "Messagerie chiffrée" : "Encrypted messaging"}</li>
-          <li>✓ {fr ? "+50 TerraCoins offerts à l'inscription" : "+50 TerraCoins on signup"}</li>
+          <li>✓ {fr ? "+50 DiasCoins offerts à l'inscription" : "+50 DiasCoins on signup"}</li>
         </ul>
         <div className="flex flex-col gap-2 mt-2">
           <Link

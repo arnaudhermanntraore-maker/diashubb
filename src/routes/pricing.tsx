@@ -10,9 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Tarifs & Plans Agences — TerraFrique" },
+      { title: "Tarifs & Plans Agences — Diashubb" },
       { name: "description", content: "4 plans pour agences immobilières : Starter gratuit, Pro $49/mo, Business $149/mo, Enterprise $499/mo. 14 jours d'essai gratuit." },
-      { property: "og:title", content: "Plans Agences TerraFrique" },
+      { property: "og:title", content: "Plans Agences Diashubb" },
       { property: "og:description", content: "Accédez à 44M d'acheteurs diaspora. Commencez gratuitement, évoluez selon vos besoins." },
     ],
   }),
@@ -43,8 +43,8 @@ const PLANS: Plan[] = [
     accent: "#6B7280",
     borderClass: "border border-border",
     ctaTo: "/agency/register",
-    featuresFr: ["3 annonces actives", "Profil agence basique", "Messagerie sécurisée", "Badge Agence TerraFrique", "Statistiques basiques"],
-    featuresEn: ["3 active listings", "Basic agency profile", "Secure messaging", "TerraFrique Agency badge", "Basic stats"],
+    featuresFr: ["3 annonces actives", "Profil agence basique", "Messagerie sécurisée", "Badge Agence Diashubb", "Statistiques basiques"],
+    featuresEn: ["3 active listings", "Basic agency profile", "Secure messaging", "Diashubb Agency badge", "Basic stats"],
     excludedFr: ["Boosts inclus", "Traduction automatique", "Leads qualifiés"],
     excludedEn: ["Included boosts", "Auto translation", "Qualified leads"],
   },
@@ -68,8 +68,8 @@ const PLANS: Plan[] = [
     borderClass: "border-2",
     ctaTo: "/agency/register",
     highlight: "popular",
-    featuresFr: ["Annonces illimitées", "Badge Agence Certifiée Premium", "10 boosts inclus/mois", "Page agence dédiée brandée", "Logo sur toutes les annonces", "Featured newsletter 1x/mois", "Accès API TerraFrique", "5 comptes agents liés", "CRM leads intégré", "Support chat dédié 24h", "Rapport mensuel performance"],
-    featuresEn: ["Unlimited listings", "Premium Certified badge", "10 boosts/month", "Branded agency page", "Logo on all listings", "Newsletter feature monthly", "TerraFrique API access", "5 linked agent accounts", "Built-in leads CRM", "24h dedicated chat support", "Monthly performance report"],
+    featuresFr: ["Annonces illimitées", "Badge Agence Certifiée Premium", "10 boosts inclus/mois", "Page agence dédiée brandée", "Logo sur toutes les annonces", "Featured newsletter 1x/mois", "Accès API Diashubb", "5 comptes agents liés", "CRM leads intégré", "Support chat dédié 24h", "Rapport mensuel performance"],
+    featuresEn: ["Unlimited listings", "Premium Certified badge", "10 boosts/month", "Branded agency page", "Logo on all listings", "Newsletter feature monthly", "Diashubb API access", "5 linked agent accounts", "Built-in leads CRM", "24h dedicated chat support", "Monthly performance report"],
   },
   {
     key: "enterprise",
@@ -128,7 +128,7 @@ const FAQS_EN: { q: string; a: string }[] = [
 ];
 
 const TESTIMONIALS = [
-  { fr: "Depuis TerraFrique Business, nous recevons 12-15 contacts diaspora par semaine. Impossible d'atteindre ces clients avant.", en: "Since TerraFrique Business, we get 12-15 diaspora leads per week. Unreachable before.", who: "AfriImmo Group · Abidjan CI" },
+  { fr: "Depuis Diashubb Business, nous recevons 12-15 contacts diaspora par semaine. Impossible d'atteindre ces clients avant.", en: "Since Diashubb Business, we get 12-15 diaspora leads per week. Unreachable before.", who: "AfriImmo Group · Abidjan CI" },
   { fr: "Le badge certifié a multiplié notre taux de conversion par 3. Les acheteurs diaspora font confiance au badge.", en: "The certified badge tripled our conversion rate. Diaspora buyers trust the badge.", who: "Cabinet Diallo · Dakar SN" },
   { fr: "L'API d'import nous permet de publier nos 200+ listings automatiquement. Gain de temps énorme.", en: "The import API lets us publish our 200+ listings automatically. Massive time saver.", who: "Regimanuel Gray · Accra GH" },
 ];
@@ -150,7 +150,7 @@ function PricingPage() {
             <Sparkles size={12} /> {fr ? "Rejoignez 200+ agences" : "Join 200+ agencies"}
           </span>
           <h1 className="mt-4 text-2xl md:text-4xl font-display font-bold">
-            {fr ? "Choisissez votre plan TerraFrique" : "Choose your TerraFrique plan"}
+            {fr ? "Choisissez votre plan Diashubb" : "Choose your Diashubb plan"}
           </h1>
           <p className="mt-3 text-sm md:text-base text-white/70 max-w-2xl mx-auto">
             {fr

@@ -63,7 +63,7 @@ export const Route = createFileRoute("/listings")({
   },
   head: () => ({
     meta: [
-      { title: "Browse properties — TerraFrique" },
+      { title: "Browse properties — Diashubb" },
       { name: "description", content: "Search verified properties across the US and Africa with country, price, and type filters." },
     ],
   }),

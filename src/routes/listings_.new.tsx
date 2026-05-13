@@ -16,7 +16,7 @@ export const Route = createFileRoute("/listings_/new")({
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
   },
-  head: () => ({ meta: [{ title: "Publier un bien — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Publier un bien — Diashubb" }] }),
   component: NewListing,
 });
 
@@ -164,7 +164,7 @@ function NewListing() {
         <h1 className="font-display text-2xl font-bold">{fr ? "Annonce soumise pour modération" : "Listing submitted for review"}</h1>
         <p className="mt-2 text-muted-foreground">{fr ? "Votre annonce sera en ligne sous 24h après vérification." : "Your listing will go live within 24h after review."}</p>
         <div className="mt-4 inline-block px-4 py-1.5 rounded-full bg-muted text-sm font-mono">{done.ref}</div>
-        <div className="mt-3 text-sm" style={{ color: "var(--tf-green)" }}>+50 TerraCoins {fr ? "crédités" : "credited"}</div>
+        <div className="mt-3 text-sm" style={{ color: "var(--tf-green)" }}>+50 DiasCoins {fr ? "crédités" : "credited"}</div>
         <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-center">
           <Link to="/dashboard" className="px-5 py-2.5 rounded-full text-white" style={{ background: "var(--tf-blue)" }}>{fr ? "Voir mes annonces" : "View my listings"}</Link>
           <button onClick={() => { setData(DEFAULTS); setStep(1); setDone(null); }} className="px-5 py-2.5 rounded-full border border-border">{fr ? "Publier un autre bien" : "Publish another"}</button>
@@ -186,7 +186,7 @@ function NewListing() {
       <aside className="w-full md:w-[220px] shrink-0 md:min-h-[calc(100vh-8rem)] text-white p-5" style={{ background: "var(--tf-navy-deep)" }}>
         <Link to="/" className="flex items-center gap-2 mb-8">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--tf-blue)" }}><Home size={16} /></div>
-          <span className="font-display font-bold">TerraFrique</span>
+          <span className="font-display font-bold">Diashubb</span>
         </Link>
         <ol className="space-y-1">
           {STEPS.map((s) => {

@@ -11,8 +11,8 @@ export const Route = createFileRoute("/api/public/chat")({
         const body = (await request.json()) as { messages: { role: "user" | "assistant"; content: string }[]; lang?: string };
         const lang = body.lang === "fr" ? "fr" : "en";
         const system = lang === "fr"
-          ? "Tu es Terra, l'assistant IA de TerraFrique Global, plateforme immobilière bi-continentale (USA et Afrique). Tu réponds toujours en français, brièvement et chaleureusement. Conseille de communiquer uniquement sur la plateforme et n'invente jamais de prix."
-          : "You are Terra, the AI assistant of TerraFrique Global — a bi-continental real estate platform (USA and Africa). Always reply in English, briefly and warmly. Always advise users to communicate only on the platform and never invent prices.";
+          ? "Tu es Terra, l'assistant IA de Diashubb, plateforme immobilière bi-continentale (USA et Afrique). Tu réponds toujours en français, brièvement et chaleureusement. Conseille de communiquer uniquement sur la plateforme et n'invente jamais de prix."
+          : "You are Terra, the AI assistant of Diashubb — a bi-continental real estate platform (USA and Africa). Always reply in English, briefly and warmly. Always advise users to communicate only on the platform and never invent prices.";
         try {
           const res = await fetch("https://api.anthropic.com/v1/messages", {
             method: "POST",

@@ -4,7 +4,7 @@ import { ArrowLeft, BarChart3 } from "lucide-react";
 import { useFeatureFlag } from "@/hooks/useFeatureFlags";
 
 export const Route = createFileRoute("/market")({
-  head: () => ({ meta: [{ title: "Intelligence de marché — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Intelligence de marché — Diashubb" }] }),
   component: Page,
 });
 

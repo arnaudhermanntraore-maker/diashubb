@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, DollarSign } from "lucide-react";
 
 export const Route = createFileRoute("/transfers")({
-  head: () => ({ meta: [{ title: "Transferts — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Transferts — Diashubb" }] }),
   component: Page,
 });
 

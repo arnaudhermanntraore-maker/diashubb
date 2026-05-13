@@ -275,7 +275,7 @@ export type Database = {
           stats: Json
           status: string
           stripe_session_id: string | null
-          terracoins_used: number
+          diascoins_used: number
           updated_at: string
           user_id: string
         }
@@ -292,7 +292,7 @@ export type Database = {
           stats?: Json
           status?: string
           stripe_session_id?: string | null
-          terracoins_used?: number
+          diascoins_used?: number
           updated_at?: string
           user_id: string
         }
@@ -309,7 +309,7 @@ export type Database = {
           stats?: Json
           status?: string
           stripe_session_id?: string | null
-          terracoins_used?: number
+          diascoins_used?: number
           updated_at?: string
           user_id?: string
         }
@@ -741,7 +741,7 @@ export type Database = {
           full_name: string | null
           id: string
           lang_pref: string
-          terracoins: number
+          diascoins: number
           verified: boolean
         }
         Insert: {
@@ -751,7 +751,7 @@ export type Database = {
           full_name?: string | null
           id: string
           lang_pref?: string
-          terracoins?: number
+          diascoins?: number
           verified?: boolean
         }
         Update: {
@@ -761,7 +761,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           lang_pref?: string
-          terracoins?: number
+          diascoins?: number
           verified?: boolean
         }
         Relationships: []

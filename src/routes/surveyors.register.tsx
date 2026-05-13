@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { JoinForm } from "@/components/JoinForm";
 
 export const Route = createFileRoute("/surveyors/register")({
-  head: () => ({ meta: [{ title: "Rejoindre comme géomètre — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Rejoindre comme géomètre — Diashubb" }] }),
   component: Page,
 });
 

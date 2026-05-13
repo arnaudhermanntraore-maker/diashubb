@@ -60,7 +60,7 @@ export const createBoostCheckout = createServerFn({ method: "POST" })
       line_items: [{
         price_data: {
           currency: "usd",
-          product_data: { name: `Boost ${planCfg.label} — TerraFrique` },
+          product_data: { name: `Boost ${planCfg.label} — Diashubb` },
           unit_amount: Math.round(planCfg.amount * 100),
         },
         quantity: 1,

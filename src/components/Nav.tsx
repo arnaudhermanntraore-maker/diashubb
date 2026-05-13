@@ -46,7 +46,7 @@ export function Nav() {
             <Home size={16} strokeWidth={2.5} />
           </div>
           <div className="hidden sm:flex flex-col leading-none">
-            <span className="font-display font-bold text-sm text-tf-navy">TerraFrique</span>
+            <span className="font-display font-bold text-sm text-tf-navy">Diashubb</span>
             <span className="text-[9px] uppercase tracking-widest text-muted-foreground -mt-0.5">Global</span>
           </div>
         </Link>

@@ -46,7 +46,7 @@ export function BuyerDashboard({ profile }: { profile: Profile | null }) {
           <p className="text-sm text-muted-foreground mt-1">Votre tableau de bord acheteur</p>
         </div>
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-semibold text-sm">
-          <Coins size={16} /> {profile?.terracoins ?? 0} DiasCoins
+          <Coins size={16} /> {profile?.diascoins ?? 0} DiasCoins
         </div>
       </div>
 

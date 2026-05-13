@@ -49,7 +49,7 @@ function Auth() {
     <div className="container mx-auto px-4 py-16 max-w-md">
       <div className="bg-card border border-border rounded-2xl p-8 shadow-soft">
         <h1 className="text-2xl font-display font-bold mb-1">{mode === "in" ? t("auth.signIn") : t("auth.signUp")}</h1>
-        <p className="text-sm text-muted-foreground mb-6">TerraFrique Global</p>
+        <p className="text-sm text-muted-foreground mb-6">Diashubb</p>
         <form onSubmit={submit} className="space-y-3">
           {mode === "up" && <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("auth.name")} required className="w-full px-4 py-2.5 bg-muted rounded-xl outline-none focus:ring-2 focus:ring-primary" />}
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("auth.email")} required className="w-full px-4 py-2.5 bg-muted rounded-xl outline-none focus:ring-2 focus:ring-primary" />

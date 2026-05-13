@@ -53,7 +53,7 @@ export const createSubscriptionCheckout = createServerFn({ method: "POST" })
             recurring: { interval: (data.cycle === "yearly" ? "year" : "month") as "year" | "month" },
             unit_amount: Math.round(Number(unitAmount ?? 0) * 100),
             product_data: {
-              name: `TerraFrique ${plan.name_en} (${data.cycle})`,
+              name: `Diashubb ${plan.name_en} (${data.cycle})`,
             },
           },
         };

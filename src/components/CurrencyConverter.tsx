@@ -259,7 +259,7 @@ export function CurrencyConverter({ initialCurrency = "XOF", initialCountry = "C
 
       {/* Fee */}
       <div className="flex justify-between" style={{ padding: "6px 0", fontSize: 12 }}>
-        <span style={{ color: "#111827" }}>{fr ? "Frais TerraFrique" : "TerraFrique fee"}</span>
+        <span style={{ color: "#111827" }}>{fr ? "Frais Diashubb" : "Diashubb fee"}</span>
         <span style={{ color: "#6B7280" }}>${FEE_USD.toFixed(2)} {fr ? "fixe" : "flat"}</span>
       </div>
 

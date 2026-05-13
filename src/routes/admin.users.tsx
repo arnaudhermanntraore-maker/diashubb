@@ -15,7 +15,7 @@ interface UserRow {
   full_name: string | null;
   country: string | null;
   verified: boolean;
-  terracoins: number;
+  diascoins: number;
   created_at: string;
   roles: Role[];
 }
@@ -38,7 +38,7 @@ function UsersPage() {
   const load = async () => {
     setLoading(true);
     const [{ data: profiles }, { data: rolesData }] = await Promise.all([
-      supabase.from("profiles").select("id, email, full_name, country, verified, terracoins, created_at").order("created_at", { ascending: false }).limit(500),
+      supabase.from("profiles").select("id, email, full_name, country, verified, diascoins, created_at").order("created_at", { ascending: false }).limit(500),
       supabase.from("user_roles").select("user_id, role"),
     ]);
     const byUser = new Map<string, Role[]>();
@@ -112,7 +112,7 @@ function UsersPage() {
                     {u.verified && <UserCheck className="w-4 h-4 text-success" />}
                   </div>
                   <div className="text-xs text-muted-foreground">{u.email}</div>
-                  <div className="text-[11px] text-muted-foreground mt-0.5">{u.country ?? "?"} · {u.terracoins} TC · {new Date(u.created_at).toLocaleDateString()}</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">{u.country ?? "?"} · {u.diascoins} TC · {new Date(u.created_at).toLocaleDateString()}</div>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {ALL_ROLES.map((r) => {

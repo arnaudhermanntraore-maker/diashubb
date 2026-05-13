@@ -57,7 +57,7 @@ export function Chatbot() {
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-[var(--tf-navy)]" />
               </div>
               <div>
-                <div className="font-display font-bold text-sm">Terra · TerraFrique AI</div>
+                <div className="font-display font-bold text-sm">Terra · Diashubb AI</div>
                 <div className="text-[10px] opacity-80">{i18n.language === "fr" ? "En ligne · Powered by Claude" : "Online · Powered by Claude"}</div>
               </div>
             </div>

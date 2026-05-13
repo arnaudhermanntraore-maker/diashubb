@@ -5,7 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 export const Route = createFileRoute("/foreclosures_/guide")({
   head: () => ({
     meta: [
-      { title: "How to buy a foreclosure — TerraFrique" },
+      { title: "How to buy a foreclosure — Diashubb" },
       { name: "description", content: "Complete guide to buying foreclosure properties: HUD, REO, auction and pre-foreclosure." },
     ],
   }),

@@ -13,9 +13,9 @@ const PAGE_SIZE = 24;
 export const Route = createFileRoute("/foreclosures")({
   head: () => ({
     meta: [
-      { title: "Foreclosures — TerraFrique" },
+      { title: "Foreclosures — Diashubb" },
       { name: "description", content: "Bank-owned, HUD and auction properties up to 50% below market value." },
-      { property: "og:title", content: "Foreclosures — TerraFrique" },
+      { property: "og:title", content: "Foreclosures — Diashubb" },
     ],
   }),
   component: ForeclosuresPage,

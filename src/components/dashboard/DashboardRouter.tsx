@@ -14,15 +14,31 @@ export interface Profile {
   email: string | null;
   full_name: string | null;
   country: string | null;
+  country_code: string | null;
   lang_pref: string;
-  terracoins: number;
+  diascoins: number;
   verified: boolean;
+  role: string | null;
 }
 
-type Role = "buyer" | "agent" | "contractor" | "broker" | "surveyor" | "admin" | "super_admin";
+type Role =
+  | "buyer"
+  | "agent"
+  | "contractor"
+  | "broker"
+  | "surveyor"
+  | "admin"
+  | "super_admin";
 
-// Higher index = higher priority for choosing the dashboard
-const ROLE_PRIORITY: Role[] = ["buyer", "agent", "contractor", "broker", "surveyor", "admin", "super_admin"];
+const ROLE_PRIORITY: Role[] = [
+  "buyer",
+  "contractor",
+  "broker",
+  "surveyor",
+  "agent",
+  "admin",
+  "super_admin",
+];
 
 function pickRole(roles: string[]): Role {
   let chosen: Role = "buyer";
@@ -40,14 +56,43 @@ export function DashboardRouter() {
   const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) { setProfileLoading(false); return; }
-    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
-      setProfile((data as Profile) ?? null);
+    if (!user) {
       setProfileLoading(false);
-    });
+      return;
+    }
+    supabase
+      .from("users")
+      .select("id, email, full_name, country, country_code, lang_pref, diascoins, verified, role")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error || !data) {
+          supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle()
+            .then(({ data: profileData }) => {
+              setProfile((profileData as Profile) ?? null);
+              setProfileLoading(false);
+            });
+        } else {
+          setProfile(data as Profile);
+          setProfileLoading(false);
+        }
+      });
   }, [user]);
 
-  const role = pickRole(roles);
+  const effectiveRoles = [...roles];
+  if (profile?.role && !effectiveRoles.includes(profile.role as Role)) {
+    effectiveRoles.push(profile.role as Role);
+  }
+  const metaRole = user?.user_metadata?.role as string | undefined;
+  if (metaRole && !effectiveRoles.includes(metaRole)) {
+    effectiveRoles.push(metaRole);
+  }
+
+  const role = pickRole(effectiveRoles);
 
   useEffect(() => {
     if (!loading && !profileLoading && (role === "admin" || role === "super_admin")) {
@@ -58,13 +103,18 @@ export function DashboardRouter() {
   if (loading || profileLoading) return <LoadingDashboard />;
 
   switch (role) {
-    case "agent": return <AgentDashboard profile={profile} />;
-    case "contractor": return <ContractorDashboard profile={profile} />;
-    case "broker": return <BrokerDashboard profile={profile} />;
-    case "surveyor": return <SurveyorDashboard profile={profile} />;
+    case "agent":
+      return <AgentDashboard profile={profile} />;
+    case "contractor":
+      return <ContractorDashboard profile={profile} />;
+    case "broker":
+      return <BrokerDashboard profile={profile} />;
+    case "surveyor":
+      return <SurveyorDashboard profile={profile} />;
     case "admin":
     case "super_admin":
       return <LoadingDashboard />;
-    default: return <BuyerDashboard profile={profile} />;
+    default:
+      return <BuyerDashboard profile={profile} />;
   }
 }

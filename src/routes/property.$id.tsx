@@ -103,7 +103,7 @@ function PropertyDetail() {
             <button onClick={payDeposit} disabled={paying} className="mt-2 w-full inline-flex items-center justify-center gap-2 bg-success text-success-foreground rounded-full py-3 font-medium hover:opacity-90 transition disabled:opacity-50">
               <Lock size={16} /> {paying ? "…" : `Pay 5% deposit ($${Math.max(50, Math.round(Number(p.price_usd) * 0.05)).toLocaleString()})`}
             </button>
-            <p className="text-[11px] text-muted-foreground mt-2 text-center">Held in escrow · released by TerraFrique on title transfer</p>
+            <p className="text-[11px] text-muted-foreground mt-2 text-center">Held in escrow · released by Diashubb on title transfer</p>
             {user?.id === p.agent_id && (
               <div className="mt-4 pt-4 border-t border-border">
                 <BoostButton itemType="property" itemId={p.id} itemTitle={p.title} itemPrice={p.price_usd} itemThumb={p.cover_url} className="w-full justify-center py-2.5 text-sm" />

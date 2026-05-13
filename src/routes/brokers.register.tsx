@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { JoinForm } from "@/components/JoinForm";
 
 export const Route = createFileRoute("/brokers/register")({
-  head: () => ({ meta: [{ title: "Devenir démarcheur — TerraFrique" }] }),
+  head: () => ({ meta: [{ title: "Devenir démarcheur — Diashubb" }] }),
   component: Page,
 });
 
