@@ -19,11 +19,16 @@ export function BuyerDashboard({ profile }: { profile: Profile | null }) {
     if (!user) return;
     (async () => {
       const [{ data: favs }, { count: alerts }, { count: msgs }] = await Promise.all([
-        supabase.from("favorites").select("property_id, properties(id,title,country,price_usd,cover_url)").eq("user_id", user.id).limit(20),
+        supabase.from("favorites").select("property_id").eq("user_id", user.id).limit(20),
         supabase.from("alerts").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("active", true),
         supabase.from("messages").select("id", { count: "exact", head: true }).eq("receiver_id", user.id).is("read_at", null),
       ]);
-      const props = (favs ?? []).map((f) => (f as { properties: SavedProperty | null }).properties).filter(Boolean) as SavedProperty[];
+      const ids = (favs ?? []).map((f) => f.property_id);
+      let props: SavedProperty[] = [];
+      if (ids.length) {
+        const { data: ps } = await supabase.from("properties").select("id,title,country,price_usd,cover_url").in("id", ids);
+        props = (ps ?? []) as SavedProperty[];
+      }
       setSaves(props);
       setCounts({ saves: props.length, alerts: alerts ?? 0, messages: msgs ?? 0 });
     })();
