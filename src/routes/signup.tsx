@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,22 +32,34 @@ const COUNTRIES: { code: string; flag: string; name: string; dial: string; lang:
   { code: "CA", flag: "🇨🇦", name: "Canada", dial: "+1", lang: "en" },
 ];
 
+// Map signup profile to DB role
+const PROFILE_TO_ROLE: Record<ProfileKey, string> = {
+  buyer: "buyer",
+  diaspora: "buyer", // diaspora = buyer with extra features
+  agent: "agent",
+  contractor: "contractor",
+  broker: "broker",
+  surveyor: "surveyor",
+};
+
 function SignupPage() {
   const { i18n } = useTranslation();
   const fr = i18n.language === "fr";
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 5>(1);
   const [profile, setProfile] = useState<ProfileKey>("buyer");
-  const [info, setInfo] = useState({ firstName: "", lastName: "", email: "", phone: "", country: "US", city: "" });
+  const [info, setInfo] = useState({
+    firstName: "", lastName: "", email: "",
+    phone: "", country: "US", city: "",
+  });
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showSummary, setShowSummary] = useState(false);
   const [pwd, setPwd] = useState({ password: "", confirm: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [checks, setChecks] = useState({ terms: false, fair: false, news: true });
   const [busy, setBusy] = useState(false);
-  
   const [geoText, setGeoText] = useState<string | null>(null);
   const [geoErr, setGeoErr] = useState(false);
 
@@ -60,29 +72,39 @@ function SignupPage() {
   // Geolocation in step 2
   useEffect(() => {
     if (step !== 2 || geoText !== null || geoErr) return;
-    if (typeof navigator === "undefined" || !navigator.geolocation) { setGeoErr(true); return; }
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setGeoErr(true); return;
+    }
     navigator.geolocation.getCurrentPosition(async (pos) => {
       try {
         const { token } = await getMapboxToken();
         if (!token) throw new Error();
-        const r = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${pos.coords.longitude},${pos.coords.latitude}.json?access_token=${token}&types=place,country`);
+        const r = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${pos.coords.longitude},${pos.coords.latitude}.json?access_token=${token}&types=place,country`
+        );
         const j = await r.json();
         const place = j.features?.find((f: any) => f.place_type?.includes("place"));
         const country = j.features?.find((f: any) => f.place_type?.includes("country"));
         const cc = (country?.properties?.short_code || "us").toUpperCase();
         const cityName = place?.text || "";
         setGeoText(`${country?.text || ""} · ${cityName}`);
-        setInfo((p) => ({ ...p, country: COUNTRIES.find(c => c.code === cc)?.code || p.country, city: p.city || cityName }));
+        setInfo((p) => ({
+          ...p,
+          country: COUNTRIES.find(c => c.code === cc)?.code || p.country,
+          city: p.city || cityName,
+        }));
       } catch { setGeoErr(true); }
     }, () => setGeoErr(true), { timeout: 6000 });
   }, [step, geoText, geoErr]);
 
-
   const country = COUNTRIES.find((c) => c.code === info.country) || COUNTRIES[0];
-
   const T = (en: string, frTxt: string) => (fr ? frTxt : en);
 
-  const PROFILES: { key: ProfileKey; bg: string; stroke: string; svg: React.ReactNode; name: [string, string]; desc: [string, string]; hint: [string, string] }[] = [
+  const PROFILES: {
+    key: ProfileKey; bg: string; stroke: string;
+    svg: React.ReactNode;
+    name: [string, string]; desc: [string, string]; hint: [string, string];
+  }[] = [
     { key: "buyer", bg: "#E6F1FB", stroke: "#185FA5", svg: <PathHouse />, name: ["Homebuyer", "Acheteur"], desc: ["I'm looking to buy or rent in the US", "J'achète ou loue aux USA"], hint: ["Access to MLS listings, AI score, mortgage matcher and alerts.", "Accès aux annonces MLS, score IA, simulateur prêt et alertes."] },
     { key: "diaspora", bg: "#E1F5EE", stroke: "#0F6E56", svg: <PathGlobe />, name: ["Diaspora investor", "Investisseur diaspora"], desc: ["US home + Africa investment", "Maison USA + investissement Afrique"], hint: ["US + Africa dual dashboard, transfer tool and bi-continental portfolio.", "Dashboard bi-continental, outil de transfert et portefeuille USA + Afrique."] },
     { key: "agent", bg: "#FAEEDA", stroke: "#854F0B", svg: <PathBuilding />, name: ["Agent / Seller", "Agent / Vendeur"], desc: ["I list and sell properties", "Je publie et vends des biens"], hint: ["Listing tools, boost annonces, verified agency badge.", "Outils de publication, boost, badge agence certifiée."] },
@@ -104,11 +126,16 @@ function SignupPage() {
     return Math.max(1, s);
   }, [pwd.password]);
 
-  const requiredFilled = info.firstName.trim() && info.lastName.trim() && /^\S+@\S+\.\S+$/.test(info.email) && info.phone.trim() && info.country && info.city.trim();
+  const requiredFilled =
+    info.firstName.trim() && info.lastName.trim() &&
+    /^\S+@\S+\.\S+$/.test(info.email) &&
+    info.phone.trim() && info.country && info.city.trim();
+
   const fieldErr = (k: keyof typeof info, val: string) => {
     if (!touched[k] && !showSummary) return null;
     if (!val.trim()) return T("This field is required", "Ce champ est obligatoire");
-    if (k === "email" && !/^\S+@\S+\.\S+$/.test(val)) return T("Please enter a valid email address", "Veuillez saisir une adresse email valide");
+    if (k === "email" && !/^\S+@\S+\.\S+$/.test(val))
+      return T("Please enter a valid email address", "Veuillez saisir une adresse email valide");
     return null;
   };
 
@@ -125,8 +152,12 @@ function SignupPage() {
     if (!checks.terms) errs.push(T("Please accept the Terms of Service", "Acceptez les conditions"));
     if (!checks.fair) errs.push(T("Please acknowledge the Fair Housing Act", "Reconnaissez le Fair Housing Act"));
     if (errs.length) { toast.error(errs.join(" • ")); return; }
+
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
+
+    const dbRole = PROFILE_TO_ROLE[profile];
+
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email: info.email,
       password: pwd.password,
       options: {
@@ -139,24 +170,67 @@ function SignupPage() {
           country_code: info.country,
           city: info.city,
           lang_pref: country.lang,
-          profile_role: profile,
+          role: dbRole,           // ← role in metadata
+          profile_role: profile,  // ← original profile key
           newsletter: checks.news,
         },
       },
     });
+
+    if (error) {
+      toast.error(error.message);
+      setBusy(false);
+      return;
+    }
+
+    // Save role in user_roles table + update profile
+    const userId = signUpData?.user?.id;
+    if (userId) {
+      try {
+        // Insert role in user_roles table
+        await supabase.from("user_roles").upsert({
+          user_id: userId,
+          role: dbRole,
+        }, { onConflict: "user_id,role" });
+
+        // Update users table (try both table names)
+        const updates = {
+          full_name: `${info.firstName} ${info.lastName}`.trim(),
+          country: info.country,
+          country_code: info.country,
+          city: info.city,
+          lang_pref: country.lang,
+          role: dbRole,
+          terracoins: 100,
+          diascoins: 100,
+        };
+
+        // Try "users" table first
+        const { error: usersErr } = await supabase
+          .from("users")
+          .upsert({ id: userId, ...updates });
+
+        // Fallback to "profiles" table
+        if (usersErr) {
+          await supabase
+            .from("profiles")
+            .upsert({ id: userId, ...updates });
+        }
+
+      } catch (e) {
+        console.warn("Post-signup DB update failed:", e);
+        // Non-blocking — account is created, role might need manual fix
+      }
+    }
+
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    // Award DiasCoins if session is active (auto-confirm enabled)
-    try {
-      const { data: u } = await supabase.auth.getUser();
-      if (u?.user) await supabase.from("profiles").update({ diascoins: 100, country: info.country, lang_pref: country.lang }).eq("id", u.user.id);
-    } catch {}
-    toast.success(T("Check your email to confirm your account", "Vérifiez votre email pour confirmer votre compte"));
+    toast.success(T(
+      "Account created! Check your email to confirm.",
+      "Compte créé ! Vérifiez votre email pour confirmer."
+    ));
     setStep(5);
   };
 
-
-  // ============ STEPS ============
   if (authBlocked) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -164,9 +238,10 @@ function SignupPage() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen flex" style={{ background: "#fff" }}>
-      {/* LEFT */}
+      {/* LEFT PANEL */}
       <aside className="hidden md:flex flex-col justify-between" style={{ width: 220, background: "#0C447C", padding: 20, color: "white" }}>
         <div>
           <div className="flex items-center gap-2">
@@ -205,9 +280,9 @@ function SignupPage() {
         </div>
       </aside>
 
-      {/* RIGHT */}
+      {/* RIGHT PANEL */}
       <section className="flex-1 overflow-y-auto" style={{ padding: "20px 24px" }}>
-        {/* Progress */}
+        {/* Progress bar */}
         <div className="flex items-center" style={{ marginBottom: 20, maxWidth: 520 }}>
           {[1, 2, 3].map((n, idx) => {
             const done = step > n || step === 5;
@@ -232,18 +307,18 @@ function SignupPage() {
         <div className="max-w-xl" key={step} style={{ animation: "slideIn 0.2s ease" }}>
           <style>{`@keyframes slideIn { from { transform: translateX(20px); opacity: 0 } to { transform: translateX(0); opacity: 1 } } @keyframes pop { 0%{transform:scale(.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }`}</style>
 
+          {/* STEP 1 — Profile selection */}
           {step === 1 && (
             <>
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 1 of 3", "Étape 1 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("What's your profile?", "Quel est votre profil ?")}</h1>
-              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("Choose the role that best fits your main activity. You can add more later.", "Choisissez votre rôle principal. Vous pourrez en ajouter d'autres ensuite.")}</p>
+              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("Choose the role that best fits your main activity.", "Choisissez votre rôle principal.")}</p>
               <div className="grid grid-cols-2" style={{ gap: 7, marginBottom: 14 }}>
                 {PROFILES.map((p) => {
                   const sel = profile === p.key;
                   return (
-                    <button key={p.key} type="button" onClick={() => setProfile(p.key)} style={{ border: sel ? `2px solid ${p.stroke}` : "0.5px solid #E5E7EB", borderRadius: 12, padding: "12px 10px", background: sel ? "#E6F1FB" : "white", textAlign: "center", cursor: "pointer", transition: "all 0.15s" }}>
+                    <button key={p.key} type="button" onClick={() => setProfile(p.key)} style={{ border: sel ? `2px solid ${p.stroke}` : "0.5px solid #E5E7EB", borderRadius: 12, padding: "12px 10px", background: sel ? p.bg : "white", textAlign: "center", cursor: "pointer", transition: "all 0.15s" }}>
                       <div style={{ width: 34, height: 34, borderRadius: 10, background: p.bg, margin: "0 auto 7px" }} className="flex items-center justify-center">
-                        {/* clone with stroke */}
                         <span style={{ color: p.stroke }}>{p.svg}</span>
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 500, color: "#111827" }}>{fr ? p.name[1] : p.name[0]}</div>
@@ -253,33 +328,34 @@ function SignupPage() {
                 })}
               </div>
               <div style={{ background: "#E6F1FB", border: "0.5px solid #B5D4F4", borderRadius: 8, padding: "8px 11px", fontSize: 12, color: "#0C447C", marginBottom: 14 }}>
-                {T("Selected", "Sélectionné")}: {fr ? selectedProfile.name[1] : selectedProfile.name[0]} — {fr ? selectedProfile.hint[1] : selectedProfile.hint[0]}
+                {T("Selected", "Sélectionné")}: <strong>{fr ? selectedProfile.name[1] : selectedProfile.name[0]}</strong> — {fr ? selectedProfile.hint[1] : selectedProfile.hint[0]}
               </div>
-              <button onClick={() => setStep(2)} style={{ width: "100%", background: "#185FA5", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500 }}>{T("Continue →", "Continuer →")}</button>
+              <button onClick={() => setStep(2)} style={{ width: "100%", background: "#185FA5", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                {T("Continue →", "Continuer →")}
+              </button>
               <div className="text-center mt-4 text-xs text-muted-foreground">
                 {T("Already have an account?", "Déjà un compte ?")} <Link to="/auth" className="text-tf-blue font-medium">{T("Sign in", "Se connecter")}</Link>
               </div>
             </>
           )}
 
+          {/* STEP 2 — Personal info */}
           {step === 2 && (
             <>
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 2 of 3", "Étape 2 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Tell us about yourself", "Parlez-nous de vous")}</h1>
               <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>{T("Your location is detected automatically.", "Votre localisation est détectée automatiquement.")}</p>
-
               <div className="flex items-center gap-1.5" style={{ background: geoErr ? "#FCEBEB" : "#E1F5EE", border: `0.5px solid ${geoErr ? "#F09595" : "#9FE1CB"}`, borderRadius: 8, padding: "7px 10px", fontSize: 12, color: geoErr ? "#791F1F" : "#085041", marginBottom: 12 }}>
                 <PathPin stroke={geoErr ? "#791F1F" : "#0F6E56"} size={13} />
-                <span>{geoErr ? T("Location not detected — please select your country manually", "Localisation non détectée — sélectionnez votre pays manuellement") : geoText ? `${T("Location detected", "Localisation")}: ${geoText} · ${T("auto-assigned", "marché assigné")}` : T("Detecting your location…", "Détection en cours…")}</span>
+                <span>{geoErr ? T("Location not detected — please select your country manually", "Localisation non détectée — sélectionnez votre pays manuellement") : geoText ? `${T("Location detected", "Localisation")}: ${geoText}` : T("Detecting your location…", "Détection en cours…")}</span>
               </div>
-
               <div className="grid grid-cols-2 gap-2 mb-2">
-                <Field label={T("First name", "Prénom")} val={info.firstName} onChange={(v) => setInfo({ ...info, firstName: v })} placeholder="Adjoua" onBlur={() => setTouched({ ...touched, firstName: true })} err={fieldErr("firstName", info.firstName)} />
-                <Field label={T("Last name", "Nom")} val={info.lastName} onChange={(v) => setInfo({ ...info, lastName: v })} placeholder="Kouamé" onBlur={() => setTouched({ ...touched, lastName: true })} err={fieldErr("lastName", info.lastName)} />
+                <SignupField label={T("First name", "Prénom")} val={info.firstName} onChange={(v) => setInfo({ ...info, firstName: v })} placeholder="Adjoua" onBlur={() => setTouched({ ...touched, firstName: true })} err={fieldErr("firstName", info.firstName)} />
+                <SignupField label={T("Last name", "Nom")} val={info.lastName} onChange={(v) => setInfo({ ...info, lastName: v })} placeholder="Kouamé" onBlur={() => setTouched({ ...touched, lastName: true })} err={fieldErr("lastName", info.lastName)} />
               </div>
-              <Field label={T("Email address", "Adresse email")} type="email" val={info.email} onChange={(v) => setInfo({ ...info, email: v })} placeholder="adjoua@email.com" onBlur={() => setTouched({ ...touched, email: true })} err={fieldErr("email", info.email)} />
+              <SignupField label={T("Email address", "Adresse email")} type="email" val={info.email} onChange={(v) => setInfo({ ...info, email: v })} placeholder="adjoua@email.com" onBlur={() => setTouched({ ...touched, email: true })} err={fieldErr("email", info.email)} />
               <div className="mt-2">
-                <label className="text-xs font-medium text-foreground/80">{T("Phone (for OTP verification)", "Téléphone (pour vérification OTP)")}</label>
+                <label className="text-xs font-medium text-foreground/80">{T("Phone", "Téléphone")}</label>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span style={{ background: "#F3F4F6", padding: "8px 10px", borderRadius: 8, fontSize: 13 }}>{country.flag} {country.dial}</span>
                   <input value={info.phone} onChange={(e) => setInfo({ ...info, phone: e.target.value })} onBlur={() => setTouched({ ...touched, phone: true })} placeholder="(404) 555-0100" className="flex-1 px-3 py-2 rounded-lg" style={{ border: `1.5px solid ${fieldErr("phone", info.phone) ? "#E24B4A" : info.phone && touched.phone ? "#1D9E75" : "#E5E7EB"}`, fontSize: 13 }} />
@@ -293,15 +369,13 @@ function SignupPage() {
                     {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.flag} {c.name}</option>)}
                   </select>
                 </div>
-                <Field label={T("City", "Ville")} val={info.city} onChange={(v) => setInfo({ ...info, city: v })} placeholder="Atlanta" onBlur={() => setTouched({ ...touched, city: true })} err={fieldErr("city", info.city)} />
+                <SignupField label={T("City", "Ville")} val={info.city} onChange={(v) => setInfo({ ...info, city: v })} placeholder="Atlanta" onBlur={() => setTouched({ ...touched, city: true })} err={fieldErr("city", info.city)} />
               </div>
-
               {showSummary && !requiredFilled && (
                 <div style={{ background: "#FCEBEB", border: "0.5px solid #F09595", borderRadius: 8, padding: "7px 10px", fontSize: 12, color: "#791F1F", marginTop: 12 }}>
-                  {T("Please fill in all required fields before continuing.", "Veuillez remplir tous les champs obligatoires avant de continuer.")}
+                  {T("Please fill in all required fields.", "Veuillez remplir tous les champs obligatoires.")}
                 </div>
               )}
-
               <div className="flex gap-2 mt-4">
                 <button onClick={() => setStep(1)} style={{ border: "0.5px solid #E5E7EB", color: "#6B7280", padding: "9px 16px", borderRadius: 8, fontSize: 13 }}>{T("← Back", "← Retour")}</button>
                 <button onClick={() => { setShowSummary(true); setTouched({ firstName: true, lastName: true, email: true, phone: true, city: true }); if (requiredFilled) { setShowSummary(false); setStep(3); } }} style={{ flex: 1, background: "#185FA5", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500 }}>{T("Continue →", "Continuer →")}</button>
@@ -309,12 +383,12 @@ function SignupPage() {
             </>
           )}
 
+          {/* STEP 3 — Password */}
           {step === 3 && (
             <>
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", color: "#9CA3AF", marginBottom: 4 }}>{T("Step 3 of 3", "Étape 3 sur 3")}</div>
               <h1 style={{ fontSize: 16, fontWeight: 500, color: "#111827" }}>{T("Create your password", "Créez votre mot de passe")}</h1>
-              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("At least 8 characters. Mix letters, numbers and symbols.", "Minimum 8 caractères. Mélangez lettres, chiffres et symboles.")}</p>
-
+              <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>{T("At least 8 characters.", "Minimum 8 caractères.")}</p>
               <label className="text-xs font-medium">{T("Password", "Mot de passe")}</label>
               <div className="relative mt-1">
                 <input type={showPwd ? "text" : "password"} value={pwd.password} onChange={(e) => setPwd({ ...pwd, password: e.target.value })} placeholder={T("Min. 8 characters", "Min. 8 caractères")} className="w-full px-3 py-2 pr-10 rounded-lg" style={{ border: "0.5px solid #E5E7EB", fontSize: 13 }} />
@@ -329,7 +403,6 @@ function SignupPage() {
               <div style={{ fontSize: 11, marginTop: 4, color: pwScore === 0 ? "#9CA3AF" : pwScore === 1 ? "#E24B4A" : pwScore === 2 ? "#EF9F27" : "#1D9E75" }}>
                 {[T("Enter a password", "Saisissez un mot de passe"), T("Too weak", "Trop faible"), T("Fair", "Acceptable"), T("Good", "Bon"), T("Strong ✓", "Fort ✓")][pwScore]}
               </div>
-
               <label className="text-xs font-medium mt-3 block">{T("Confirm password", "Confirmer le mot de passe")}</label>
               <input type={showPwd ? "text" : "password"} value={pwd.confirm} onChange={(e) => setPwd({ ...pwd, confirm: e.target.value })} placeholder={T("Repeat your password", "Répétez le mot de passe")} className="w-full px-3 py-2 rounded-lg mt-1" style={{ border: "0.5px solid #E5E7EB", fontSize: 13 }} />
               {pwd.confirm && (
@@ -337,47 +410,46 @@ function SignupPage() {
                   {pwd.confirm === pwd.password ? T("✓ Passwords match", "✓ Mots de passe identiques") : T("✗ Passwords do not match", "✗ Mots de passe différents")}
                 </div>
               )}
-
               <hr style={{ border: 0, borderTop: "0.5px solid #E5E7EB", margin: "12px 0" }} />
-
               <label className="flex items-start gap-2 text-xs cursor-pointer">
                 <input type="checkbox" checked={checks.terms} onChange={(e) => setChecks({ ...checks, terms: e.target.checked })} className="mt-0.5" />
                 <span>{T("I agree to the ", "J'accepte les ")}<a className="text-tf-blue underline">{T("Terms of Service", "Conditions d'utilisation")}</a>{T(" and ", " et la ")}<a className="text-tf-blue underline">{T("Privacy Policy", "Politique de confidentialité")}</a></span>
               </label>
               <label className="flex items-start gap-2 text-xs cursor-pointer mt-2">
                 <input type="checkbox" checked={checks.fair} onChange={(e) => setChecks({ ...checks, fair: e.target.checked })} className="mt-0.5" />
-                <span>{T("I acknowledge the ", "Je reconnais que la loi ")}<a className="text-tf-blue underline">Fair Housing Act</a>{T(" applies to all US property listings on this platform", " s'applique à toutes les annonces immobilières US sur cette plateforme")}</span>
+                <span>{T("I acknowledge the ", "Je reconnais que la ")}<a className="text-tf-blue underline">Fair Housing Act</a>{T(" applies to all US listings", " s'applique aux annonces US")}</span>
               </label>
               <label className="flex items-start gap-2 text-xs cursor-pointer mt-2">
                 <input type="checkbox" checked={checks.news} onChange={(e) => setChecks({ ...checks, news: e.target.checked })} className="mt-0.5" />
-                <span>{T("Send me property alerts and market intelligence by email (optional)", "M'envoyer des alertes de biens et analyses de marché par email (optionnel)")}</span>
+                <span>{T("Send me property alerts by email (optional)", "M'envoyer des alertes de biens par email (optionnel)")}</span>
               </label>
-
               <div className="flex gap-2 mt-4">
                 <button onClick={() => setStep(2)} style={{ border: "0.5px solid #E5E7EB", color: "#6B7280", padding: "9px 16px", borderRadius: 8, fontSize: 13 }}>{T("← Back", "← Retour")}</button>
-                <button onClick={submitAccount} disabled={busy} style={{ flex: 1, background: "#1D9E75", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500, opacity: busy ? 0.7 : 1 }}>{busy ? T("Creating your account…", "Création du compte…") : T("Create my account →", "Créer mon compte →")}</button>
+                <button onClick={submitAccount} disabled={busy} style={{ flex: 1, background: "#1D9E75", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500, opacity: busy ? 0.7 : 1 }}>
+                  {busy ? T("Creating your account…", "Création du compte…") : T("Create my account →", "Créer mon compte →")}
+                </button>
               </div>
             </>
           )}
 
-
-
+          {/* STEP 5 — Welcome */}
           {step === 5 && (
             <div className="text-center pt-4">
               <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#E1F5EE", border: "2px solid #1D9E75", margin: "0 auto", animation: "pop 0.4s ease forwards" }} className="flex items-center justify-center">
                 <PathCheck stroke="#1D9E75" size={28} />
               </div>
               <h1 style={{ fontSize: 18, fontWeight: 500, color: "#111827", marginTop: 14 }}>{T("Welcome to Diashubb!", "Bienvenue sur Diashubb !")}</h1>
-              <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>{T(`Your account is ready, ${info.firstName}.`, `Votre compte est prêt, ${info.firstName}.`)}</p>
-
+              <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 8 }}>{T(`Your account is ready, ${info.firstName}.`, `Votre compte est prêt, ${info.firstName}.`)}</p>
+              <p style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 16 }}>
+                {T("Check your email to confirm your account.", "Vérifiez votre email pour confirmer votre compte.")}
+              </p>
               <div className="flex items-center gap-2 mx-auto" style={{ background: "#E1F5EE", border: "0.5px solid #9FE1CB", borderRadius: 12, padding: "10px 14px", maxWidth: 300, marginBottom: 16 }}>
                 <PathStar stroke="#1D9E75" size={20} />
                 <div className="text-left leading-tight">
                   <div style={{ fontSize: 13, fontWeight: 500, color: "#0F6E56" }}>{T("100 DiasCoins credited", "100 DiasCoins crédités")}</div>
-                  <div style={{ fontSize: 11, color: "#085041" }}>{T("Worth $5 · Use on reports, boosts or transfers", "Valeur $5 · À utiliser sur rapports, boosts ou transferts")}</div>
+                  <div style={{ fontSize: 11, color: "#085041" }}>{T("Worth $5 · Use on reports, boosts or transfers", "Valeur $5 · Rapports, boosts ou transferts")}</div>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-2 mx-auto" style={{ maxWidth: 320, marginBottom: 16 }}>
                 {[
                   { n: "100", l: "DiasCoins", c: "#185FA5" },
@@ -391,9 +463,12 @@ function SignupPage() {
                   </div>
                 ))}
               </div>
-
-              <button onClick={() => navigate({ to: "/dashboard" })} style={{ width: "100%", background: "#1D9E75", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500 }}>{T("Go to my dashboard →", "Accéder à mon dashboard →")}</button>
-              <button onClick={() => navigate({ to: "/listings" })} className="w-full mt-2" style={{ border: "0.5px solid #E5E7EB", color: "#6B7280", padding: 10, borderRadius: 8, fontSize: 13 }}>{T("Browse listings now", "Parcourir les annonces")}</button>
+              <button onClick={() => navigate({ to: "/dashboard" })} style={{ width: "100%", background: "#1D9E75", color: "white", padding: 10, borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                {T("Go to my dashboard →", "Accéder à mon dashboard →")}
+              </button>
+              <button onClick={() => navigate({ to: "/listings" })} className="w-full mt-2" style={{ border: "0.5px solid #E5E7EB", color: "#6B7280", padding: 10, borderRadius: 8, fontSize: 13 }}>
+                {T("Browse listings", "Parcourir les annonces")}
+              </button>
             </div>
           )}
         </div>
@@ -402,7 +477,7 @@ function SignupPage() {
   );
 }
 
-function Field({ label, val, onChange, placeholder, onBlur, err, type = "text" }: { label: string; val: string; onChange: (v: string) => void; placeholder?: string; onBlur?: () => void; err?: string | null; type?: string }) {
+function SignupField({ label, val, onChange, placeholder, onBlur, err, type = "text" }: { label: string; val: string; onChange: (v: string) => void; placeholder?: string; onBlur?: () => void; err?: string | null; type?: string }) {
   return (
     <div>
       <label className="text-xs font-medium text-foreground/80">{label}</label>
@@ -412,7 +487,6 @@ function Field({ label, val, onChange, placeholder, onBlur, err, type = "text" }
   );
 }
 
-// ============ SVG Icons ============
 function PathHouse({ stroke = "currentColor", size = 13 }: { stroke?: string; size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
 }
