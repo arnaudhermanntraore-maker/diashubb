@@ -180,7 +180,7 @@ function Home() {
       />
 
       {/* CONTRACTORS */}
-      <SectionHeader title={fr ? "Artisans vérifiés près de chez vous" : "Verified contractors near you"} link={fr ? "Voir tous" : "See all"} />
+      <SectionHeader title={fr ? "Artisans vérifiés près de chez vous" : "Verified contractors near you"} link={fr ? "Voir tous les artisans" : "See all contractors"} linkTo="/contractors" />
       <div className="container mx-auto px-4 pb-12 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <ContractorCard featured initials="MJ" color={TF_BLUE} name="Marcus Johnson" meta={fr ? "Entrepreneur général · 4.9★ · Atlanta GA" : "General contractor · 4.9★ · Atlanta GA"} rate="$85/hr" badge={fr ? "Antécédents vérifiés" : "Background checked"} badgeColor={TF_BLUE} />
         <ContractorCard initials="RW" color={TF_GREEN} name="Rivera & Williams" meta={fr ? "Électriciens · 4.8★ · Houston TX" : "Electricians · 4.8★ · Houston TX"} rate="$95/hr" badge={fr ? "Disponible" : "Available now"} badgeColor={TF_GREEN} />
@@ -327,12 +327,12 @@ function GlassCard({ className = "", delay = "0s", kicker, badge, badgeColor, va
   );
 }
 
-function SectionHeader({ title, link }: { title: string; link: string }) {
+function SectionHeader({ title, link, linkTo = "/listings" }: { title: string; link: string; linkTo?: string }) {
   return (
     <section className="container mx-auto px-4 pt-14 pb-4 max-w-7xl">
       <div className="flex items-end justify-between">
         <h2 className="text-2xl font-display font-bold text-tf-navy">{title}</h2>
-        <Link to="/listings" className="text-sm font-semibold inline-flex items-center gap-1 text-tf-blue">{link} <ArrowRight size={16} /></Link>
+        <Link to={linkTo} className="text-sm font-semibold inline-flex items-center gap-1 text-tf-blue">{link} <ArrowRight size={16} /></Link>
       </div>
     </section>
   );
